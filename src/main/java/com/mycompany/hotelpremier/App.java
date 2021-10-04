@@ -19,11 +19,12 @@ public class App {
     
     public static void main(String[] args) {
              
+          /* Para listar pasajeros */
 //        System.out.println("Lista de personas:");
 //        System.out.println(gestorPersonas.getAllPersonasFisicas());
   
 
-
+          /* Para encuentrar un pasajero */
 //        PersonaFisica p = gestorPersonas.findPersonaFisica(9);
 //        
 //        System.out.println("\nPersona con id: 9");
@@ -39,22 +40,24 @@ public class App {
 //        System.out.println(p.getDireccion().getLocalidad().getProvincia().getPais());
 
 
+        /* Para crear un pasajero */
 //        PersonaFisicaDTO p = new PersonaFisicaDTO("apellido","nombres", "DNI", 40617522, "1997-09-05",
 //                "email", "ocupacion", "nacionalidad", "telefono", "calle", 4782,
 //                "departamento", "piso", 3000, "Consumidor Final",3,1,1);        
 //        gestorPersonas.createPersonaFisica(p);
 
 
-        System.out.println("\nPersona con id: 9");
-        System.out.println(gestorPersonas.findPersonaFisica(9));
-        
-        PersonaFisicaDTO p = new PersonaFisicaDTO("Jose","Perez", "DNI", 40617522, "1997-09-05",
-                "email", "Ingeniero", "nacionalidad", "telefono", "calle", 4782,
-                "departamento", "piso", 3000, "Consumidor Final",3,1,1);
-        
-        gestorPersonas.updatePersonaFisica(p, 9);
-       
-        System.out.println("\nPersona con id: 9");
-        System.out.println(gestorPersonas.findPersonaFisica(9));
+        /* Para modificar un pasajero */
+//        System.out.println("\nPersona con id: 9");
+//        System.out.println(gestorPersonas.findPersonaFisica(9));
+//        
+//        PersonaFisicaDTO p = new PersonaFisicaDTO("Jose","Perez", "DNI", 40617522, "1997-09-05",
+//                "email", "Ingeniero", "nacionalidad", "telefono", "calle", 4782,
+//                "departamento", "piso", 3000, "Consumidor Final",3,1,1);
+//        
+//        gestorPersonas.updatePersonaFisica(p, 9);
+//       
+//        System.out.println("\nPersona con id: 9");
+//        System.out.println(gestorPersonas.findPersonaFisica(9));
     }
 }
