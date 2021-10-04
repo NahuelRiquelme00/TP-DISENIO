@@ -28,12 +28,12 @@ public class PersonaFisicaDTO {
     private String departamento;
     private String piso;
     private Integer codigoPostal;
-    private String posicionIVA;
+    private Integer idPosicionIVA;
     private Integer idLocalidad;
     private Integer idProvincia;
     private Integer idPais;
 
-    public PersonaFisicaDTO(String apellido, String nombres, String tipoDocumento, Integer nroDocumento, String fechaNacimiento, String email, String ocupacion, String nacionalidad, String telefono, String calle, Integer numero, String departamento, String piso, Integer codigoPostal, String posicionIVA, Integer idLocalidad, Integer idProvincia, Integer idPais) {
+    public PersonaFisicaDTO(String apellido, String nombres, String tipoDocumento, Integer nroDocumento, String fechaNacimiento, String email, String ocupacion, String nacionalidad, String telefono, String calle, Integer numero, String departamento, String piso, Integer codigoPostal, Integer posicionIVA, Integer idLocalidad, Integer idProvincia, Integer idPais) {
         this.apellido = apellido;
         this.nombres = nombres;
         this.tipoDocumento = tipoDocumento;
@@ -48,7 +48,7 @@ public class PersonaFisicaDTO {
         this.departamento = departamento;
         this.piso = piso;
         this.codigoPostal = codigoPostal;
-        this.posicionIVA = posicionIVA;
+        this.idPosicionIVA = posicionIVA;
         this.idLocalidad = idLocalidad;
         this.idProvincia = idProvincia;
         this.idPais = idPais;
@@ -166,12 +166,12 @@ public class PersonaFisicaDTO {
         this.codigoPostal = codigoPostal;
     }
 
-    public String getPosicionIVA() {
-        return posicionIVA;
+    public Integer getIdPosicionIVA() {
+        return idPosicionIVA;
     }
 
-    public void setPosicionIVA(String posicionIVA) {
-        this.posicionIVA = posicionIVA;
+    public void setIdPosicionIVA(Integer idPosicionIVA) {
+        this.idPosicionIVA = idPosicionIVA;
     }
 
     public Integer getIdLocalidad() {

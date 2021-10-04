@@ -20,7 +20,7 @@ public class Persona {
     @JoinColumn(name = "id_direccion", referencedColumnName = "id_direccion")
     Direccion direccion;
     
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     @JoinColumn(name = "id_tipo_posicion_frente_IVA", referencedColumnName = "id_tipo_posicion_frente_IVA")
     TipoPosicionFrenteIVA tipoPosicionFrenteIVA;
 

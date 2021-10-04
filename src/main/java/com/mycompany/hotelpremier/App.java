@@ -41,9 +41,9 @@ public class App {
 
 
         /* Para crear un pasajero */
-//        PersonaFisicaDTO p = new PersonaFisicaDTO("apellido","nombres", "DNI", 40617522, "1997-09-05",
+//        PersonaFisicaDTO p = new PersonaFisicaDTO("Rodriguez","Eduardo", "DNI", 40617522, "1997-09-05",
 //                "email", "ocupacion", "nacionalidad", "telefono", "calle", 4782,
-//                "departamento", "piso", 3000, "Consumidor Final",3,1,1);        
+//                "departamento", "piso", 3000, 7,3,1,1);        
 //        gestorPersonas.createPersonaFisica(p);
 
 

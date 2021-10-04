@@ -60,9 +60,10 @@ public class GestorDePersonas {
         
         PersonaFisica personaFisica = new PersonaFisica(p.getApellido(), p.getNombres(), TipoDocumento.valueOf(p.getTipoDocumento()), p.getNroDocumento(), LocalDate.parse(p.getFechaNacimiento()),p.getEmail(),p.getOcupacion(),p.getNacionalidad(),p.getTelefono());
         Direccion direccion = new Direccion(p.getCalle(), p.getNumero(), p.getDepartamento(), p.getPiso(), p.getCodigoPostal());
-        TipoPosicionFrenteIVA posicionIVA= new TipoPosicionFrenteIVA(p.getPosicionIVA(), TipoFactura.A);
-        //La direccion y la posicionIVA se crean al crear la persona
-        //La localidad, la provincia y el pais se tienen que relacionar entre ellos por su id;
+        //La direccion se crea al crear la persona
+        
+        //La posicionIVA, la localidad, la provincia y el pais se tienen que relacionar entre ellos por su id;
+        TipoPosicionFrenteIVA posicionIVA = personaDAO.findTipoPosicionFrenteIVA(p.getIdPosicionIVA());
         Localidad loc = personaDAO.findLocalidad(p.getIdLocalidad());
         Provincia prov = personaDAO.findProvincia(p.getIdProvincia());
         Pais pais = personaDAO.findPais(p.getIdPais());
@@ -71,7 +72,6 @@ public class GestorDePersonas {
         prov.setPais(pais);
         loc.setProvincia(prov);
         direccion.setLocalidad(loc);        
-        
         personaFisica.setDireccion(direccion);
         personaFisica.setTipoPosicionFrenteIVA(posicionIVA);        
         
@@ -89,18 +89,14 @@ public class GestorDePersonas {
         
         PersonaFisica personaFisica = new PersonaFisica(p.getApellido(), p.getNombres(), TipoDocumento.valueOf(p.getTipoDocumento()), p.getNroDocumento(), LocalDate.parse(p.getFechaNacimiento()),p.getEmail(),p.getOcupacion(),p.getNacionalidad(),p.getTelefono());
         Direccion direccion = new Direccion(p.getCalle(), p.getNumero(), p.getDepartamento(), p.getPiso(), p.getCodigoPostal());
-        TipoPosicionFrenteIVA posicionIVA= new TipoPosicionFrenteIVA(p.getPosicionIVA(), TipoFactura.A);
-        //La direccion y la posicionIVA se crean al crear la persona
-        //La localidad, la provincia y el pais se tienen que relacionar entre ellos por su id;
+        TipoPosicionFrenteIVA posicionIVA = personaDAO.findTipoPosicionFrenteIVA(p.getIdPosicionIVA());
         Localidad loc = personaDAO.findLocalidad(p.getIdLocalidad());
         Provincia prov = personaDAO.findProvincia(p.getIdProvincia());
         Pais pais = personaDAO.findPais(p.getIdPais());
-        //Se podria lanzar una excepcion si no existen en la base de datos, pero al ser cargados desde una interface
-        //siempre deberian existir
+        
         prov.setPais(pais);
         loc.setProvincia(prov);
-        direccion.setLocalidad(loc);        
-        
+        direccion.setLocalidad(loc);     
         personaFisica.setDireccion(direccion);
         personaFisica.setTipoPosicionFrenteIVA(posicionIVA);   
         personaFisica.setIdPersonaFisica(id_persona);

@@ -11,6 +11,7 @@ import entidades.Localidad;
 import entidades.Pais;
 import entidades.PersonaFisica;
 import entidades.Provincia;
+import entidades.TipoPosicionFrenteIVA;
 import java.util.List;
 
 /**
@@ -34,6 +35,8 @@ public interface PersonaDAO {
     public Provincia findProvincia(Integer id);
     
     public Pais findPais(Integer id);
+    
+    public TipoPosicionFrenteIVA findTipoPosicionFrenteIVA(Integer id);
     
     public void close();
     

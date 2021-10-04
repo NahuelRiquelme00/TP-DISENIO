@@ -36,9 +36,6 @@ public class TipoPosicionFrenteIVA implements Serializable {
     @Column (name = "tipo_factura")
     @Enumerated(EnumType.STRING)
     private TipoFactura tipoFactura; 
-    
-//    @OneToMany(mappedBy= "tipoPosicionFrenteIVA")
-//    private List<PersonaFisica> listaPersonas;
 
     public TipoPosicionFrenteIVA() {
     }

@@ -12,6 +12,7 @@ import entidades.Localidad;
 import entidades.Pais;
 import entidades.PersonaFisica;
 import entidades.Provincia;
+import entidades.TipoPosicionFrenteIVA;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -133,6 +134,15 @@ public class PersonaDAOImpl implements PersonaDAO {
         EntityManager em = getEntityManager();
         try {
             return em.find(PersonaFisica.class, id);
+        } finally {
+            em.close();
+        }
+    }
+    
+        public TipoPosicionFrenteIVA findTipoPosicionFrenteIVA(Integer id) {
+        EntityManager em = getEntityManager();
+        try {
+            return em.find(TipoPosicionFrenteIVA.class, id);
         } finally {
             em.close();
         }
