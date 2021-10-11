@@ -77,7 +77,7 @@ VALUES (DEFAULT,
 INSERT INTO persona_fisica
 VALUES (DEFAULT,
 		'DNI',
-		40585894,
+		40617524,
 		'Apellido1',
 		'Nombre1',
 		'09-12-1998',

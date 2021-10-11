@@ -14,9 +14,9 @@ import entidades.Pais;
 import entidades.PersonaFisica;
 import entidades.Provincia;
 import entidades.TipoDocumento;
-import entidades.TipoFactura;
 import entidades.TipoPosicionFrenteIVA;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -124,6 +124,56 @@ public class GestorDePersonas {
         return persona;
     }
     
+    public List<PersonaFisicaDTO> buscarPasajero(String nombre, String apellido, String tipoDocumento, String nroDocumento){
+        personaDAO = new PersonaDAOImpl();
+        //Aca se deberia llamar a un metodo que busque solo por atributos
+        List<PersonaFisica> listaPersonas = personaDAO.buscarPasajero(nombre, apellido, tipoDocumento, nroDocumento);
+        personaDAO.close();
+        return convertirAdto(listaPersonas);        
+    }
     
+    public List<PersonaFisicaDTO> convertirAdto(List<PersonaFisica> listaPersonas){
+        List<PersonaFisicaDTO> pasajerosDTO = new ArrayList<>();
+        listaPersonas.stream().map(p -> new PersonaFisicaDTO(p.getIdPersonaFisica(),p.getApellido(), p.getNombres(), p.getTipoDocumento().toString(), p.getNroDocumento())).forEachOrdered(dto -> {
+            pasajerosDTO.add(dto);
+        });
+        return pasajerosDTO;
+    }
+    
+    public List<Pais> getAllPaises(){
+        personaDAO = new PersonaDAOImpl();
+        try{
+            return personaDAO.getAllPaises();
+        }finally{
+            personaDAO.close();
+        }
+    }
+    
+    public List<Provincia> getProvinciasWith(Integer id_pais){
+        personaDAO = new PersonaDAOImpl();
+        try{
+            return personaDAO.getProvinciasWith(id_pais);
+        }finally{
+            personaDAO.close();
+        }
+    }
+
+    public List<Localidad> getLocalidadesWith(Integer idProvincia) {
+        personaDAO = new PersonaDAOImpl();
+        try{
+            return personaDAO.getLocalidadesWith(idProvincia);
+        }finally{
+            personaDAO.close();
+        }
+    }
+    
+    public List<TipoPosicionFrenteIVA> getAllPosicionesIVA(){
+        personaDAO = new PersonaDAOImpl();
+        try{
+            return personaDAO.getAllPosicionesIVA();
+        }finally{
+            personaDAO.close();
+        }
+    }
     
 }

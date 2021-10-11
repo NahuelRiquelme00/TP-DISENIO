@@ -36,8 +36,18 @@ public interface PersonaDAO {
     
     public Pais findPais(Integer id);
     
+    public List<Pais> getAllPaises();
+    
+    public List<Provincia> getProvinciasWith(Integer id_pais);
+    
     public TipoPosicionFrenteIVA findTipoPosicionFrenteIVA(Integer id);
     
+    public List<PersonaFisica> buscarPasajero(String nombre, String apellido, String tipoDocumento, String nroDocumento);
+    
     public void close();
+
+    public List<Localidad> getLocalidadesWith(Integer idProvincia);
+
+    public List<TipoPosicionFrenteIVA> getAllPosicionesIVA();
     
 }

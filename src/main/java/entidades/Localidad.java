@@ -61,7 +61,7 @@ public class Localidad implements Serializable {
 
     @Override
     public String toString() {
-        return "Localidad{" + "nombre=" + nombre + '}';
+        return nombre;
     }   
     
 }

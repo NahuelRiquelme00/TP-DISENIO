@@ -16,8 +16,9 @@ import gestores.GestorDePersonas;
  */
 public class App {
     private static final GestorDePersonas gestorPersonas = GestorDePersonas.getInstance();
-    
     public static void main(String[] args) {
+        
+        System.out.println(gestorPersonas.getAllPaises().get(0).getIdPais());
              
           /* Para listar pasajeros */
 //        System.out.println("Lista de personas:");
@@ -41,10 +42,13 @@ public class App {
 
 
         /* Para crear un pasajero */
-//        PersonaFisicaDTO p = new PersonaFisicaDTO("Rodriguez","Eduardo", "DNI", 40617522, "1997-09-05",
+//        for (int i = 0; i < 20; i++) {
+//                PersonaFisicaDTO p = new PersonaFisicaDTO("Rodriguez","Eduardo", "DNI", 40617522, "1997-09-05",
 //                "email", "ocupacion", "nacionalidad", "telefono", "calle", 4782,
 //                "departamento", "piso", 3000, 7,3,1,1);        
-//        gestorPersonas.createPersonaFisica(p);
+//                gestorPersonas.createPersonaFisica(p); 
+//        }
+
 
 
         /* Para modificar un pasajero */
@@ -58,6 +62,6 @@ public class App {
 //        gestorPersonas.updatePersonaFisica(p, 9);
 //       
 //        System.out.println("\nPersona con id: 9");
-//        System.out.println(gestorPersonas.findPersonaFisica(9));
+//        System.out.println(gestorPersonas.findPersonaFisica(9));  
     }
 }

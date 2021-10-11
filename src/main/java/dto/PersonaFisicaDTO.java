@@ -14,6 +14,7 @@ import java.time.LocalDate;
  */
 public class PersonaFisicaDTO {
     
+    private Integer id;
     private String apellido;
     private String nombres;
     private String tipoDocumento;
@@ -52,6 +53,23 @@ public class PersonaFisicaDTO {
         this.idLocalidad = idLocalidad;
         this.idProvincia = idProvincia;
         this.idPais = idPais;
+    }
+
+    //Para la interface
+    public PersonaFisicaDTO(Integer id, String apellido, String nombres, String tipoDocumento, Integer nroDocumento) {
+        this.id = id;
+        this.apellido = apellido;
+        this.nombres = nombres;
+        this.tipoDocumento = tipoDocumento;
+        this.nroDocumento = nroDocumento;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getApellido() {

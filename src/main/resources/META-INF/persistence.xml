@@ -4,10 +4,10 @@
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
     <class>entidades.TipoPosicionFrenteIVA</class>
     <class>entidades.Direccion</class>
-    <class>entidades.PersonaFisica</class>
     <class>entidades.Localidad</class>
     <class>entidades.Pais</class>
     <class>entidades.Provincia</class>
+    <class>entidades.PersonaFisica</class>
     <properties>
       <!-- Configuring JDBC properties -->
       <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/postgres"/>

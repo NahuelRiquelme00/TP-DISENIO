@@ -71,7 +71,7 @@ public class TipoPosicionFrenteIVA implements Serializable {
 
     @Override
     public String toString() {
-        return "TipoPosicionFrenteIVA{" + "nombre=" + nombre + '}';
+        return nombre + " (" + tipoFactura + ")" ;
     }
     
     
