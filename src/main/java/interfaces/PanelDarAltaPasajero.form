@@ -1,0 +1,539 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+  <Properties>
+    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+      <Dimension value="[800, 600]"/>
+    </Property>
+  </Properties>
+  <AuxValues>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
+    <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+  </AuxValues>
+
+  <Layout>
+    <DimensionLayout dim="0">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" attributes="0">
+              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="jPanel2" max="32767" attributes="0"/>
+                  <Component id="jPanel3" max="32767" attributes="0"/>
+                  <Group type="102" alignment="1" attributes="0">
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      <Component id="jButtonSiguiente" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="jButtonCancelar" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <Component id="jLabel9" min="-2" max="-2" attributes="0"/>
+                  <Component id="jPanel1" alignment="0" max="32767" attributes="0"/>
+              </Group>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+    <DimensionLayout dim="1">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <Component id="jPanel1" pref="178" max="32767" attributes="0"/>
+              <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
+              <Component id="jLabel9" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <Component id="jPanel2" pref="176" max="32767" attributes="0"/>
+              <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
+              <Component id="jPanel3" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="jButtonCancelar" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jButtonSiguiente" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+  </Layout>
+  <SubComponents>
+    <Container class="javax.swing.JPanel" name="jPanel1">
+      <Properties>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+            <LineBorder thickness="2"/>
+          </Border>
+        </Property>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[780, 175]"/>
+        </Property>
+      </Properties>
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" attributes="0">
+                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="jLabel4" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="1" attributes="0">
+                      <Component id="jDateChooserFecha" alignment="0" pref="197" max="32767" attributes="0"/>
+                      <Component id="jComboBoxTipoDoc" alignment="0" max="32767" attributes="0"/>
+                      <Component id="jTextFieldNombre" alignment="0" max="32767" attributes="0"/>
+                      <Component id="jTextFieldEmail" alignment="0" max="32767" attributes="0"/>
+                  </Group>
+                  <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="jLabel8" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="jLabel7" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="jLabel6" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="jLabel5" alignment="0" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="jTextFieldDocumento" alignment="0" pref="197" max="32767" attributes="0"/>
+                      <Component id="jTextFieldTelefono" alignment="0" max="32767" attributes="0"/>
+                      <Component id="jTextFieldNacionalidad" alignment="0" max="32767" attributes="0"/>
+                      <Component id="jTextFieldApellido" max="32767" attributes="0"/>
+                  </Group>
+                  <EmptySpace min="-2" pref="72" max="-2" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="2" attributes="0">
+                      <Group type="102" alignment="2" attributes="0">
+                          <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="26" pref="26" max="26" attributes="0"/>
+                          <Component id="jLabel6" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="26" pref="26" max="26" attributes="0"/>
+                          <Component id="jLabel7" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="26" pref="26" max="26" attributes="0"/>
+                          <Component id="jLabel8" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="2" attributes="0">
+                          <Component id="jTextFieldApellido" linkSize="2" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="18" pref="18" max="18" attributes="0"/>
+                          <Component id="jTextFieldDocumento" linkSize="2" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="18" pref="18" max="18" attributes="0"/>
+                          <Component id="jTextFieldTelefono" linkSize="2" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="18" pref="18" max="18" attributes="0"/>
+                          <Component id="jTextFieldNacionalidad" linkSize="2" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="2" attributes="0">
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="jTextFieldNombre" linkSize="2" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace min="18" pref="18" max="18" attributes="0"/>
+                                  <Group type="103" groupAlignment="3" attributes="0">
+                                      <Component id="jComboBoxTipoDoc" linkSize="2" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                          </Group>
+                          <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jDateChooserFecha" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="jTextFieldEmail" linkSize="2" alignment="2" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel4" alignment="2" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                  </Group>
+                  <EmptySpace max="32767" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+      <SubComponents>
+        <Component class="javax.swing.JLabel" name="jLabel1">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;&lt;body&gt;&#xa;&#xa;&lt;p&gt;&#xa;&#xa;&lt;span style=&quot;color:Black&quot;&gt;Nombres(s)&lt;/span&gt;&#xa;&lt;span style=&quot;color:RED&quot;&gt;(*)&lt;/span&gt;&#xa;&#xa;&#xa;&lt;/p&gt;&#xa;&#xa;&#xa;&lt;/body&gt;&#xa;&lt;/html&gt;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel2">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;&lt;body&gt;&#xa;&#xa;&lt;p&gt;&#xa;&#xa;&lt;span style=&quot;color:Black&quot;&gt;Tipo de documento&lt;/span&gt;&#xa;&lt;span style=&quot;color:RED&quot;&gt;(*)&lt;/span&gt;&#xa;&#xa;&#xa;&lt;/p&gt;&#xa;&#xa;&#xa;&lt;/body&gt;&#xa;&lt;/html&gt;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel3">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;&lt;body&gt;&#xa;&#xa;&lt;p&gt;&#xa;&#xa;&lt;span style=&quot;color:Black&quot;&gt;Fecha de nacimiento&lt;/span&gt;&#xa;&lt;span style=&quot;color:RED&quot;&gt;(*)&lt;/span&gt;&#xa;&#xa;&#xa;&lt;/p&gt;&#xa;&#xa;&#xa;&lt;/body&gt;&#xa;&lt;/html&gt;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel4">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Email"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="jTextFieldEmail">
+        </Component>
+        <Component class="javax.swing.JTextField" name="jTextFieldNombre">
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel5">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;&lt;body&gt;&#xa;&#xa;&lt;p&gt;&#xa;&#xa;&lt;span style=&quot;color:Black&quot;&gt;Apellido(s)&lt;/span&gt;&#xa;&lt;span style=&quot;color:RED&quot;&gt;(*)&lt;/span&gt;&#xa;&#xa;&#xa;&lt;/p&gt;&#xa;&#xa;&#xa;&lt;/body&gt;&#xa;&lt;/html&gt;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel6">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;&lt;body&gt;&#xa;&#xa;&lt;p&gt;&#xa;&#xa;&lt;span style=&quot;color:Black&quot;&gt;Numero de documento&lt;/span&gt;&#xa;&lt;span style=&quot;color:RED&quot;&gt;(*)&lt;/span&gt;&#xa;&#xa;&#xa;&lt;/p&gt;&#xa;&#xa;&#xa;&lt;/body&gt;&#xa;&lt;/html&gt;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel7">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;&lt;body&gt;&#xa;&#xa;&lt;p&gt;&#xa;&#xa;&lt;span style=&quot;color:Black&quot;&gt;Telefono &lt;/span&gt;&#xa;&lt;span style=&quot;color:RED&quot;&gt;(*)&lt;/span&gt;&#xa;&#xa;&#xa;&lt;/p&gt;&#xa;&#xa;&#xa;&lt;/body&gt;&#xa;&lt;/html&gt;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel8">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;&lt;body&gt;&#xa;&#xa;&lt;p&gt;&#xa;&#xa;&lt;span style=&quot;color:Black&quot;&gt;Nacionalidad &lt;/span&gt;&#xa;&lt;span style=&quot;color:RED&quot;&gt;(*)&lt;/span&gt;&#xa;&#xa;&#xa;&lt;/p&gt;&#xa;&#xa;&#xa;&lt;/body&gt;&#xa;&lt;/html&gt;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="jTextFieldApellido">
+        </Component>
+        <Component class="javax.swing.JTextField" name="jTextFieldDocumento">
+          <Properties>
+            <Property name="enabled" type="boolean" value="false"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="jTextFieldTelefono">
+        </Component>
+        <Component class="javax.swing.JTextField" name="jTextFieldNacionalidad">
+        </Component>
+        <Component class="javax.swing.JComboBox" name="jComboBoxTipoDoc">
+          <Properties>
+            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+              <StringArray count="0"/>
+            </Property>
+          </Properties>
+          <Events>
+            <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="jComboBoxTipoDocItemStateChanged"/>
+          </Events>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="DefaultComboBoxModel tipoDocModel = new DefaultComboBoxModel();&#xa;for(TipoDocumento t: TipoDocumento.values()){&#xa;    tipoDocModel.addElement(t);&#xa;}&#xa;jComboBoxTipoDoc.setModel(tipoDocModel);&#xa;jComboBoxTipoDoc.setSelectedIndex(-1);&#xa;jComboBoxTipoDoc.setSelectedItem(null);&#xa;"/>
+            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;TipoDocumento&gt;"/>
+          </AuxValues>
+        </Component>
+        <Component class="com.toedter.calendar.JDateChooser" name="jDateChooserFecha">
+        </Component>
+      </SubComponents>
+    </Container>
+    <Container class="javax.swing.JPanel" name="jPanel2">
+      <Properties>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+            <LineBorder thickness="2"/>
+          </Border>
+        </Property>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[780, 175]"/>
+        </Property>
+      </Properties>
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" attributes="0">
+                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="jLabel13" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="jLabel12" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="jLabel11" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="jLabel10" alignment="0" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace min="-2" pref="45" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="1" attributes="0">
+                      <Component id="jTextFieldCodigoPostal" max="32767" attributes="0"/>
+                      <Component id="jTextFieldDepartamento" alignment="0" max="32767" attributes="0"/>
+                      <Component id="jTextFieldCalle" alignment="0" max="32767" attributes="0"/>
+                      <Component id="jComboBoxProvincia" max="32767" attributes="0"/>
+                  </Group>
+                  <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="jLabel14" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="jLabel15" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="jLabel16" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="jLabel17" alignment="0" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace min="-2" pref="68" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="jTextFieldNumero" max="32767" attributes="0"/>
+                      <Component id="jTextFieldPiso" alignment="0" max="32767" attributes="0"/>
+                      <Component id="jComboBoxPais" alignment="0" max="32767" attributes="0"/>
+                      <Component id="jComboBoxLocalidad" alignment="0" max="32767" attributes="0"/>
+                  </Group>
+                  <EmptySpace min="-2" pref="73" max="-2" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="jLabel10" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jTextFieldCalle" linkSize="3" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jLabel14" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jTextFieldNumero" linkSize="3" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="jLabel11" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jTextFieldDepartamento" linkSize="3" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jLabel15" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jTextFieldPiso" linkSize="3" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="jLabel12" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jTextFieldCodigoPostal" linkSize="3" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jLabel16" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jComboBoxPais" linkSize="3" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="jLabel13" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jLabel17" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jComboBoxProvincia" linkSize="3" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jComboBoxLocalidad" linkSize="3" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="32767" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+      <SubComponents>
+        <Component class="javax.swing.JLabel" name="jLabel10">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;&lt;body&gt;&#xa;&#xa;&lt;p&gt;&#xa;&#xa;&lt;span style=&quot;color:Black&quot;&gt;Calle&lt;/span&gt;&#xa;&lt;span style=&quot;color:RED&quot;&gt;(*)&lt;/span&gt;&#xa;&#xa;&#xa;&lt;/p&gt;&#xa;&#xa;&#xa;&lt;/body&gt;&#xa;&lt;/html&gt;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel11">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;&lt;body&gt;&#xa;&#xa;&lt;p&gt;&#xa;&#xa;&lt;span style=&quot;color:Black&quot;&gt;Departamento&lt;/span&gt;&#xa;&lt;span style=&quot;color:RED&quot;&gt;(*)&lt;/span&gt;&#xa;&#xa;&#xa;&lt;/p&gt;&#xa;&#xa;&#xa;&lt;/body&gt;&#xa;&lt;/html&gt;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel12">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;&lt;body&gt;&#xa;&#xa;&lt;p&gt;&#xa;&#xa;&lt;span style=&quot;color:Black&quot;&gt;Codigo Postal&lt;/span&gt;&#xa;&lt;span style=&quot;color:RED&quot;&gt;(*)&lt;/span&gt;&#xa;&#xa;&#xa;&lt;/p&gt;&#xa;&#xa;&#xa;&lt;/body&gt;&#xa;&lt;/html&gt;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel13">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;&lt;body&gt;&#xa;&#xa;&lt;p&gt;&#xa;&#xa;&lt;span style=&quot;color:Black&quot;&gt;Provincia &lt;/span&gt;&#xa;&lt;span style=&quot;color:RED&quot;&gt;(*)&lt;/span&gt;&#xa;&#xa;&#xa;&lt;/p&gt;&#xa;&#xa;&#xa;&lt;/body&gt;&#xa;&lt;/html&gt;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="jTextFieldCalle">
+        </Component>
+        <Component class="javax.swing.JTextField" name="jTextFieldDepartamento">
+        </Component>
+        <Component class="javax.swing.JTextField" name="jTextFieldCodigoPostal">
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel14">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;&lt;body&gt;&#xa;&#xa;&lt;p&gt;&#xa;&#xa;&lt;span style=&quot;color:Black&quot;&gt;Numero &lt;/span&gt;&#xa;&lt;span style=&quot;color:RED&quot;&gt;(*)&lt;/span&gt;&#xa;&#xa;&#xa;&lt;/p&gt;&#xa;&#xa;&#xa;&lt;/body&gt;&#xa;&lt;/html&gt;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel15">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;&lt;body&gt;&#xa;&#xa;&lt;p&gt;&#xa;&#xa;&lt;span style=&quot;color:Black&quot;&gt;Piso &lt;/span&gt;&#xa;&lt;span style=&quot;color:RED&quot;&gt;(*)&lt;/span&gt;&#xa;&#xa;&#xa;&lt;/p&gt;&#xa;&#xa;&#xa;&lt;/body&gt;&#xa;&lt;/html&gt;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel16">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;&lt;body&gt;&#xa;&#xa;&lt;p&gt;&#xa;&#xa;&lt;span style=&quot;color:Black&quot;&gt;Pais &lt;/span&gt;&#xa;&lt;span style=&quot;color:RED&quot;&gt;(*)&lt;/span&gt;&#xa;&#xa;&#xa;&lt;/p&gt;&#xa;&#xa;&#xa;&lt;/body&gt;&#xa;&lt;/html&gt;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel17">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;&lt;body&gt;&#xa;&#xa;&lt;p&gt;&#xa;&#xa;&lt;span style=&quot;color:Black&quot;&gt;Localidad &lt;/span&gt;&#xa;&lt;span style=&quot;color:RED&quot;&gt;(*)&lt;/span&gt;&#xa;&#xa;&#xa;&lt;/p&gt;&#xa;&#xa;&#xa;&lt;/body&gt;&#xa;&lt;/html&gt;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="jTextFieldNumero">
+        </Component>
+        <Component class="javax.swing.JTextField" name="jTextFieldPiso">
+        </Component>
+        <Component class="javax.swing.JComboBox" name="jComboBoxProvincia">
+          <Properties>
+            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+              <StringArray count="0"/>
+            </Property>
+            <Property name="enabled" type="boolean" value="false"/>
+          </Properties>
+          <Events>
+            <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="jComboBoxProvinciaItemStateChanged"/>
+          </Events>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;Provincia&gt;"/>
+          </AuxValues>
+        </Component>
+        <Component class="javax.swing.JComboBox" name="jComboBoxPais">
+          <Properties>
+            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+              <StringArray count="0"/>
+            </Property>
+          </Properties>
+          <Events>
+            <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="jComboBoxPaisItemStateChanged"/>
+          </Events>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="DefaultComboBoxModel modelo = new DefaultComboBoxModel();&#xd;&#xa;List&lt;Pais&gt; paises = this.gestorPersonas.getAllPaises();&#xd;&#xa;for(Pais p : paises){&#xd;&#xa;    modelo.addElement(p);&#xd;&#xa;}&#xd;&#xa;jComboBoxPais.setModel(modelo);&#xd;&#xa;jComboBoxPais.setSelectedIndex(-1);&#xd;&#xa;jComboBoxPais.setSelectedItem(null);&#xd;&#xa;"/>
+            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;Pais&gt;"/>
+          </AuxValues>
+        </Component>
+        <Component class="javax.swing.JComboBox" name="jComboBoxLocalidad">
+          <Properties>
+            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+              <StringArray count="0"/>
+            </Property>
+            <Property name="enabled" type="boolean" value="false"/>
+          </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;Localidad&gt;"/>
+          </AuxValues>
+        </Component>
+      </SubComponents>
+    </Container>
+    <Component class="javax.swing.JLabel" name="jLabel9">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Tahoma" size="12" style="1"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Direccion"/>
+      </Properties>
+    </Component>
+    <Container class="javax.swing.JPanel" name="jPanel3">
+      <Properties>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+            <LineBorder thickness="2"/>
+          </Border>
+        </Property>
+      </Properties>
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" attributes="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" attributes="0">
+                          <EmptySpace min="-2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="jLabel18" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel19" alignment="0" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="-2" pref="59" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="jTextFieldOcupacion" max="32767" attributes="0"/>
+                              <Component id="jTextFieldCUIT" max="32767" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="-2" pref="156" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="1" attributes="0">
+                          <EmptySpace max="32767" attributes="0"/>
+                          <Component id="jLabel20" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                  <Component id="jComboBoxPosicionIVA" max="32767" attributes="0"/>
+                  <EmptySpace min="-2" pref="42" max="-2" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" attributes="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jTextFieldCUIT" linkSize="4" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel18" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jLabel19" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jTextFieldOcupacion" linkSize="4" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jLabel20" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jComboBoxPosicionIVA" linkSize="4" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                  </Group>
+                  <EmptySpace pref="41" max="32767" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+      <SubComponents>
+        <Component class="javax.swing.JLabel" name="jLabel18">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="CUIT"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel19">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;&lt;body&gt;&#xa;&#xa;&lt;p&gt;&#xa;&#xa;&lt;span style=&quot;color:Black&quot;&gt;Ocupacion &lt;/span&gt;&#xa;&lt;span style=&quot;color:RED&quot;&gt;(*)&lt;/span&gt;&#xa;&#xa;&#xa;&lt;/p&gt;&#xa;&#xa;&#xa;&lt;/body&gt;&#xa;&lt;/html&gt;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel20">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;&lt;body&gt;&#xa;&#xa;&lt;p&gt;&#xa;&#xa;&lt;span style=&quot;color:Black&quot;&gt;Posicion frente a IVA &lt;/span&gt;&#xa;&lt;span style=&quot;color:RED&quot;&gt;(*)&lt;/span&gt;&#xa;&#xa;&#xa;&lt;/p&gt;&#xa;&#xa;&#xa;&lt;/body&gt;&#xa;&lt;/html&gt;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="jTextFieldCUIT">
+        </Component>
+        <Component class="javax.swing.JComboBox" name="jComboBoxPosicionIVA">
+          <Properties>
+            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+              <StringArray count="0"/>
+            </Property>
+          </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="DefaultComboBoxModel posicionIVAModel = new DefaultComboBoxModel();&#xd;&#xa;List&lt;TipoPosicionFrenteIVA&gt; posicionesIVA = this.gestorPersonas.getAllPosicionesIVA();&#xd;&#xa;for(TipoPosicionFrenteIVA p : posicionesIVA){&#xd;&#xa;    posicionIVAModel.addElement(p);&#xd;&#xa;}&#xd;&#xa;jComboBoxPosicionIVA.setModel(posicionIVAModel);&#xd;&#xa;jComboBoxPosicionIVA.setSelectedIndex(-1);&#xd;&#xa;jComboBoxPosicionIVA.setSelectedItem(null);"/>
+            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;TipoPosicionFrenteIVA&gt;"/>
+          </AuxValues>
+        </Component>
+        <Component class="javax.swing.JTextField" name="jTextFieldOcupacion">
+        </Component>
+      </SubComponents>
+    </Container>
+    <Component class="javax.swing.JButton" name="jButtonCancelar">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Cancelar"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonCancelarActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="jButtonSiguiente">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Siguiente"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonSiguienteActionPerformed"/>
+      </Events>
+    </Component>
+  </SubComponents>
+</Form>
