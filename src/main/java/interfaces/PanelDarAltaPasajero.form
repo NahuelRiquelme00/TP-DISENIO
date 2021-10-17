@@ -43,11 +43,11 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Component id="jPanel1" pref="178" max="32767" attributes="0"/>
+              <Component id="jPanel1" pref="179" max="32767" attributes="0"/>
               <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
               <Component id="jLabel9" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Component id="jPanel2" pref="176" max="32767" attributes="0"/>
+              <Component id="jPanel2" pref="177" max="32767" attributes="0"/>
               <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
               <Component id="jPanel3" max="32767" attributes="0"/>
               <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
@@ -164,7 +164,7 @@
       <SubComponents>
         <Component class="javax.swing.JLabel" name="jLabel1">
           <Properties>
-            <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;&lt;body&gt;&#xa;&#xa;&lt;p&gt;&#xa;&#xa;&lt;span style=&quot;color:Black&quot;&gt;Nombres(s)&lt;/span&gt;&#xa;&lt;span style=&quot;color:RED&quot;&gt;(*)&lt;/span&gt;&#xa;&#xa;&#xa;&lt;/p&gt;&#xa;&#xa;&#xa;&lt;/body&gt;&#xa;&lt;/html&gt;"/>
+            <Property name="text" type="java.lang.String" value="&lt;html&gt; &lt;body&gt;  &lt;p&gt;  &lt;span style=&quot;color:Black&quot;&gt;Nombres(s)&lt;/span&gt; &lt;span style=&quot;color:RED&quot;&gt;(*)&lt;/span&gt;   &lt;/p&gt;   &lt;/body&gt; &lt;/html&gt;"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel2">
@@ -327,7 +327,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel11">
           <Properties>
-            <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;&lt;body&gt;&#xa;&#xa;&lt;p&gt;&#xa;&#xa;&lt;span style=&quot;color:Black&quot;&gt;Departamento&lt;/span&gt;&#xa;&lt;span style=&quot;color:RED&quot;&gt;(*)&lt;/span&gt;&#xa;&#xa;&#xa;&lt;/p&gt;&#xa;&#xa;&#xa;&lt;/body&gt;&#xa;&lt;/html&gt;"/>
+            <Property name="text" type="java.lang.String" value="Departamento"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel12">
@@ -353,7 +353,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel15">
           <Properties>
-            <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;&lt;body&gt;&#xa;&#xa;&lt;p&gt;&#xa;&#xa;&lt;span style=&quot;color:Black&quot;&gt;Piso &lt;/span&gt;&#xa;&lt;span style=&quot;color:RED&quot;&gt;(*)&lt;/span&gt;&#xa;&#xa;&#xa;&lt;/p&gt;&#xa;&#xa;&#xa;&lt;/body&gt;&#xa;&lt;/html&gt;"/>
+            <Property name="text" type="java.lang.String" value="Piso"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel16">
@@ -510,6 +510,9 @@
               <StringArray count="0"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jComboBoxPosicionIVAActionPerformed"/>
+          </Events>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="DefaultComboBoxModel posicionIVAModel = new DefaultComboBoxModel();&#xd;&#xa;List&lt;TipoPosicionFrenteIVA&gt; posicionesIVA = this.gestorPersonas.getAllPosicionesIVA();&#xd;&#xa;for(TipoPosicionFrenteIVA p : posicionesIVA){&#xd;&#xa;    posicionIVAModel.addElement(p);&#xd;&#xa;}&#xd;&#xa;jComboBoxPosicionIVA.setModel(posicionIVAModel);&#xd;&#xa;jComboBoxPosicionIVA.setSelectedIndex(-1);&#xd;&#xa;jComboBoxPosicionIVA.setSelectedItem(null);"/>
             <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;TipoPosicionFrenteIVA&gt;"/>
