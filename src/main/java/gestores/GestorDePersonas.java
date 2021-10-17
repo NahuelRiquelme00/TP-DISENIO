@@ -192,50 +192,39 @@ public class GestorDePersonas {
         // Se validan los que son obligatorios
 	if(nombre.isEmpty()){
             hayCamposIncompletos.add("nombre");
-            System.out.println(nombre);
 	}
 	if (apellido.isEmpty()){
             hayCamposIncompletos.add("apellido");
-            System.out.println(apellido);
 		}
 	if (documento.isEmpty()){
             hayCamposIncompletos.add("documento");
-            System.out.println(documento);
 	}
         if (fechaNac.toString().isBlank()){
             hayCamposIncompletos.add("fechaNac");
-            
 	}
 	if (telefono.isEmpty()){
             hayCamposIncompletos.add("telefono");
-            System.out.println(telefono);
 	}
 	if (nacionalidad.isEmpty()){
             hayCamposIncompletos.add("nacionalidad");
-            System.out.println(nacionalidad);
 	}
 	if (calle.isEmpty()){
             hayCamposIncompletos.add("calle");
-            System.out.println(calle);
 	}
 	if (numero.isEmpty()){
             hayCamposIncompletos.add("numero");
-            System.out.println(numero);
 	}	
 	if (codPostal.isEmpty()){
             hayCamposIncompletos.add("codPostal");
-            System.out.println(codPostal);
 	}	
 	// El cuit no puede ser vacio si se es "responsable inscripto"
 	if (posIVA.equals("RESPONSABLE INSCRIPTO (A)")){
             if (cuit.length() < largoCuit){
 		hayCamposIncompletos.add("cuit");
-                System.out.println(cuit);
             }
 	}
 	if (ocupacion.isEmpty()){
             hayCamposIncompletos.add("ocupacion");
-            System.out.println(ocupacion);
             
 	}
 	
