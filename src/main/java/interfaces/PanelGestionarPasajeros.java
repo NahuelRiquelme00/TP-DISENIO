@@ -19,6 +19,8 @@ import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -53,6 +55,10 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
 //                System.out.println(jTable1.getValueAt(row_selected,1));
 //            }
 //        });
+//limitando cantidad caracteres
+        JTextApellido.setDocument(new JTextFieldLimit(32));
+        JTextNombre.setDocument(new JTextFieldLimit(32));
+        JTextDocumento.setDocument(new JTextFieldLimit(16));
     }
     
     private void cargarModelo(){
@@ -71,6 +77,9 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
         TableColumnModel cm = jTable1.getColumnModel();
         cm.addColumn(new TableColumn(0, 10, new MyTableCellRenderer(), null));
         cm.moveColumn(cm.getColumnCount() - 1, 0);
+        // Instanciamos el TableRowSorter y lo añadimos al JTable para ordernar por columna
+        TableRowSorter<TableModel> ordenarTabla = new TableRowSorter<>(model);
+        jTable1.setRowSorter(ordenarTabla);
     }
 
     private void cargarDatosBusqueda(){
@@ -89,7 +98,7 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
         //Modifico el jLabel con la cantidad de paginas
         pagActual = pisoInclusivo / MAX_FILAS + 1;
         pagsTotales = pasajerosDTO.size() / MAX_FILAS + ((pasajerosDTO.size() % MAX_FILAS == 0)? 0 : 1);
-        lPag.setText("Pagina "+pagActual+"/"+pagsTotales);
+        lPag.setText("Página "+pagActual+"/"+pagsTotales);
         
         //Carga la pagina actual
         cargarPagina();
@@ -126,6 +135,7 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
             tipoDocModel.addElement(t);
         }
         jComboBoxTipoDoc.setModel(tipoDocModel);
+        jComboBoxTipoDoc.setSelectedItem(TipoDocumento.DNI);
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         JTextApellido = new javax.swing.JTextField();
@@ -164,7 +174,7 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
 
         jLabel4.setText("Apellido(s)");
 
-        jLabel5.setText("Numero de documento");
+        jLabel5.setText("Número de documento");
 
         JTextApellido.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
@@ -231,7 +241,7 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
         jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {JTextApellido, JTextDocumento, JTextNombre, jComboBoxTipoDoc});
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel3.setText("Criterios de busqueda");
+        jLabel3.setText("Criterios de búsqueda");
 
         jButton1.setText("Cancelar");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -275,7 +285,7 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
         });
 
         lPag.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        lPag.setText("Pagina 0/0");
+        lPag.setText("Página 0/0");
 
         bAtras.setText("<");
         bAtras.setDoubleBuffered(true);
@@ -321,7 +331,7 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
         );
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel6.setText("Resultados de busqueda");
+        jLabel6.setText("Resultados de búsqueda");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -364,9 +374,10 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
         //Carga los datos en la tabla
         cargarDatosBusqueda();
         if (pasajerosDTO.isEmpty()){
-            int opcion = JOptionPane.showConfirmDialog(null, "¿Desea dar de alta un pasajero?", "Pasajero no encontrado",
-                         JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-            if(opcion == 0) {
+            Object[] options = { "No", "Si"};
+            int opcion = JOptionPane.showOptionDialog(null, "¿Desea dar de alta un pasajero?", "Pasajero no encontrado",
+                         JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+            if(opcion == 1) {
                 System.out.println("Pasar a la interface alta de pasajero");
                 frame.cambiarPanel(VentanaPrincipal.PANE_DAR_ALTA_PASAJERO);
             } else System.out.println("Seguir buscando");
@@ -387,6 +398,14 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
     private void jButtonSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSiguienteActionPerformed
         // TODO add your handling code here:
         //Si se selecciono una persona se pasa a la interfaz modificar usuario
+        Object[] options = { "No", "Si"};
+            int opcion = JOptionPane.showOptionDialog(null, "¿Desea dar de alta un pasajero?", "Dar de Alta Pasajero",
+                         JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+            if(opcion == 1) {
+                System.out.println("Pasar a la interface alta de pasajero");
+                frame.cambiarPanel(VentanaPrincipal.PANE_DAR_ALTA_PASAJERO);
+            } else System.out.println("Seguir buscando");
+
     }//GEN-LAST:event_jButtonSiguienteActionPerformed
 
     private void jComboBoxTipoDocItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxTipoDocItemStateChanged
@@ -409,7 +428,7 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
     private void bAtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAtrasActionPerformed
         // TODO add your handling code here:
         pagActual--;
-        lPag.setText("Pagina "+pagActual+"/"+pagsTotales);
+        lPag.setText("Página "+pagActual+"/"+pagsTotales);
 
         if (pisoInclusivo + MAX_FILAS >= pasajerosDTO.size())
                 techoExclusivo -= pasajerosDTO.size() - pisoInclusivo;
@@ -426,7 +445,7 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
     private void bAdelanteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAdelanteActionPerformed
         // TODO add your handling code here:
         pagActual++;
-        lPag.setText("Pagina "+pagActual+"/"+pagsTotales);
+        lPag.setText("Página "+pagActual+"/"+pagsTotales);
 
         pisoInclusivo += MAX_FILAS;
         bAtras.setEnabled(true);

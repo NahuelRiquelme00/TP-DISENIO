@@ -137,7 +137,7 @@ public class PanelMenuPrincipal extends javax.swing.JPanel {
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
 
         jButton2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jButton2.setText("Gestionar Pasajeros");
+        jButton2.setText("Gestionar pasajeros");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -145,7 +145,7 @@ public class PanelMenuPrincipal extends javax.swing.JPanel {
         });
 
         jButton4.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jButton4.setText("Cancelar Reserva");
+        jButton4.setText("Cancelar reserva");
 
         jButton9.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jButton9.setText("Gestionar responsable de pago");
@@ -154,16 +154,21 @@ public class PanelMenuPrincipal extends javax.swing.JPanel {
         jButton12.setText("Facturar");
 
         jButton13.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jButton13.setText("Gestionar Listado");
+        jButton13.setText("Gestionar listado");
 
         jButton14.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jButton14.setText("Reservar habitacion");
+        jButton14.setText("Reservar habitación");
+        jButton14.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton14ActionPerformed(evt);
+            }
+        });
 
         jButton15.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jButton15.setText("Ocupar Habitacion");
+        jButton15.setText("Ocupar habitación");
 
         jButton16.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jButton16.setText("Ingresar Pago");
+        jButton16.setText("Ingresar pago");
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/hp.jpeg"))); // NOI18N
 
@@ -242,6 +247,10 @@ public class PanelMenuPrincipal extends javax.swing.JPanel {
         // TODO add your handling code here:
         frame.cambiarPanel(VentanaPrincipal.PANE_GESTIONAR_PASAJEROS);
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton14ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

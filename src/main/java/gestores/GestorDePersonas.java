@@ -67,13 +67,14 @@ public class GestorDePersonas {
         TipoPosicionFrenteIVA posicionIVA = personaDAO.findTipoPosicionFrenteIVA(p.getIdPosicionIVA());
         Localidad loc = personaDAO.findLocalidad(p.getIdLocalidad());
         
-        //TODO:Sacar
+        /*
         Provincia prov = personaDAO.findProvincia(p.getIdProvincia());
         Pais pais = personaDAO.findPais(p.getIdPais());
         //Se podria lanzar una excepcion si no existen en la base de datos, pero al ser cargados desde una interface
         //siempre deberian existir
         prov.setPais(pais);
         loc.setProvincia(prov);
+        */
         
         direccion.setLocalidad(loc);        
         personaFisica.setDireccion(direccion);
@@ -184,7 +185,22 @@ public class GestorDePersonas {
     	return !buscarPasajero("", "", tipoDocumento, númeroDocumento).isEmpty();
     }
     
-    public List<String> datosCompletos(String nombre, String apellido, String documento, Date fechaNac, String telefono, String nacionalidad, String calle, String numero, String codPostal, String cuit, String posIVA, String ocupacion){
+    public List<String> datosCompletos(
+                String nombre, 
+                String apellido, 
+                String documento,
+                Date fechaNac,
+                String telefono, 
+                String nacionalidad, 
+                String calle, 
+                String numero, 
+                String codPostal, 
+                String cuit, 
+                String posIVA, 
+                String ocupacion,
+                String localidad,
+                String provincia,
+                String pais){
         
         Integer largoCuit = 14;
         List<String> hayCamposIncompletos = new ArrayList<>();
@@ -199,7 +215,7 @@ public class GestorDePersonas {
 	if (documento.isEmpty()){
             hayCamposIncompletos.add("documento");
 	}
-        if (fechaNac.toString().isBlank()){
+        if (fechaNac == null){
             hayCamposIncompletos.add("fechaNac");
 	}
 	if (telefono.isEmpty()){
@@ -218,7 +234,7 @@ public class GestorDePersonas {
             hayCamposIncompletos.add("codPostal");
 	}	
 	// El cuit no puede ser vacio si se es "responsable inscripto"
-	if (posIVA.equals("RESPONSABLE INSCRIPTO (A)")){
+	if (posIVA.equals("RESPONSABLE INSCRIPTO (A)") ){
             if (cuit.length() < largoCuit){
 		hayCamposIncompletos.add("cuit");
             }
@@ -227,8 +243,18 @@ public class GestorDePersonas {
             hayCamposIncompletos.add("ocupacion");
             
 	}
-	
-        
+	if (localidad.isEmpty()){
+            hayCamposIncompletos.add("localidad");
+            
+	}
+        if (provincia.isEmpty()){
+            hayCamposIncompletos.add("provincia");
+            
+	}
+        if (pais.isEmpty()){
+            hayCamposIncompletos.add("pais");
+            
+	}
         return hayCamposIncompletos;
     }
 }

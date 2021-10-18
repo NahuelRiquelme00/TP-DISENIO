@@ -193,12 +193,12 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel6">
           <Properties>
-            <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;&lt;body&gt;&#xa;&#xa;&lt;p&gt;&#xa;&#xa;&lt;span style=&quot;color:Black&quot;&gt;Numero de documento&lt;/span&gt;&#xa;&lt;span style=&quot;color:RED&quot;&gt;(*)&lt;/span&gt;&#xa;&#xa;&#xa;&lt;/p&gt;&#xa;&#xa;&#xa;&lt;/body&gt;&#xa;&lt;/html&gt;"/>
+            <Property name="text" type="java.lang.String" value="&lt;html&gt; &lt;body&gt;  &lt;p&gt;  &lt;span style=&quot;color:Black&quot;&gt;N&#xfa;mero de documento&lt;/span&gt; &lt;span style=&quot;color:RED&quot;&gt;(*)&lt;/span&gt;   &lt;/p&gt;   &lt;/body&gt; &lt;/html&gt;"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel7">
           <Properties>
-            <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;&lt;body&gt;&#xa;&#xa;&lt;p&gt;&#xa;&#xa;&lt;span style=&quot;color:Black&quot;&gt;Telefono &lt;/span&gt;&#xa;&lt;span style=&quot;color:RED&quot;&gt;(*)&lt;/span&gt;&#xa;&#xa;&#xa;&lt;/p&gt;&#xa;&#xa;&#xa;&lt;/body&gt;&#xa;&lt;/html&gt;"/>
+            <Property name="text" type="java.lang.String" value="&lt;html&gt; &lt;body&gt;  &lt;p&gt;  &lt;span style=&quot;color:Black&quot;&gt;Tel&#xe9;fono &lt;/span&gt; &lt;span style=&quot;color:RED&quot;&gt;(*)&lt;/span&gt;   &lt;/p&gt;   &lt;/body&gt; &lt;/html&gt;"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel8">
@@ -227,7 +227,7 @@
             <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="jComboBoxTipoDocItemStateChanged"/>
           </Events>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="DefaultComboBoxModel tipoDocModel = new DefaultComboBoxModel();&#xa;for(TipoDocumento t: TipoDocumento.values()){&#xa;    tipoDocModel.addElement(t);&#xa;}&#xa;jComboBoxTipoDoc.setModel(tipoDocModel);&#xa;jComboBoxTipoDoc.setSelectedIndex(-1);&#xa;jComboBoxTipoDoc.setSelectedItem(null);&#xa;"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="DefaultComboBoxModel tipoDocModel = new DefaultComboBoxModel();&#xa;for(TipoDocumento t: TipoDocumento.values()){&#xa;    tipoDocModel.addElement(t);&#xa;}&#xa;jComboBoxTipoDoc.setModel(tipoDocModel);&#xa;jComboBoxTipoDoc.setSelectedIndex(-1);&#xa;jComboBoxTipoDoc.setSelectedItem(TipoDocumento.DNI);"/>
             <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;TipoDocumento&gt;"/>
           </AuxValues>
         </Component>
@@ -332,7 +332,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel12">
           <Properties>
-            <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;&lt;body&gt;&#xa;&#xa;&lt;p&gt;&#xa;&#xa;&lt;span style=&quot;color:Black&quot;&gt;Codigo Postal&lt;/span&gt;&#xa;&lt;span style=&quot;color:RED&quot;&gt;(*)&lt;/span&gt;&#xa;&#xa;&#xa;&lt;/p&gt;&#xa;&#xa;&#xa;&lt;/body&gt;&#xa;&lt;/html&gt;"/>
+            <Property name="text" type="java.lang.String" value="&lt;html&gt; &lt;body&gt;  &lt;p&gt;  &lt;span style=&quot;color:Black&quot;&gt;C&#xf3;digo Postal&lt;/span&gt; &lt;span style=&quot;color:RED&quot;&gt;(*)&lt;/span&gt;   &lt;/p&gt;   &lt;/body&gt; &lt;/html&gt;"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel13">
@@ -348,7 +348,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel14">
           <Properties>
-            <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;&lt;body&gt;&#xa;&#xa;&lt;p&gt;&#xa;&#xa;&lt;span style=&quot;color:Black&quot;&gt;Numero &lt;/span&gt;&#xa;&lt;span style=&quot;color:RED&quot;&gt;(*)&lt;/span&gt;&#xa;&#xa;&#xa;&lt;/p&gt;&#xa;&#xa;&#xa;&lt;/body&gt;&#xa;&lt;/html&gt;"/>
+            <Property name="text" type="java.lang.String" value="&lt;html&gt; &lt;body&gt;  &lt;p&gt;  &lt;span style=&quot;color:Black&quot;&gt;N&#xfa;mero &lt;/span&gt; &lt;span style=&quot;color:RED&quot;&gt;(*)&lt;/span&gt;   &lt;/p&gt;   &lt;/body&gt; &lt;/html&gt;"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel15">
@@ -358,7 +358,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel16">
           <Properties>
-            <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;&lt;body&gt;&#xa;&#xa;&lt;p&gt;&#xa;&#xa;&lt;span style=&quot;color:Black&quot;&gt;Pais &lt;/span&gt;&#xa;&lt;span style=&quot;color:RED&quot;&gt;(*)&lt;/span&gt;&#xa;&#xa;&#xa;&lt;/p&gt;&#xa;&#xa;&#xa;&lt;/body&gt;&#xa;&lt;/html&gt;"/>
+            <Property name="text" type="java.lang.String" value="&lt;html&gt; &lt;body&gt;  &lt;p&gt;  &lt;span style=&quot;color:Black&quot;&gt;Pa&#xed;s &lt;/span&gt; &lt;span style=&quot;color:RED&quot;&gt;(*)&lt;/span&gt;   &lt;/p&gt;   &lt;/body&gt; &lt;/html&gt;"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel17">
@@ -394,7 +394,7 @@
             <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="jComboBoxPaisItemStateChanged"/>
           </Events>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="DefaultComboBoxModel modelo = new DefaultComboBoxModel();&#xd;&#xa;List&lt;Pais&gt; paises = this.gestorPersonas.getAllPaises();&#xd;&#xa;for(Pais p : paises){&#xd;&#xa;    modelo.addElement(p);&#xd;&#xa;}&#xd;&#xa;jComboBoxPais.setModel(modelo);&#xd;&#xa;jComboBoxPais.setSelectedIndex(-1);&#xd;&#xa;jComboBoxPais.setSelectedItem(null);&#xd;&#xa;"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="DefaultComboBoxModel modelo = new DefaultComboBoxModel();&#xd;&#xa;List&lt;Pais&gt; paises = this.gestorPersonas.getAllPaises();&#xd;&#xa;for(Pais p : paises){&#xd;&#xa;    modelo.addElement(p);&#xd;&#xa;}&#xd;&#xa;jComboBoxPais.setModel(modelo);&#xd;&#xa;jComboBoxPais.setSelectedIndex(-1);&#xd;&#xa;jComboBoxPais.setSelectedItem(null);&#xd;&#xa;&#xd;&#xa;"/>
             <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;Pais&gt;"/>
           </AuxValues>
         </Component>
@@ -494,12 +494,12 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel19">
           <Properties>
-            <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;&lt;body&gt;&#xa;&#xa;&lt;p&gt;&#xa;&#xa;&lt;span style=&quot;color:Black&quot;&gt;Ocupacion &lt;/span&gt;&#xa;&lt;span style=&quot;color:RED&quot;&gt;(*)&lt;/span&gt;&#xa;&#xa;&#xa;&lt;/p&gt;&#xa;&#xa;&#xa;&lt;/body&gt;&#xa;&lt;/html&gt;"/>
+            <Property name="text" type="java.lang.String" value="&lt;html&gt; &lt;body&gt;  &lt;p&gt;  &lt;span style=&quot;color:Black&quot;&gt;Ocupaci&#xf3;n &lt;/span&gt; &lt;span style=&quot;color:RED&quot;&gt;(*)&lt;/span&gt;   &lt;/p&gt;   &lt;/body&gt; &lt;/html&gt;"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel20">
           <Properties>
-            <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;&lt;body&gt;&#xa;&#xa;&lt;p&gt;&#xa;&#xa;&lt;span style=&quot;color:Black&quot;&gt;Posicion frente a IVA &lt;/span&gt;&#xa;&lt;span style=&quot;color:RED&quot;&gt;(*)&lt;/span&gt;&#xa;&#xa;&#xa;&lt;/p&gt;&#xa;&#xa;&#xa;&lt;/body&gt;&#xa;&lt;/html&gt;"/>
+            <Property name="text" type="java.lang.String" value="&lt;html&gt; &lt;body&gt;  &lt;p&gt;  &lt;span style=&quot;color:Black&quot;&gt;Posici&#xf3;n frente a IVA &lt;/span&gt; &lt;span style=&quot;color:RED&quot;&gt;(*)&lt;/span&gt;   &lt;/p&gt;   &lt;/body&gt; &lt;/html&gt;"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="jTextFieldCUIT">
@@ -514,7 +514,7 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jComboBoxPosicionIVAActionPerformed"/>
           </Events>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="DefaultComboBoxModel posicionIVAModel = new DefaultComboBoxModel();&#xd;&#xa;List&lt;TipoPosicionFrenteIVA&gt; posicionesIVA = this.gestorPersonas.getAllPosicionesIVA();&#xd;&#xa;for(TipoPosicionFrenteIVA p : posicionesIVA){&#xd;&#xa;    posicionIVAModel.addElement(p);&#xd;&#xa;}&#xd;&#xa;jComboBoxPosicionIVA.setModel(posicionIVAModel);&#xd;&#xa;jComboBoxPosicionIVA.setSelectedIndex(-1);&#xd;&#xa;jComboBoxPosicionIVA.setSelectedItem(null);"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="DefaultComboBoxModel posicionIVAModel = new DefaultComboBoxModel();&#xd;&#xa;List&lt;TipoPosicionFrenteIVA&gt; posicionesIVA = this.gestorPersonas.getAllPosicionesIVA();&#xd;&#xa;for(TipoPosicionFrenteIVA p : posicionesIVA){&#xd;&#xa;    posicionIVAModel.addElement(p);&#xd;&#xa;}&#xd;&#xa;jComboBoxPosicionIVA.setModel(posicionIVAModel);&#xd;&#xa;jComboBoxPosicionIVA.setSelectedIndex(-1);&#xd;&#xa;//jComboBoxPosicionIVA.setSelectedItem(null);"/>
             <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;TipoPosicionFrenteIVA&gt;"/>
           </AuxValues>
         </Component>
