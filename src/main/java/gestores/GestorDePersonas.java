@@ -65,12 +65,14 @@ public class GestorDePersonas {
         //La posicionIVA, la localidad, la provincia y el pais se tienen que relacionar entre ellos por su id;
         TipoPosicionFrenteIVA posicionIVA = personaDAO.findTipoPosicionFrenteIVA(p.getIdPosicionIVA());
         Localidad loc = personaDAO.findLocalidad(p.getIdLocalidad());
+        
         Provincia prov = personaDAO.findProvincia(p.getIdProvincia());
         Pais pais = personaDAO.findPais(p.getIdPais());
         //Se podria lanzar una excepcion si no existen en la base de datos, pero al ser cargados desde una interface
         //siempre deberian existir
         prov.setPais(pais);
         loc.setProvincia(prov);
+        
         direccion.setLocalidad(loc);        
         personaFisica.setDireccion(direccion);
         personaFisica.setTipoPosicionFrenteIVA(posicionIVA);        

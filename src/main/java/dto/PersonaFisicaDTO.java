@@ -7,12 +7,13 @@ package dto;
 
 import entidades.TipoDocumento;
 import java.time.LocalDate;
+import java.util.Objects;
 
 /**
  *
  * @author Nahuel Riquelme
  */
-public class PersonaFisicaDTO {
+public class PersonaFisicaDTO implements Comparable<PersonaFisicaDTO>{
     
     private Integer id;
     private String apellido;
@@ -33,6 +34,11 @@ public class PersonaFisicaDTO {
     private Integer idLocalidad;
     private Integer idProvincia;
     private Integer idPais;
+    private String categoria;
+    
+    public PersonaFisicaDTO(Integer id){
+        this.id = id;
+    }
 
     public PersonaFisicaDTO(String apellido, String nombres, String tipoDocumento, Integer nroDocumento, String fechaNacimiento, String email, String ocupacion, String nacionalidad, String telefono, String calle, Integer numero, String departamento, String piso, Integer codigoPostal, Integer posicionIVA, Integer idLocalidad, Integer idProvincia, Integer idPais) {
         this.apellido = apellido;
@@ -215,12 +221,43 @@ public class PersonaFisicaDTO {
     public void setIdPais(Integer idPais) {
         this.idPais = idPais;
     }
-    
-    
-    
-    
-    
-    
-    
+
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
+    } 
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 67 * hash + Objects.hashCode(this.id);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final PersonaFisicaDTO other = (PersonaFisicaDTO) obj;
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int compareTo(PersonaFisicaDTO o) {
+        return o.nombres.compareToIgnoreCase(this.nombres);
+    } 
     
 }
