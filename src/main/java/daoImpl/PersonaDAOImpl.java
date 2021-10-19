@@ -185,7 +185,7 @@ public class PersonaDAOImpl implements PersonaDAO {
             Predicate predicateApellido;
             Predicate predicateTipoDoc;
             Predicate predicateNumDoc;
-            ArrayList<Predicate> condiciones = new ArrayList<Predicate>();
+            ArrayList<Predicate> condiciones = new ArrayList<>();
 
             if(!nombre.isBlank()) {
                 predicateNombre = cb.like(raizPersona.get("nombres"),nombre+"%");
@@ -214,15 +214,7 @@ public class PersonaDAOImpl implements PersonaDAO {
             
             List<PersonaFisica> resultado = em.createQuery(configPersonas).getResultList();
             
-//            resultado.forEach(personaFisica -> {
-//                System.out.println(personaFisica);
-//            });
-//            
-//            if (resultado.isEmpty()) System.out.println("Lista vacia");
-//            System.out.println(nombre + " " + apellido + " " + " " + tipoDocumento + " " + nroDocumento);
-            
-            return resultado;
-            
+            return resultado;            
             
         } finally {
             em.close();

@@ -44,18 +44,14 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
      * @param frame
      */
     public PanelGestionarPasajeros(VentanaPrincipal frame) {
-        initComponents();
         this.frame = frame;
-        cargarModelo();
-        
-//        jTable1.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
-//            int filasSeleccionadas = jTable1.getSelectedRowCount();
-//            if(filasSeleccionadas == 1){
-//                int row_selected = jTable1.getSelectedRow();
-//                System.out.println(jTable1.getValueAt(row_selected,1));
-//            }
-//        });
-//limitando cantidad caracteres
+        initComponents();
+        limitarCampos();        
+        cargarModelo();        
+    }
+    
+    private void limitarCampos(){
+        //Limita la longitud de los campos
         JTextApellido.setDocument(new JTextFieldLimit(32));
         JTextNombre.setDocument(new JTextFieldLimit(32));
         JTextDocumento.setDocument(new JTextFieldLimit(16));
@@ -65,21 +61,22 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
         model = new PasajerosTableModel();
         jTable1.setModel(model);  
     
-    //Le agrego el radiobutton a la tabla
-    class MyTableCellRenderer extends JRadioButton implements TableCellRenderer {
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-           this.setSelected(isSelected);
-            setBackground(Color.WHITE);
-           return this;
+        //Agrego el radiobutton a la tabla
+        class MyTableCellRenderer extends JRadioButton implements TableCellRenderer {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+               this.setSelected(isSelected);
+                setBackground(Color.WHITE);
+               return this;
+            }
         }
-    }
         TableColumnModel cm = jTable1.getColumnModel();
         cm.addColumn(new TableColumn(0, 10, new MyTableCellRenderer(), null));
         cm.moveColumn(cm.getColumnCount() - 1, 0);
         // Instanciamos el TableRowSorter y lo añadimos al JTable para ordernar por columna
         TableRowSorter<TableModel> ordenarTabla = new TableRowSorter<>(model);
         jTable1.setRowSorter(ordenarTabla);
+        row_selected = -1;
     }
 
     private void cargarDatosBusqueda(){
@@ -142,7 +139,7 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
         JTextDocumento = new javax.swing.JTextField();
         jButtonBuscar = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        jButtonCancelar = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
@@ -150,6 +147,8 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
         bAdelante = new javax.swing.JButton();
         lPag = new javax.swing.JLabel();
         bAtras = new javax.swing.JButton();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
+        filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
         jLabel6 = new javax.swing.JLabel();
 
         jTextField2.setText("jTextField2");
@@ -159,12 +158,6 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
         jLabel1.setText("Nombres(s)");
 
         jLabel2.setText("Tipo de documento");
-
-        JTextNombre.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                JTextNombreKeyReleased(evt);
-            }
-        });
 
         jComboBoxTipoDoc.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -176,15 +169,14 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
 
         jLabel5.setText("Número de documento");
 
-        JTextApellido.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                JTextApellidoKeyReleased(evt);
+        JTextDocumento.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JTextDocumentoKeyTyped(evt);
             }
         });
 
-        JTextDocumento.setEnabled(false);
-
         jButtonBuscar.setText("Buscar");
+        jButtonBuscar.setNextFocusableComponent(jButtonSiguiente);
         jButtonBuscar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonBuscarActionPerformed(evt);
@@ -243,10 +235,11 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
         jLabel3.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel3.setText("Criterios de búsqueda");
 
-        jButton1.setText("Cancelar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jButtonCancelar.setText("Cancelar");
+        jButtonCancelar.setNextFocusableComponent(JTextNombre);
+        jButtonCancelar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                jButtonCancelarActionPerformed(evt);
             }
         });
 
@@ -270,6 +263,7 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
         jScrollPane1.setViewportView(jTable1);
 
         jButtonSiguiente.setText("Siguiente");
+        jButtonSiguiente.setNextFocusableComponent(jButtonCancelar);
         jButtonSiguiente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonSiguienteActionPerformed(evt);
@@ -303,17 +297,21 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(284, 284, 284)
+                        .addComponent(filler2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(bAtras)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lPag)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(bAdelante)
-                        .addGap(252, 252, 252)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(filler1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(246, 246, 246)
                         .addComponent(jButtonSiguiente))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(10, 10, 10)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 760, Short.MAX_VALUE)))
+                        .addComponent(jScrollPane1)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -322,12 +320,21 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lPag)
-                    .addComponent(bAdelante)
-                    .addComponent(bAtras)
-                    .addComponent(jButtonSiguiente))
-                .addContainerGap())
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(lPag)
+                                .addComponent(bAdelante)
+                                .addComponent(bAtras)
+                                .addComponent(jButtonSiguiente))
+                            .addContainerGap())
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                            .addComponent(filler1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(21, 21, 21)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(filler2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(20, 20, 20))))
         );
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -342,7 +349,7 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton1))
+                        .addComponent(jButtonCancelar))
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
@@ -364,7 +371,7 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton1)
+                .addComponent(jButtonCancelar)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -372,6 +379,7 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
     private void jButtonBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarActionPerformed
         // TODO add your handling code here:
         //Carga los datos en la tabla
+        row_selected = -1;
         cargarDatosBusqueda();
         if (pasajerosDTO.isEmpty()){
             Object[] options = { "No", "Si"};
@@ -391,20 +399,26 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
             if(filasSeleccionadas == 1){
                 row_selected = jTable1.getSelectedRow();
                 System.out.println("Fila seleccionada: " + row_selected);
-                System.out.println("Pasajero ID: " + pasajerosDTO.get(row_selected).getId());
+                System.out.println("Pasajero ID: " + paginado.get(row_selected).getId());
             }
     }//GEN-LAST:event_jTable1MouseClicked
 
     private void jButtonSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSiguienteActionPerformed
         // TODO add your handling code here:
-        //Si se selecciono una persona se pasa a la interfaz modificar usuario
-        Object[] options = { "No", "Si"};
+        
+        if(row_selected==-1){
+            //Si no selecciono una persona se pasa a la interfaz dar alta pasajero
+            Object[] options = { "No", "Si"};
             int opcion = JOptionPane.showOptionDialog(null, "¿Desea dar de alta un pasajero?", "Dar de Alta Pasajero",
                          JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
             if(opcion == 1) {
                 System.out.println("Pasar a la interface alta de pasajero");
                 frame.cambiarPanel(VentanaPrincipal.PANE_DAR_ALTA_PASAJERO);
             } else System.out.println("Seguir buscando");
+        }else{
+            //Si se selecciono una persona se pasa a la interfaz modificar usuario
+        }
+
 
     }//GEN-LAST:event_jButtonSiguienteActionPerformed
 
@@ -420,10 +434,10 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
 
     }//GEN-LAST:event_jComboBoxTipoDocItemStateChanged
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jButtonCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelarActionPerformed
         // TODO add your handling code here:
         frame.cambiarPanel(VentanaPrincipal.PANE_MENU_PRINCIPAL);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_jButtonCancelarActionPerformed
 
     private void bAtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAtrasActionPerformed
         // TODO add your handling code here:
@@ -460,20 +474,14 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
         cargarPagina();
     }//GEN-LAST:event_bAdelanteActionPerformed
 
-    private void JTextNombreKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JTextNombreKeyReleased
+    private void JTextDocumentoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JTextDocumentoKeyTyped
         // TODO add your handling code here:
-        //Para que el ingreso de los datos sea siempre en mayuscula
-//        int position = JTextNombre.getCaretPosition();
-//        JTextNombre.setText(JTextNombre.getText().toUpperCase());
-//        JTextNombre.setCaretPosition(position);
-    }//GEN-LAST:event_JTextNombreKeyReleased
-
-    private void JTextApellidoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JTextApellidoKeyReleased
-        // TODO add your handling code here:
-//        int position = JTextApellido.getCaretPosition();
-//        JTextApellido.setText(JTextApellido.getText().toUpperCase());
-//        JTextApellido.setCaretPosition(position);
-    }//GEN-LAST:event_JTextApellidoKeyReleased
+        //Para que se ingrese solo valores numericos
+        char c = evt.getKeyChar();
+        if(!Character.isDigit(c)){
+            evt.consume();
+        }
+    }//GEN-LAST:event_JTextDocumentoKeyTyped
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -482,8 +490,10 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
     private javax.swing.JTextField JTextNombre;
     private javax.swing.JButton bAdelante;
     private javax.swing.JButton bAtras;
-    private javax.swing.JButton jButton1;
+    private javax.swing.Box.Filler filler1;
+    private javax.swing.Box.Filler filler2;
     private javax.swing.JButton jButtonBuscar;
+    private javax.swing.JButton jButtonCancelar;
     private javax.swing.JButton jButtonSiguiente;
     private javax.swing.JComboBox<TipoDocumento> jComboBoxTipoDoc;
     private javax.swing.JLabel jLabel1;
