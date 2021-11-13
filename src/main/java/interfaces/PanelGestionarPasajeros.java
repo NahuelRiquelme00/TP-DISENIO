@@ -441,7 +441,6 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
 
     private void bAtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAtrasActionPerformed
         // TODO add your handling code here:
-        row_selected = -1;
         pagActual--;
         lPag.setText("Página "+pagActual+"/"+pagsTotales);
 
@@ -459,7 +458,6 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
 
     private void bAdelanteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAdelanteActionPerformed
         // TODO add your handling code here:
-        row_selected = -1;
         pagActual++;
         lPag.setText("Página "+pagActual+"/"+pagsTotales);
 

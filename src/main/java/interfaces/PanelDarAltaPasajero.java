@@ -27,15 +27,15 @@ import javax.swing.JOptionPane;
 public class PanelDarAltaPasajero extends javax.swing.JPanel {
     private final VentanaPrincipal frame;
     private final GestorDePersonas gestorPersonas = GestorDePersonas.getInstance();
-    private String tipoDoc;
-    private Integer numDoc;
-    private Integer numDireccion;
-    private Integer codigoPostal;
-    private Integer idPais;
-    private Integer idPosicion;
-    private Integer idProvincia;
-    private Integer idLocalidad;
-    private LocalDate fecha;
+    String tipoDoc;
+    Integer numDoc;
+    Integer numDireccion;
+    Integer codigoPostal;
+    Integer idPais;
+    Integer idPosicion;
+    Integer idProvincia;
+    Integer idLocalidad;
+    LocalDate fecha;
     
 
     /**
@@ -594,7 +594,7 @@ public class PanelDarAltaPasajero extends javax.swing.JPanel {
             JOptionPane.showOptionDialog(
                 null, 
 		"Complete todos los campos marcados como obligatorios (*).", 
-		"Campos incompletos", 
+		"Error", 
 		JOptionPane.DEFAULT_OPTION, 
 		JOptionPane.INFORMATION_MESSAGE, 
 		null, 
