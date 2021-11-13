@@ -17,6 +17,9 @@ import java.util.Date;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 
+import dto.PersonaFisicaDTO;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Nahuel Riquelme
@@ -24,16 +27,85 @@ import javax.swing.DefaultComboBoxModel;
 public class PanelDarAltaPasajero extends javax.swing.JPanel {
     private final VentanaPrincipal frame;
     private final GestorDePersonas gestorPersonas = GestorDePersonas.getInstance();
+    private String tipoDoc;
+    private Integer numDoc;
+    private Integer numDireccion;
+    private Integer codigoPostal;
+    private Integer idPais;
+    private Integer idPosicion;
+    private Integer idProvincia;
+    private Integer idLocalidad;
+    private LocalDate fecha;
+    
 
     /**
      * Creates new form PanelDarAltaPasajero
      * @param frame
      */
     public PanelDarAltaPasajero(VentanaPrincipal frame) {
-        initComponents();
         this.frame=frame;
+        initComponents();
+        limitarCampos();
+    }
+    
+    private void limitarCampos(){
+        //limitando cantidad caracteres
+        jTextFieldApellido.setDocument(new JTextFieldLimit(32));
+        jTextFieldNombre.setDocument(new JTextFieldLimit(32));
+        //jTextFieldDocumento.setDocument(new JTextFieldLimit(16));
+        jTextFieldDocumento.setDocument(new LimitadorCaracteres());
+        jTextFieldTelefono.setDocument(new JTextFieldLimit(16));
+        jTextFieldEmail.setDocument(new JTextFieldLimit(64));
+        jTextFieldNacionalidad.setDocument(new JTextFieldLimit(16));
+        jTextFieldNacionalidad.setText("ARGENTINA");
+        jTextFieldCalle.setDocument(new JTextFieldLimit(32));
+        //jTextFieldNumero.setDocument(new JTextFieldLimit(8));
+        jTextFieldNumero.setDocument(new LimitadorCaracteres());
+        jTextFieldDepartamento.setDocument(new JTextFieldLimit(8));
+        jTextFieldPiso.setDocument(new JTextFieldLimit(8));
+        //jTextFieldCodigoPostal.setDocument(new JTextFieldLimit(16));
+        jTextFieldCodigoPostal.setDocument(new LimitadorCaracteres());
+        jTextFieldCUIT.setDocument(new JTextFieldLimit(32));
+        jTextFieldOcupacion.setDocument(new JTextFieldLimit(32));        
     }
 
+    private void crearPasajero(){
+        PersonaFisicaDTO p = new PersonaFisicaDTO(
+                        jTextFieldApellido.getText(),
+                        jTextFieldNombre.getText(),            
+                        tipoDoc,            
+                        numDoc,
+                        fecha.toString(),
+                        jTextFieldEmail.getText(),
+                        jTextFieldOcupacion.getText(),
+                        jTextFieldNacionalidad.getText(),
+                        jTextFieldTelefono.getText(),
+                        jTextFieldCalle.getText(),
+                        numDireccion,
+                        jTextFieldDepartamento.getText(),
+                        jTextFieldPiso.getText(),
+                        codigoPostal,
+                        idPosicion,
+                        idLocalidad,
+                        idProvincia,
+                        idPais
+                        );
+
+        gestorPersonas.createPersonaFisica(p);
+
+        //Una vez se guarda el pasajero
+        Object[] options2 = { "No", "Si"};
+        int opcion2 = JOptionPane.showOptionDialog(null, "El pasajero " +  jTextFieldApellido.getText()+ ", " + jTextFieldNombre.getText() +" ha sido satisfactoriamente cargado al sistema. ¿Desea cargar otro?", "Alta Pasajero Exitosa",
+        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options2, options2[0]);
+        if(opcion2 == 1) { 
+            //si se presiona se limpian los campos
+            frame.cambiarPanel(VentanaPrincipal.PANE_DAR_ALTA_PASAJERO);
+        } else {
+            //vuelvo al gestionar pasajero
+            frame.cambiarPanel(VentanaPrincipal.PANE_GESTIONAR_PASAJEROS);
+        }
+        
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -65,8 +137,10 @@ public class PanelDarAltaPasajero extends javax.swing.JPanel {
         }
         jComboBoxTipoDoc.setModel(tipoDocModel);
         jComboBoxTipoDoc.setSelectedIndex(-1);
-        jComboBoxTipoDoc.setSelectedItem(null);
+        jComboBoxTipoDoc.setSelectedItem(TipoDocumento.DNI);
         jDateChooserFecha = new com.toedter.calendar.JDateChooser();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
+        filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
         jPanel2 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
@@ -89,9 +163,11 @@ public class PanelDarAltaPasajero extends javax.swing.JPanel {
             modelo.addElement(p);
         }
         jComboBoxPais.setModel(modelo);
-        jComboBoxPais.setSelectedIndex(-1);
         jComboBoxPais.setSelectedItem(null);
+
         jComboBoxLocalidad = new javax.swing.JComboBox<>();
+        filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
+        filler4 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
         jLabel9 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jLabel18 = new javax.swing.JLabel();
@@ -105,8 +181,7 @@ public class PanelDarAltaPasajero extends javax.swing.JPanel {
             posicionIVAModel.addElement(p);
         }
         jComboBoxPosicionIVA.setModel(posicionIVAModel);
-        jComboBoxPosicionIVA.setSelectedIndex(-1);
-        jComboBoxPosicionIVA.setSelectedItem(null);
+        jComboBoxPosicionIVA.setSelectedIndex(0);
         jTextFieldOcupacion = new javax.swing.JTextField();
         jButtonCancelar = new javax.swing.JButton();
         jButtonSiguiente = new javax.swing.JButton();
@@ -116,7 +191,7 @@ public class PanelDarAltaPasajero extends javax.swing.JPanel {
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
         jPanel1.setPreferredSize(new java.awt.Dimension(780, 175));
 
-        jLabel1.setText("<html>\n<body>\n\n<p>\n\n<span style=\"color:Black\">Nombres(s)</span>\n<span style=\"color:RED\">(*)</span>\n\n\n</p>\n\n\n</body>\n</html>");
+        jLabel1.setText("<html> <body>  <p>  <span style=\"color:Black\">Nombres(s)</span> <span style=\"color:RED\">(*)</span>   </p>   </body> </html>");
 
         jLabel2.setText("<html>\n<body>\n\n<p>\n\n<span style=\"color:Black\">Tipo de documento</span>\n<span style=\"color:RED\">(*)</span>\n\n\n</p>\n\n\n</body>\n</html>");
 
@@ -126,13 +201,17 @@ public class PanelDarAltaPasajero extends javax.swing.JPanel {
 
         jLabel5.setText("<html>\n<body>\n\n<p>\n\n<span style=\"color:Black\">Apellido(s)</span>\n<span style=\"color:RED\">(*)</span>\n\n\n</p>\n\n\n</body>\n</html>");
 
-        jLabel6.setText("<html>\n<body>\n\n<p>\n\n<span style=\"color:Black\">Numero de documento</span>\n<span style=\"color:RED\">(*)</span>\n\n\n</p>\n\n\n</body>\n</html>");
+        jLabel6.setText("<html> <body>  <p>  <span style=\"color:Black\">Número de documento</span> <span style=\"color:RED\">(*)</span>   </p>   </body> </html>");
 
-        jLabel7.setText("<html>\n<body>\n\n<p>\n\n<span style=\"color:Black\">Telefono </span>\n<span style=\"color:RED\">(*)</span>\n\n\n</p>\n\n\n</body>\n</html>");
+        jLabel7.setText("<html> <body>  <p>  <span style=\"color:Black\">Teléfono </span> <span style=\"color:RED\">(*)</span>   </p>   </body> </html>");
 
         jLabel8.setText("<html>\n<body>\n\n<p>\n\n<span style=\"color:Black\">Nacionalidad </span>\n<span style=\"color:RED\">(*)</span>\n\n\n</p>\n\n\n</body>\n</html>");
 
-        jTextFieldDocumento.setEnabled(false);
+        jTextFieldDocumento.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextFieldDocumentoKeyTyped(evt);
+            }
+        });
 
         jComboBoxTipoDoc.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -159,22 +238,33 @@ public class PanelDarAltaPasajero extends javax.swing.JPanel {
                     .addComponent(jTextFieldEmail, javax.swing.GroupLayout.Alignment.LEADING))
                 .addGap(38, 38, 38)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextFieldDocumento, javax.swing.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE)
-                    .addComponent(jTextFieldTelefono)
-                    .addComponent(jTextFieldNacionalidad)
-                    .addComponent(jTextFieldApellido))
-                .addGap(72, 72, 72))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(filler1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextFieldDocumento, javax.swing.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE)
+                            .addComponent(jTextFieldTelefono)
+                            .addComponent(jTextFieldNacionalidad)
+                            .addComponent(jTextFieldApellido))
+                        .addGap(72, 72, 72))))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(368, 368, 368)
+                .addComponent(filler2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(5, 5, 5)
+                .addComponent(filler1, javax.swing.GroupLayout.DEFAULT_SIZE, 3, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -209,7 +299,9 @@ public class PanelDarAltaPasajero extends javax.swing.JPanel {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jTextFieldEmail, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.CENTER))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(filler2, javax.swing.GroupLayout.DEFAULT_SIZE, 4, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jComboBoxTipoDoc, jTextFieldApellido, jTextFieldDocumento, jTextFieldEmail, jTextFieldNacionalidad, jTextFieldNombre, jTextFieldTelefono});
@@ -219,19 +311,31 @@ public class PanelDarAltaPasajero extends javax.swing.JPanel {
 
         jLabel10.setText("<html>\n<body>\n\n<p>\n\n<span style=\"color:Black\">Calle</span>\n<span style=\"color:RED\">(*)</span>\n\n\n</p>\n\n\n</body>\n</html>");
 
-        jLabel11.setText("<html>\n<body>\n\n<p>\n\n<span style=\"color:Black\">Departamento</span>\n<span style=\"color:RED\">(*)</span>\n\n\n</p>\n\n\n</body>\n</html>");
+        jLabel11.setText("Departamento");
 
-        jLabel12.setText("<html>\n<body>\n\n<p>\n\n<span style=\"color:Black\">Codigo Postal</span>\n<span style=\"color:RED\">(*)</span>\n\n\n</p>\n\n\n</body>\n</html>");
+        jLabel12.setText("<html> <body>  <p>  <span style=\"color:Black\">Código Postal</span> <span style=\"color:RED\">(*)</span>   </p>   </body> </html>");
 
         jLabel13.setText("<html>\n<body>\n\n<p>\n\n<span style=\"color:Black\">Provincia </span>\n<span style=\"color:RED\">(*)</span>\n\n\n</p>\n\n\n</body>\n</html>");
 
-        jLabel14.setText("<html>\n<body>\n\n<p>\n\n<span style=\"color:Black\">Numero </span>\n<span style=\"color:RED\">(*)</span>\n\n\n</p>\n\n\n</body>\n</html>");
+        jTextFieldCodigoPostal.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextFieldCodigoPostalKeyTyped(evt);
+            }
+        });
 
-        jLabel15.setText("<html>\n<body>\n\n<p>\n\n<span style=\"color:Black\">Piso </span>\n<span style=\"color:RED\">(*)</span>\n\n\n</p>\n\n\n</body>\n</html>");
+        jLabel14.setText("<html> <body>  <p>  <span style=\"color:Black\">Número </span> <span style=\"color:RED\">(*)</span>   </p>   </body> </html>");
 
-        jLabel16.setText("<html>\n<body>\n\n<p>\n\n<span style=\"color:Black\">Pais </span>\n<span style=\"color:RED\">(*)</span>\n\n\n</p>\n\n\n</body>\n</html>");
+        jLabel15.setText("Piso");
+
+        jLabel16.setText("<html> <body>  <p>  <span style=\"color:Black\">País </span> <span style=\"color:RED\">(*)</span>   </p>   </body> </html>");
 
         jLabel17.setText("<html>\n<body>\n\n<p>\n\n<span style=\"color:Black\">Localidad </span>\n<span style=\"color:RED\">(*)</span>\n\n\n</p>\n\n\n</body>\n</html>");
+
+        jTextFieldNumero.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextFieldNumeroKeyTyped(evt);
+            }
+        });
 
         jComboBoxProvincia.setEnabled(false);
         jComboBoxProvincia.addItemListener(new java.awt.event.ItemListener() {
@@ -257,7 +361,7 @@ public class PanelDarAltaPasajero extends javax.swing.JPanel {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel11)
                     .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(45, 45, 45)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -268,7 +372,7 @@ public class PanelDarAltaPasajero extends javax.swing.JPanel {
                 .addGap(39, 39, 39)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel15)
                     .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(68, 68, 68)
@@ -278,11 +382,19 @@ public class PanelDarAltaPasajero extends javax.swing.JPanel {
                     .addComponent(jComboBoxPais, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jComboBoxLocalidad, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(73, 73, 73))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(363, 363, 363)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(filler4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(filler3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(5, 5, 5)
+                .addComponent(filler3, javax.swing.GroupLayout.DEFAULT_SIZE, 3, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextFieldCalle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -290,9 +402,9 @@ public class PanelDarAltaPasajero extends javax.swing.JPanel {
                     .addComponent(jTextFieldNumero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel11)
                     .addComponent(jTextFieldDepartamento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel15)
                     .addComponent(jTextFieldPiso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -306,7 +418,9 @@ public class PanelDarAltaPasajero extends javax.swing.JPanel {
                     .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jComboBoxProvincia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jComboBoxLocalidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(filler4, javax.swing.GroupLayout.DEFAULT_SIZE, 4, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jComboBoxLocalidad, jComboBoxPais, jComboBoxProvincia, jTextFieldCalle, jTextFieldCodigoPostal, jTextFieldDepartamento, jTextFieldNumero, jTextFieldPiso});
@@ -318,32 +432,34 @@ public class PanelDarAltaPasajero extends javax.swing.JPanel {
 
         jLabel18.setText("CUIT");
 
-        jLabel19.setText("<html>\n<body>\n\n<p>\n\n<span style=\"color:Black\">Ocupacion </span>\n<span style=\"color:RED\">(*)</span>\n\n\n</p>\n\n\n</body>\n</html>");
+        jLabel19.setText("<html> <body>  <p>  <span style=\"color:Black\">Ocupación </span> <span style=\"color:RED\">(*)</span>   </p>   </body> </html>");
 
-        jLabel20.setText("<html>\n<body>\n\n<p>\n\n<span style=\"color:Black\">Posicion frente a IVA </span>\n<span style=\"color:RED\">(*)</span>\n\n\n</p>\n\n\n</body>\n</html>");
+        jLabel20.setText("<html> <body>  <p>  <span style=\"color:Black\">Posición frente a IVA </span> <span style=\"color:RED\">(*)</span>   </p>   </body> </html>");
+
+        jComboBoxPosicionIVA.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBoxPosicionIVAItemStateChanged(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel18)
-                            .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(59, 59, 59)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextFieldOcupacion)
-                            .addComponent(jTextFieldCUIT))
-                        .addGap(156, 156, 156))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)))
-                .addComponent(jComboBoxPosicionIVA, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(42, 42, 42))
+                    .addComponent(jLabel18)
+                    .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(59, 59, 59)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTextFieldCUIT, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jTextFieldOcupacion, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jComboBoxPosicionIVA, 0, 232, Short.MAX_VALUE)
+                .addGap(45, 45, 45))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -359,11 +475,11 @@ public class PanelDarAltaPasajero extends javax.swing.JPanel {
                             .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jTextFieldOcupacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(41, 41, 41)
+                        .addGap(39, 39, 39)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jComboBoxPosicionIVA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(41, Short.MAX_VALUE))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
 
         jPanel3Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jComboBoxPosicionIVA, jTextFieldCUIT, jTextFieldOcupacion});
@@ -404,14 +520,14 @@ public class PanelDarAltaPasajero extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 178, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel9)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 176, Short.MAX_VALUE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(20, 20, 20)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonCancelar)
                     .addComponent(jButtonSiguiente))
@@ -421,20 +537,123 @@ public class PanelDarAltaPasajero extends javax.swing.JPanel {
 
     private void jButtonCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelarActionPerformed
         // TODO add your handling code here:
-        frame.cambiarPanel(VentanaPrincipal.PANE_GESTIONAR_PASAJEROS);
+        Object[] options1 = { "No", "Si"};
+    		int opcion = JOptionPane.showOptionDialog(null, "¿Desea cancelar el alta de pasajero?", "Cancelar alta",
+                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options1, options1[0]);
+    		if(opcion == 0){
+                    System.out.println("Seguir en la interface de alta");
+                }else{
+                    System.out.println("Volver a gestionar pasajeros");
+                    frame.cambiarPanel(VentanaPrincipal.PANE_GESTIONAR_PASAJEROS);
+                }
     }//GEN-LAST:event_jButtonCancelarActionPerformed
 
     private void jButtonSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSiguienteActionPerformed
-        // TODO add your handling code here:
-        //Captura los datos
-        //Verificar si los datos estan completos
-        //Verifica si existe el dni
-        //Se cargan los datos en un DTO y se los manda al gestor para que realice la creacion
         
-        //Para la captura desde el jDate
-        Date f = jDateChooserFecha.getDate();
-        LocalDate l = f.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        System.out.println(l);
+        String tipoPosIVA, localidad1, provincia1, pais1;
+        
+        if(jComboBoxPosicionIVA.getSelectedItem() == null){
+            tipoPosIVA = "";
+            }else tipoPosIVA = jComboBoxPosicionIVA.getSelectedItem().toString();
+
+        if(jComboBoxLocalidad.getSelectedItem() == null){
+            localidad1 = "";
+            }else localidad1 = jComboBoxLocalidad.getSelectedItem().toString();
+
+        if(jComboBoxProvincia.getSelectedItem() == null){
+            provincia1 = "";
+            }else provincia1 = jComboBoxProvincia.getSelectedItem().toString();
+
+        if(jComboBoxPais.getSelectedItem() == null){
+            pais1 = "";
+            }else pais1 = jComboBoxPais.getSelectedItem().toString();
+
+        //Lista de posibles datos erroneos
+        List<String> listaProblemas = gestorPersonas.datosCompletos(
+                jTextFieldNombre.getText(),
+                jTextFieldApellido.getText(),
+                jTextFieldDocumento.getText(),
+                jDateChooserFecha.getDate(),
+                jTextFieldTelefono.getText(),
+                jTextFieldNacionalidad.getText(),
+                jTextFieldCalle.getText(),
+                jTextFieldNumero.getText(),
+                jTextFieldCodigoPostal.getText(),
+                jTextFieldCUIT.getText(),
+                tipoPosIVA,
+                jTextFieldOcupacion.getText(),
+                localidad1,
+                provincia1,
+                pais1
+                );
+        
+        //Verificar si los datos estan completos-Gestor
+        if(!listaProblemas.isEmpty()){
+            
+            Object opciones[] = {"Aceptar"};
+            JOptionPane.showOptionDialog(
+                null, 
+		"Complete todos los campos marcados como obligatorios (*).", 
+		"Campos incompletos", 
+		JOptionPane.DEFAULT_OPTION, 
+		JOptionPane.INFORMATION_MESSAGE, 
+		null, 
+		opciones,
+		opciones[0]
+            );
+            //Pintar Errores
+            pintarErrores(listaProblemas);
+            
+        }else{
+           
+            tipoDoc = jComboBoxTipoDoc.getSelectedItem().toString();
+        
+            numDoc = Integer.valueOf(jTextFieldDocumento.getText());
+
+            numDireccion = Integer.valueOf(jTextFieldNumero.getText());
+
+            codigoPostal = Integer.valueOf(jTextFieldCodigoPostal.getText());
+
+            //Para obtener id Pais
+            Integer nroPais = jComboBoxPais.getSelectedIndex();
+            Pais pais = jComboBoxPais.getItemAt(nroPais);
+            idPais = pais.getIdPais();
+
+            //Para obtener id TipoIVA
+            Integer nroPosicion = jComboBoxPosicionIVA.getSelectedIndex();
+            TipoPosicionFrenteIVA posicion = jComboBoxPosicionIVA.getItemAt(nroPosicion);
+            idPosicion = posicion.getIdTipoPosicionFrenteIVA();
+
+            //Para obtener id Provincia
+            Integer nroProvincia = jComboBoxProvincia.getSelectedIndex();
+            Provincia provincia = jComboBoxProvincia.getItemAt(nroProvincia);
+            idProvincia = provincia.getIdProvincia();
+
+            //Para obtener id Localidad
+            Integer nroLocalidad = jComboBoxLocalidad.getSelectedIndex();
+            Localidad localidad = jComboBoxLocalidad.getItemAt(nroLocalidad);
+            idLocalidad = localidad.getIdLocalidad();
+
+            //Para la captura desde el jDate
+            Date f = jDateChooserFecha.getDate();
+            fecha = f.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+            if(gestorPersonas.tipoYNúmeroExistentes(jComboBoxTipoDoc.getSelectedItem().toString(), jTextFieldDocumento.getText())) {
+    		Object[] options1 = { "Modificar", "Aceptar igualmente"};
+    		int opcion = JOptionPane.showOptionDialog(null, "El tipo y número de documento ya existen en el sistema.", "Documento ya existente",
+                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options1, options1[0]);
+    		if(opcion == 0){
+                    System.out.println("Modificar tipo o numero de documento");
+                    //Poner el foco en tipo de documento
+                    jComboBoxTipoDoc.showPopup();
+                }else{
+                    crearPasajero();
+                }
+            }else{
+               crearPasajero();
+            }
+            
+        } 
     }//GEN-LAST:event_jButtonSiguienteActionPerformed
 
     private void jComboBoxTipoDocItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxTipoDocItemStateChanged
@@ -457,7 +676,6 @@ public class PanelDarAltaPasajero extends javax.swing.JPanel {
             });
             jComboBoxProvincia.setModel(provinciasModel);
             jComboBoxProvincia.setEnabled(true);
-            jComboBoxProvincia.setSelectedIndex(-1);
             jComboBoxProvincia.setSelectedItem(null);
     }//GEN-LAST:event_jComboBoxPaisItemStateChanged
 
@@ -473,13 +691,133 @@ public class PanelDarAltaPasajero extends javax.swing.JPanel {
             });
             jComboBoxLocalidad.setModel(localidadesModel);
             jComboBoxLocalidad.setEnabled(true);
-            jComboBoxLocalidad.setSelectedIndex(-1);
             jComboBoxLocalidad.setSelectedItem(null);            
         }
     }//GEN-LAST:event_jComboBoxProvinciaItemStateChanged
 
+    private void jTextFieldDocumentoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldDocumentoKeyTyped
+        // TODO add your handling code here:
+        //Para limitar la cantidad de digitos
+        if (jTextFieldDocumento.getText().length()== 16) {
+                 evt.consume(); 
+            } 
+    }//GEN-LAST:event_jTextFieldDocumentoKeyTyped
 
+    private void jComboBoxPosicionIVAItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxPosicionIVAItemStateChanged
+        // TODO add your handling code here:
+        if(jComboBoxPosicionIVA.getSelectedItem().toString().equals("RESPONSABLE INSCRIPTO (A)")){
+            jLabel18.setText("<html> <body>  <p>  <span style=\"color:Black\">CUIT </span> <span style=\"color:RED\">(*)</span>   </p>   </body> </html>");            
+        }else jLabel18.setText("CUIT");
+    }//GEN-LAST:event_jComboBoxPosicionIVAItemStateChanged
+
+    private void jTextFieldNumeroKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldNumeroKeyTyped
+        // TODO add your handling code here:
+        if (jTextFieldNumero.getText().length()== 8) {
+                 evt.consume(); 
+            } 
+    }//GEN-LAST:event_jTextFieldNumeroKeyTyped
+
+    private void jTextFieldCodigoPostalKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldCodigoPostalKeyTyped
+        // TODO add your handling code here:
+        //Para limitar la cantidad de digitos
+        if (jTextFieldCodigoPostal.getText().length()== 16) {
+                 evt.consume(); 
+        } 
+    }//GEN-LAST:event_jTextFieldCodigoPostalKeyTyped
+
+    private void pintarErrores(List<String> listaErrores){
+        
+        if(listaErrores.contains("nombre")){
+            jLabel1.setText("<html> <body>  <p>  <span style=\"color:RED\">Nombres(s) (*)</span>   </p>   </body> </html>");
+        }else{
+            jLabel1.setText("<html> <body>  <p>  <span style=\"color:Black\">Nombres(s)</span> <span style=\"color:RED\">(*)</span>   </p>   </body> </html>");          
+        }
+            
+        
+        if(listaErrores.contains("fechaNac")){
+             jLabel3.setText("<html>\n<body>\n\n<p>\n\n<span style=\"color:RED\">Fecha de nacimiento (*)</span>\n\n\n</p>\n\n\n</body>\n</html>");           
+        }else{
+            jLabel3.setText("<html> <body>  <p>  <span style=\"color:Black\">Fecha de nacimiento</span> <span style=\"color:RED\">(*)</span>   </p>   </body> </html>"); 
+        }
+        
+        if(listaErrores.contains("apellido")){
+            jLabel5.setText("<html>\n<body>\n\n<p>\n\n<span style=\"color:RED\">Apellido(s) (*)</span>\n\n\n</p>\n\n\n</body>\n</html>");            
+        }else{
+            jLabel5.setText("<html> <body>  <p>  <span style=\"color:Black\">Apellido(s)</span> <span style=\"color:RED\">(*)</span>   </p>   </body> </html>"); 
+        }
+        
+        if(listaErrores.contains("documento")){
+            jLabel6.setText("<html>\n<body>\n\n<p>\n\n<span style=\"color:RED\">Número de documento (*)</span>\n\n\n</p>\n\n\n</body>\n</html>");            
+        }else{
+            jLabel6.setText("<html> <body>  <p>  <span style=\"color:Black\">Número de documento</span> <span style=\"color:RED\">(*)</span>   </p>   </body> </html>");
+        }
+        
+        if(listaErrores.contains("telefono")){
+            jLabel7.setText("<html>\n<body>\n\n<p>\n\n<span style=\"color:RED\">Teléfono (*)</span>\n\n\n</p>\n\n\n</body>\n</html>");            
+        }else{
+            jLabel7.setText("<html> <body>  <p>  <span style=\"color:Black\">Teléfono </span> <span style=\"color:RED\">(*)</span>   </p>   </body> </html>");
+        }
+        
+        if(listaErrores.contains("nacionalidad")){
+            jLabel8.setText("<html>\n<body>\n\n<p>\n\n<span style=\"color:RED\">Nacionalidad (*)</span>\n\n\n</p>\n\n\n</body>\n</html>");            
+        }else{
+            jLabel8.setText("<html> <body>  <p>  <span style=\"color:Black\">Nacionalidad </span> <span style=\"color:RED\">(*)</span>   </p>   </body> </html>");  
+        }
+        
+        if(listaErrores.contains("calle")){
+            jLabel10.setText("<html>\n<body>\n\n<p>\n\n<span style=\"color:RED\">Calle (*)</span>\n\n\n</p>\n\n\n</body>\n</html>");            
+        }else{
+            jLabel10.setText("<html> <body>  <p>  <span style=\"color:Black\">Calle</span> <span style=\"color:RED\">(*)</span>   </p>   </body> </html>");
+        }
+        
+        if(listaErrores.contains("codPostal")){
+            jLabel12.setText("<html>\n<body>\n\n<p>\n\n<span style=\"color:RED\">Código Postal (*)</span>\n\n\n</p>\n\n\n</body>\n</html>");           
+        }else{
+            jLabel12.setText("<html> <body>  <p>  <span style=\"color:Black\">Código Postal</span> <span style=\"color:RED\">(*)</span>   </p>   </body> </html>");
+        }
+        
+        if(listaErrores.contains("numero")){
+            jLabel14.setText("<html>\n<body>\n\n<p>\n\n<span style=\"color:RED\">Número (*)</span>\n\n\n</p>\n\n\n</body>\n</html>");            
+        }else{
+            jLabel14.setText("<html> <body>  <p>  <span style=\"color:Black\">Número </span> <span style=\"color:RED\">(*)</span>   </p>   </body> </html>");
+        }
+      
+        if(listaErrores.contains("cuit")){
+            jLabel18.setText("<html>\n<body>\n\n<p>\n\n<span style=\"color:RED\">CUIT (*)</span>\n\n\n</p>\n\n\n</body>\n</html>");            
+        }else{
+            jLabel18.setText("CUIT"); 
+        }
+        
+        if(listaErrores.contains("ocupacion")){
+            jLabel19.setText("<html>\n<body>\n\n<p>\n\n<span style=\"color:RED\">Ocupación (*)</span>\n\n\n</p>\n\n\n</body>\n</html>");            
+        }else{
+            jLabel19.setText("<html> <body>  <p>  <span style=\"color:Black\">Ocupación </span> <span style=\"color:RED\">(*)</span>   </p>   </body> </html>"); 
+        }
+        
+        if(listaErrores.contains("localidad")){
+            jLabel17.setText("<html>\n<body>\n\n<p>\n\n<span style=\"color:RED\">Localidad (*)</span>\n\n\n</p>\n\n\n</body>\n</html>");            
+        }else{
+            jLabel17.setText("<html> <body>  <p>  <span style=\"color:Black\">Localidad </span> <span style=\"color:RED\">(*)</span>   </p>   </body> </html>");
+        }
+       
+        if(listaErrores.contains("provincia")){
+            jLabel13.setText("<html>\n<body>\n\n<p>\n\n<span style=\"color:RED\">Provincia (*)</span>\n\n\n</p>\n\n\n</body>\n</html>");            
+        }else{
+           jLabel13.setText("<html> <body>  <p>  <span style=\"color:Black\">Provincia </span> <span style=\"color:RED\">(*)</span>   </p>   </body> </html>"); 
+        }
+        
+        if(listaErrores.contains("pais")){
+            jLabel16.setText("<html>\n<body>\n\n<p>\n\n<span style=\"color:RED\">País (*)</span>\n\n\n</p>\n\n\n</body>\n</html>");            
+        }else{
+            jLabel16.setText("<html> <body>  <p>  <span style=\"color:Black\">País </span> <span style=\"color:RED\">(*)</span>   </p>   </body> </html>");
+        }
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.Box.Filler filler1;
+    private javax.swing.Box.Filler filler2;
+    private javax.swing.Box.Filler filler3;
+    private javax.swing.Box.Filler filler4;
     private javax.swing.JButton jButtonCancelar;
     private javax.swing.JButton jButtonSiguiente;
     private javax.swing.JComboBox<Localidad> jComboBoxLocalidad;

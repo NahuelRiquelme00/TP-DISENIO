@@ -17,6 +17,7 @@ import entidades.TipoDocumento;
 import entidades.TipoPosicionFrenteIVA;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -66,12 +67,14 @@ public class GestorDePersonas {
         TipoPosicionFrenteIVA posicionIVA = personaDAO.findTipoPosicionFrenteIVA(p.getIdPosicionIVA());
         Localidad loc = personaDAO.findLocalidad(p.getIdLocalidad());
         
+        /*
         Provincia prov = personaDAO.findProvincia(p.getIdProvincia());
         Pais pais = personaDAO.findPais(p.getIdPais());
         //Se podria lanzar una excepcion si no existen en la base de datos, pero al ser cargados desde una interface
         //siempre deberian existir
         prov.setPais(pais);
         loc.setProvincia(prov);
+        */
         
         direccion.setLocalidad(loc);        
         personaFisica.setDireccion(direccion);
@@ -131,10 +134,10 @@ public class GestorDePersonas {
         //Aca se deberia llamar a un metodo que busque solo por atributos
         List<PersonaFisica> listaPersonas = personaDAO.buscarPasajero(nombre, apellido, tipoDocumento, nroDocumento);
         personaDAO.close();
-        return convertirAdto(listaPersonas);        
+        return convertirADTO(listaPersonas);        
     }
     
-    public List<PersonaFisicaDTO> convertirAdto(List<PersonaFisica> listaPersonas){
+    public List<PersonaFisicaDTO> convertirADTO(List<PersonaFisica> listaPersonas){
         List<PersonaFisicaDTO> pasajerosDTO = new ArrayList<>();
         listaPersonas.stream().map(p -> new PersonaFisicaDTO(p.getIdPersonaFisica(),p.getApellido(), p.getNombres(), p.getTipoDocumento().toString(), p.getNroDocumento())).forEachOrdered(dto -> {
             pasajerosDTO.add(dto);
@@ -178,4 +181,80 @@ public class GestorDePersonas {
         }
     }
     
+    public Boolean tipoYNúmeroExistentes(String tipoDocumento, String númeroDocumento) {
+    	return !buscarPasajero("", "", tipoDocumento, númeroDocumento).isEmpty();
+    }
+    
+    public List<String> datosCompletos(
+                String nombre, 
+                String apellido, 
+                String documento,
+                Date fechaNac,
+                String telefono, 
+                String nacionalidad, 
+                String calle, 
+                String numero, 
+                String codPostal, 
+                String cuit, 
+                String posIVA, 
+                String ocupacion,
+                String localidad,
+                String provincia,
+                String pais){
+        
+        Integer largoCuit = 14;
+        List<String> hayCamposIncompletos = new ArrayList<>();
+	
+        // Se validan los que son obligatorios
+	if(nombre.isEmpty()){
+            hayCamposIncompletos.add("nombre");
+	}
+	if (apellido.isEmpty()){
+            hayCamposIncompletos.add("apellido");
+		}
+	if (documento.isEmpty()){
+            hayCamposIncompletos.add("documento");
+	}
+        if (fechaNac == null){
+            hayCamposIncompletos.add("fechaNac");
+	}
+	if (telefono.isEmpty()){
+            hayCamposIncompletos.add("telefono");
+	}
+	if (nacionalidad.isEmpty()){
+            hayCamposIncompletos.add("nacionalidad");
+	}
+	if (calle.isEmpty()){
+            hayCamposIncompletos.add("calle");
+	}
+	if (numero.isEmpty()){
+            hayCamposIncompletos.add("numero");
+	}	
+	if (codPostal.isEmpty()){
+            hayCamposIncompletos.add("codPostal");
+	}	
+	// El cuit no puede ser vacio si se es "responsable inscripto"
+	if (posIVA.equals("RESPONSABLE INSCRIPTO (A)") ){
+            if (cuit.length() < largoCuit){
+		hayCamposIncompletos.add("cuit");
+            }
+	}
+	if (ocupacion.isEmpty()){
+            hayCamposIncompletos.add("ocupacion");
+            
+	}
+	if (localidad.isEmpty()){
+            hayCamposIncompletos.add("localidad");
+            
+	}
+        if (provincia.isEmpty()){
+            hayCamposIncompletos.add("provincia");
+            
+	}
+        if (pais.isEmpty()){
+            hayCamposIncompletos.add("pais");
+            
+	}
+        return hayCamposIncompletos;
+    }
 }

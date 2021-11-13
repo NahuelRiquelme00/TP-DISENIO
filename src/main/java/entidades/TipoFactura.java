@@ -10,5 +10,5 @@ package entidades;
  * @author Nahuel Riquelme
  */
 public enum TipoFactura {
-    A, B
+    A, B, E
 }

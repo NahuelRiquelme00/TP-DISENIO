@@ -1,12 +1,9 @@
---CREATE TYPE tipoDocumento AS ENUM ('DNI','LE','LC','PASAPORTE','OTRO');
---CREATE TYPE tipoFactura AS ENUM ('A','B');
-
 CREATE TABLE pais(
 	id_pais serial PRIMARY KEY,
 	nombre_pais varchar(30)
 );
 
-INSERT INTO pais VALUES (DEFAULT,'Argentina'), (DEFAULT,'Brazil'), (DEFAULT,'Chile'), (DEFAULT,'Uruguay'), (DEFAULT,'Bolivia');
+INSERT INTO pais VALUES (DEFAULT,'Argentina'), (DEFAULT,'Brasil'), (DEFAULT,'Chile'), (DEFAULT,'Uruguay'), (DEFAULT,'Bolivia');
 
 
 CREATE TABLE provincia(
@@ -15,7 +12,11 @@ CREATE TABLE provincia(
 	id_pais integer REFERENCES pais(id_pais)
 );
 
-INSERT INTO provincia VALUES (DEFAULT,'Santa Fe',1), (DEFAULT,'Buenos Aires',1), (DEFAULT,'Entre Rios',1), (DEFAULT,'Chubut',1), (DEFAULT,'Cordoba',1);
+INSERT INTO provincia VALUES (DEFAULT,'Santa Fe',1), (DEFAULT,'Buenos Aires',1), (DEFAULT,'Entre Rios',1), (DEFAULT,'Chubut',1), (DEFAULT,'Cordoba',1), (DEFAULT,'Tucumán',1);
+INSERT INTO provincia VALUES (DEFAULT,'Rio de Janeiro',2), (DEFAULT,'São Paulo',2), (DEFAULT,'Bahía',2), (DEFAULT,'Santa Catarina',2), (DEFAULT,'Minas Gerais',2);
+INSERT INTO provincia VALUES (DEFAULT,'Santiago',3), (DEFAULT,'Los Andes',3), (DEFAULT,'Valparaíso',3), (DEFAULT,'Concepción',3), (DEFAULT,'Valdivía',3);
+INSERT INTO provincia VALUES (DEFAULT,'Montevideo',4), (DEFAULT,'Flores',4), (DEFAULT,'Durazno',4), (DEFAULT,'Cerro Largo',4), (DEFAULT,'Soriano',4);
+INSERT INTO provincia VALUES (DEFAULT,'Beni',5), (DEFAULT,'Chuquisaca',5), (DEFAULT,'La Paz',5), (DEFAULT,'Potosí',5);
 
 CREATE TABLE localidad(
 	id_localidad serial PRIMARY KEY,
@@ -23,7 +24,11 @@ CREATE TABLE localidad(
 	id_provincia integer REFERENCES provincia(id_provincia)
 );
 
-INSERT INTO localidad VALUES (DEFAULT,'La Capital',1), (DEFAULT,'Rosario',1), (DEFAULT,'Belgrano',1), (DEFAULT,'San Justo',1), (DEFAULT,'San Javier',1);
+INSERT INTO localidad VALUES (DEFAULT,'La Capital',1), (DEFAULT,'Rosario',1), (DEFAULT,'Belgrano',1), (DEFAULT,'San Justo',1), (DEFAULT,'San Javier',1), (DEFAULT,'AMBA',2);
+INSERT INTO localidad VALUES (DEFAULT,'Rio de Janeiro',7), (DEFAULT,'São Paulo',8), (DEFAULT,'Salvador de Bahía',9), (DEFAULT,'Florianópolis',10), (DEFAULT,'Belo Horizonte',11), (DEFAULT,'Fortaleza',9), (DEFAULT,'Recife',9),  (DEFAULT,'Natal',9);
+INSERT INTO localidad VALUES (DEFAULT,'Santiago',12), (DEFAULT,'Cerrillos',12), (DEFAULT,'Recoleta',12), (DEFAULT,'San Esteban',13), (DEFAULT,'Quintero',14), (DEFAULT,'Casablanca',14), (DEFAULT,'Florida',15),  (DEFAULT,'Los Lagos',16),  (DEFAULT,'Lanco',16);
+INSERT INTO localidad VALUES (DEFAULT,'Montevideo',17), (DEFAULT,'Trinidad',18), (DEFAULT,'Durazno',19), (DEFAULT,'Carmen',19), (DEFAULT,'Melo',20), (DEFAULT,'Río Branco',20), (DEFAULT,'Mercedes',21), (DEFAULT,'Dolores',21);
+INSERT INTO localidad VALUES (DEFAULT,'	Trinidad ',22), (DEFAULT,'Sucre',23), (DEFAULT,'La Paz',24), (DEFAULT,'Potosí',25);
 
 CREATE TABLE direccion(
 	id_direccion serial PRIMARY KEY,
@@ -38,7 +43,7 @@ CREATE TABLE direccion(
 CREATE TABLE tipo_posicion_frente_IVA(
 	id_tipo_posicion_frente_IVA serial PRIMARY KEY,
 	nombre varchar(30),
-	tipo_factura varchar(30) CHECK (tipo_factura IN ('A','B'))
+	tipo_factura varchar(30) CHECK (tipo_factura IN ('A','B','E'))
 );
 
 CREATE TABLE persona_fisica(
@@ -56,20 +61,20 @@ CREATE TABLE persona_fisica(
 	id_tipo_posicion_frente_IVA integer REFERENCES tipo_posicion_frente_IVA(id_tipo_posicion_frente_IVA)
 );
 
-DROP TABLE persona_fisica;
-DROP TABLE tipo_posicion_frente_IVA;
-DROP TABLE direccion;
+INSERT INTO tipo_posicion_frente_IVA
+VALUES (DEFAULT, 'RESPONSABLE INSCRIPTO', 'A'),(DEFAULT, 'CONSUMIDOR FINAL', 'B'), (DEFAULT, 'MONOTRIBUTISTA', 'A'), (DEFAULT, 'SUJETO EXENTO', 'B'), (DEFAULT, 'EXTRANJERO', 'E');
 
+/*	   
 INSERT INTO persona_fisica
 VALUES (DEFAULT,
 		'DNI',
 		40587514,
-		'Riquelme',
-		'Nahuel',
+		'RIQUELME',
+		'NAHUEL',
 		'09-12-1999',
-		'nahuelriquelme@gmail.com',
-		'Estudiante',
-		'Argentina',
+		'NAHUELRIQUIELME@GMAIL.COM',
+		'ESTUDIANTE',
+		'ARGENTINA',
 		'3425684598',
 	   	1,
 	   	1);
@@ -77,27 +82,67 @@ VALUES (DEFAULT,
 INSERT INTO persona_fisica
 VALUES (DEFAULT,
 		'DNI',
-		40617524,
-		'Apellido1',
-		'Nombre1',
-		'09-12-1998',
-		'persona1@gmail.com',
-		'Abogado',
-		'Argentina',
+		34227524,
+		'GOMEZ',
+		'ALEJANDRO',
+		'15-01-1988',
+		'ALEJANDROGOMEZ@GMAIL.COM',
+		'ABOGADO',
+		'ARGENTINA',
 		'3425684547',
 	   	1,
 	   	1);
 		
-INSERT INTO tipo_posicion_frente_IVA
-VALUES (DEFAULT, 'RESPONSABLE INSCRIPTO', 'A'),(DEFAULT, 'RESPONSABLE INSCRIPTO', 'B');
-
-INSERT INTO direccion
+INSERT INTO persona_fisica
 VALUES (DEFAULT,
-	   'Mitre',
-	   5891,
-	   null,
-	   'Santa Fe',
-	   3000,
-	   null);
+		'DNI',
+		34227524,
+		'DE PAUL',
+		'RODRIGO',
+		'24-05-1994',
+		'RODEPAUL@GMAIL.COM',
+		'PROFESOR',
+		'ARGENTINA',
+		'3425684315',
+	   	1,
+	   	1);
+
+INSERT INTO persona_fisica
+VALUES (DEFAULT,
+		'DNI',
+		34227524,
+		'MORENO',
+		'MARIANO',
+		'18-06-1987',
+		'MARIANOMORENO@GMAIL.COM',
+		'ARQUITECTO',
+		'BOLIVIANO',
+		'3421472589',
+	   	1,
+	   	1);
+
+INSERT INTO persona_fisica
+VALUES (DEFAULT,
+		'DNI',
+		34227524,
+		'BECKER',
+		'ALISSON',
+		'02-10-1992',
+		'ALIBECKER@GMAIL.COM',
+		'INGENIERO',
+		'BRASILERO',
+		'3429466178',
+	   	1,
+	   	1);
+*/
+
+--DROP TABLE pais;
+--DROP TABLE provincia;
+--DROP TABLE localidad;
+--DROP TABLE direccion;
+--DROP TABLE tipo_posicion_frente_IVA;
+--DROP TABLE persona_fisica;
+
+
 
 

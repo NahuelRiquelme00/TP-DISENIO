@@ -30,7 +30,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         switch(panel){
             case PANE_MENU_PRINCIPAL:
                 this.setContentPane(new PanelMenuPrincipal(this));
-                this.setTitle("Menu principal");
+                this.setTitle("Menú principal");
                 break;
             case PANE_GESTIONAR_PASAJEROS:
                 this.setContentPane(new PanelGestionarPasajeros(this));
@@ -109,7 +109,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             frame.setVisible(true);
             frame.setTitle("Hotel Premier");
             frame.setLocationRelativeTo(null);
-            frame.cambiarPanel(3);      
+            frame.cambiarPanel(1);      
         });
     }
 

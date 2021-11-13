@@ -54,7 +54,11 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
 
         jLabel2.setText("Fecha desde");
 
+        jDateChooser1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+
         jLabel3.setText("Fecha hasta");
+
+        jDateChooser2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
 
         jButton1.setText("Buscar");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -105,7 +109,6 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
 
         jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 
-        jTable.setBackground(java.awt.Color.green);
         jTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, "", null, null, null, null, null, null, null, null, null, null, null, null, null},

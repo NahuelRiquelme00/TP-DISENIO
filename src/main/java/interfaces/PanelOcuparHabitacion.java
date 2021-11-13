@@ -141,6 +141,7 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
             tipoDocModel.addElement(t);
         }
         jComboBoxTipoDoc.setModel(tipoDocModel);
+        jComboBoxTipoDoc.setSelectedItem(TipoDocumento.DNI);
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         JTextApellido = new javax.swing.JTextField();
@@ -167,11 +168,14 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
         filler4 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
         jLabel8 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        jButtonAceptar = new javax.swing.JButton();
+        jButtonSeguir = new javax.swing.JButton();
+        jButtonCargarOtra = new javax.swing.JButton();
+        jButtonSalir = new javax.swing.JButton();
+        filler5 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
+        filler6 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
+        filler7 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
+        jButtonCancelar = new javax.swing.JButton();
 
         setPreferredSize(new java.awt.Dimension(1184, 798));
 
@@ -209,10 +213,10 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
             }
         });
 
-        JTextDocumento.setEnabled(false);
         JTextDocumento.setNextFocusableComponent(jButtonBuscar);
 
         jButtonBuscar.setText("Buscar");
+        jButtonBuscar.setNextFocusableComponent(jButtonCargarPasajero);
         jButtonBuscar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonBuscarActionPerformed(evt);
@@ -293,6 +297,7 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
 
         jButtonCargarAcompañante.setText("Cargar acompañante");
         jButtonCargarAcompañante.setEnabled(false);
+        jButtonCargarAcompañante.setNextFocusableComponent(jButtonQuitar);
         jButtonCargarAcompañante.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonCargarAcompañanteActionPerformed(evt);
@@ -301,6 +306,7 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
 
         jButtonCargarPasajero.setText("Cargar pasajero");
         jButtonCargarPasajero.setEnabled(false);
+        jButtonCargarPasajero.setNextFocusableComponent(jButtonCargarAcompañante);
         jButtonCargarPasajero.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonCargarPasajeroActionPerformed(evt);
@@ -378,6 +384,7 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
 
         jButtonQuitar.setText("Quitar");
         jButtonQuitar.setEnabled(false);
+        jButtonQuitar.setNextFocusableComponent(jButtonAceptar);
         jButtonQuitar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonQuitarActionPerformed(evt);
@@ -439,17 +446,45 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
 
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
 
-        jButton2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jButton2.setText("Aceptar");
+        jButtonAceptar.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jButtonAceptar.setText("Aceptar");
+        jButtonAceptar.setNextFocusableComponent(jButtonSeguir);
+        jButtonAceptar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonAceptarActionPerformed(evt);
+            }
+        });
 
-        jButton3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jButton3.setText("Seguir cargando");
+        jButtonSeguir.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jButtonSeguir.setText("Seguir cargando");
+        jButtonSeguir.setEnabled(false);
+        jButtonSeguir.setNextFocusableComponent(jButtonCargarOtra);
+        jButtonSeguir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonSeguirActionPerformed(evt);
+            }
+        });
 
-        jButton4.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jButton4.setText("Cargar otra habitacion");
+        jButtonCargarOtra.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jButtonCargarOtra.setText("Cargar otra habitacion");
+        jButtonCargarOtra.setEnabled(false);
+        jButtonCargarOtra.setName(""); // NOI18N
+        jButtonCargarOtra.setNextFocusableComponent(jButtonSalir);
+        jButtonCargarOtra.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonCargarOtraActionPerformed(evt);
+            }
+        });
 
-        jButton5.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jButton5.setText("Salir");
+        jButtonSalir.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jButtonSalir.setText("Salir");
+        jButtonSalir.setEnabled(false);
+        jButtonSalir.setNextFocusableComponent(jButtonCancelar);
+        jButtonSalir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonSalirActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -457,28 +492,52 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 90, Short.MAX_VALUE)
-                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(32, 32, 32)
-                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButtonAceptar, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(filler5, javax.swing.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonSeguir, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(filler6, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonCargarOtra, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(filler7, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3)
-                    .addComponent(jButton4)
-                    .addComponent(jButton5))
-                .addContainerGap())
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButtonAceptar)
+                            .addComponent(jButtonSeguir)
+                            .addComponent(jButtonCargarOtra)
+                            .addComponent(jButtonSalir))
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addComponent(filler7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(20, 20, 20))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addComponent(filler5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(21, 21, 21))))
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(filler6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
-        jButton1.setText("Cancelar");
+        jButtonCancelar.setText("Cancelar");
+        jButtonCancelar.setNextFocusableComponent(JTextNombre);
+        jButtonCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonCancelarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -489,7 +548,7 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton1))
+                        .addComponent(jButtonCancelar))
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
@@ -523,7 +582,7 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1)
+                .addComponent(jButtonCancelar)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -664,6 +723,37 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
         jButtonQuitar.setEnabled(false);
     }//GEN-LAST:event_jButtonQuitarActionPerformed
 
+    private void jButtonAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAceptarActionPerformed
+        // TODO add your handling code here:
+        //Si se selecciono un pasajero se actualiza la informacion y el estado de las habitaciones
+        //Ademas se activan los demas botones y se desactiva este        
+        jButtonSeguir.setEnabled(true);
+        jButtonCargarOtra.setEnabled(true);
+        jButtonSalir.setEnabled(true);
+        jButtonAceptar.setEnabled(false);
+        //Si no se selecciono un pasajero se muestra el mensaje correspondiente y se pone el foco en resultados de busqueda
+    }//GEN-LAST:event_jButtonAceptarActionPerformed
+
+    private void jButtonSeguirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSeguirActionPerformed
+        // TODO add your handling code here:
+        //Se vuelve el enfoque a la pestaña de criterios de busqueda y se limpian los textbox
+    }//GEN-LAST:event_jButtonSeguirActionPerformed
+
+    private void jButtonCargarOtraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCargarOtraActionPerformed
+        // TODO add your handling code here:
+        //Se pasa a la interfaz "Mostrar estado de Habitaciones"
+    }//GEN-LAST:event_jButtonCargarOtraActionPerformed
+
+    private void jButtonSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSalirActionPerformed
+        // TODO add your handling code here:
+        //Se actualiza la informacion y el estado de las habitaciones seleccionadas
+    }//GEN-LAST:event_jButtonSalirActionPerformed
+
+    private void jButtonCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelarActionPerformed
+        // TODO add your handling code here:
+        //Se retorna a la interfaz anterior
+    }//GEN-LAST:event_jButtonCancelarActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField JTextApellido;
@@ -675,15 +765,18 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
     private javax.swing.Box.Filler filler2;
     private javax.swing.Box.Filler filler3;
     private javax.swing.Box.Filler filler4;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
+    private javax.swing.Box.Filler filler5;
+    private javax.swing.Box.Filler filler6;
+    private javax.swing.Box.Filler filler7;
+    private javax.swing.JButton jButtonAceptar;
     private javax.swing.JButton jButtonBuscar;
+    private javax.swing.JButton jButtonCancelar;
     private javax.swing.JButton jButtonCargarAcompañante;
+    private javax.swing.JButton jButtonCargarOtra;
     private javax.swing.JButton jButtonCargarPasajero;
     private javax.swing.JButton jButtonQuitar;
+    private javax.swing.JButton jButtonSalir;
+    private javax.swing.JButton jButtonSeguir;
     private javax.swing.JComboBox<TipoDocumento> jComboBoxTipoDoc;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

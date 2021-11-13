@@ -7,6 +7,7 @@ package entidades;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -14,6 +15,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -55,6 +58,12 @@ public class PersonaFisica extends Persona implements Serializable {
     
     @Column(name="telefono")
     private String telefono;
+    
+//    @OneToMany(mappedBy="pasajeroResponsable")
+//    List<Estadia> estadias;
+//    
+//    @OneToMany(mappedBy="responsableDePagoFisico")
+//    List<Factura> facturas;    
 
     public PersonaFisica() {
     }

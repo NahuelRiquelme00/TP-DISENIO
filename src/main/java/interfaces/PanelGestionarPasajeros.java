@@ -19,6 +19,8 @@ import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -42,35 +44,39 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
      * @param frame
      */
     public PanelGestionarPasajeros(VentanaPrincipal frame) {
-        initComponents();
         this.frame = frame;
-        cargarModelo();
-        
-//        jTable1.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
-//            int filasSeleccionadas = jTable1.getSelectedRowCount();
-//            if(filasSeleccionadas == 1){
-//                int row_selected = jTable1.getSelectedRow();
-//                System.out.println(jTable1.getValueAt(row_selected,1));
-//            }
-//        });
+        initComponents();
+        limitarCampos();        
+        cargarModelo(); 
+    }
+    
+    private void limitarCampos(){
+        //Limita la longitud de los campos
+        JTextApellido.setDocument(new JTextFieldLimit(32));
+        JTextNombre.setDocument(new JTextFieldLimit(32));
+        JTextDocumento.setDocument(new JTextFieldLimit(16));
     }
     
     private void cargarModelo(){
         model = new PasajerosTableModel();
         jTable1.setModel(model);  
     
-    //Le agrego el radiobutton a la tabla
-    class MyTableCellRenderer extends JRadioButton implements TableCellRenderer {
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-           this.setSelected(isSelected);
-            setBackground(Color.WHITE);
-           return this;
+        //Agrego el radiobutton a la tabla
+        class MyTableCellRenderer extends JRadioButton implements TableCellRenderer {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+               this.setSelected(isSelected);
+                setBackground(Color.WHITE);
+               return this;
+            }
         }
-    }
         TableColumnModel cm = jTable1.getColumnModel();
         cm.addColumn(new TableColumn(0, 10, new MyTableCellRenderer(), null));
         cm.moveColumn(cm.getColumnCount() - 1, 0);
+        // Instanciamos el TableRowSorter y lo añadimos al JTable para ordernar por columna
+        TableRowSorter<TableModel> ordenarTabla = new TableRowSorter<>(model);
+        jTable1.setRowSorter(ordenarTabla);
+        row_selected = -1;
     }
 
     private void cargarDatosBusqueda(){
@@ -89,7 +95,7 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
         //Modifico el jLabel con la cantidad de paginas
         pagActual = pisoInclusivo / MAX_FILAS + 1;
         pagsTotales = pasajerosDTO.size() / MAX_FILAS + ((pasajerosDTO.size() % MAX_FILAS == 0)? 0 : 1);
-        lPag.setText("Pagina "+pagActual+"/"+pagsTotales);
+        lPag.setText("Página "+pagActual+"/"+pagsTotales);
         
         //Carga la pagina actual
         cargarPagina();
@@ -126,6 +132,7 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
             tipoDocModel.addElement(t);
         }
         jComboBoxTipoDoc.setModel(tipoDocModel);
+        jComboBoxTipoDoc.setSelectedItem(TipoDocumento.DNI);
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         JTextApellido = new javax.swing.JTextField();
@@ -140,8 +147,8 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
         bAdelante = new javax.swing.JButton();
         lPag = new javax.swing.JLabel();
         bAtras = new javax.swing.JButton();
-        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(100, 0), new java.awt.Dimension(100, 0), new java.awt.Dimension(100, 32767));
-        filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(100, 0), new java.awt.Dimension(100, 0), new java.awt.Dimension(100, 32767));
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
+        filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
         jLabel6 = new javax.swing.JLabel();
 
         jTextField2.setText("jTextField2");
@@ -152,12 +159,6 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
 
         jLabel2.setText("Tipo de documento");
 
-        JTextNombre.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                JTextNombreKeyReleased(evt);
-            }
-        });
-
         jComboBoxTipoDoc.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 jComboBoxTipoDocItemStateChanged(evt);
@@ -166,17 +167,16 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
 
         jLabel4.setText("Apellido(s)");
 
-        jLabel5.setText("Numero de documento");
+        jLabel5.setText("Número de documento");
 
-        JTextApellido.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                JTextApellidoKeyReleased(evt);
+        JTextDocumento.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JTextDocumentoKeyTyped(evt);
             }
         });
 
-        JTextDocumento.setEnabled(false);
-
         jButtonBuscar.setText("Buscar");
+        jButtonBuscar.setNextFocusableComponent(jButtonSiguiente);
         jButtonBuscar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonBuscarActionPerformed(evt);
@@ -233,9 +233,10 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
         jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {JTextApellido, JTextDocumento, JTextNombre, jComboBoxTipoDoc});
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel3.setText("Criterios de busqueda");
+        jLabel3.setText("Criterios de búsqueda");
 
         jButtonCancelar.setText("Cancelar");
+        jButtonCancelar.setNextFocusableComponent(JTextNombre);
         jButtonCancelar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonCancelarActionPerformed(evt);
@@ -262,6 +263,7 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
         jScrollPane1.setViewportView(jTable1);
 
         jButtonSiguiente.setText("Siguiente");
+        jButtonSiguiente.setNextFocusableComponent(jButtonCancelar);
         jButtonSiguiente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonSiguienteActionPerformed(evt);
@@ -277,7 +279,7 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
         });
 
         lPag.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        lPag.setText("Pagina 0/0");
+        lPag.setText("Página 0/0");
 
         bAtras.setText("<");
         bAtras.setDoubleBuffered(true);
@@ -295,50 +297,48 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(filler1, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addGap(284, 284, 284)
+                        .addComponent(filler2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(bAtras)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lPag)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(bAdelante)
-                        .addGap(18, 18, 18)
-                        .addComponent(filler2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(filler1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(246, 246, 246)
                         .addComponent(jButtonSiguiente))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(10, 10, 10)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 760, Short.MAX_VALUE)))
+                        .addComponent(jScrollPane1)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lPag)
-                            .addComponent(bAdelante)
-                            .addComponent(bAtras)
-                            .addComponent(jButtonSiguiente)))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(26, 26, 26)
-                                .addComponent(filler1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(24, 24, 24)
-                                .addComponent(filler2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(lPag)
+                                .addComponent(bAdelante)
+                                .addComponent(bAtras)
+                                .addComponent(jButtonSiguiente))
+                            .addContainerGap())
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                            .addComponent(filler1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(21, 21, 21)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(filler2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(20, 20, 20))))
         );
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel6.setText("Resultados de busqueda");
+        jLabel6.setText("Resultados de búsqueda");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -379,11 +379,13 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
     private void jButtonBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarActionPerformed
         // TODO add your handling code here:
         //Carga los datos en la tabla
+        row_selected = -1;
         cargarDatosBusqueda();
         if (pasajerosDTO.isEmpty()){
-            int opcion = JOptionPane.showConfirmDialog(null, "¿Desea dar de alta un pasajero?", "Pasajero no encontrado",
-                         JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-            if(opcion == 0) {
+            Object[] options = { "No", "Si"};
+            int opcion = JOptionPane.showOptionDialog(null, "¿Desea dar de alta un pasajero?", "Pasajero no encontrado",
+                         JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+            if(opcion == 1) {
                 System.out.println("Pasar a la interface alta de pasajero");
                 frame.cambiarPanel(VentanaPrincipal.PANE_DAR_ALTA_PASAJERO);
             } else System.out.println("Seguir buscando");
@@ -397,14 +399,27 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
             if(filasSeleccionadas == 1){
                 row_selected = jTable1.getSelectedRow();
                 System.out.println("Fila seleccionada: " + row_selected);
-                System.out.println("Pasajero ID: " + pasajerosDTO.get(row_selected).getId());
+                System.out.println("Pasajero ID: " + paginado.get(row_selected).getId());
             }
     }//GEN-LAST:event_jTable1MouseClicked
 
     private void jButtonSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSiguienteActionPerformed
         // TODO add your handling code here:
-        //Si se selecciono una persona se pasa a la interfaz modificar usuario
-        //Si no se selecciono ninguna persona se pasa a la interfaz dar de alta 
+        
+        if(row_selected==-1){
+            //Si no selecciono una persona se pasa a la interfaz dar alta pasajero
+            Object[] options = { "No", "Si"};
+            int opcion = JOptionPane.showOptionDialog(null, "¿Desea dar de alta un pasajero?", "Dar de Alta Pasajero",
+                         JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+            if(opcion == 1) {
+                System.out.println("Pasar a la interface alta de pasajero");
+                frame.cambiarPanel(VentanaPrincipal.PANE_DAR_ALTA_PASAJERO);
+            } else System.out.println("Seguir buscando");
+        }else{
+            //Si se selecciono una persona se pasa a la interfaz modificar usuario
+        }
+
+
     }//GEN-LAST:event_jButtonSiguienteActionPerformed
 
     private void jComboBoxTipoDocItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxTipoDocItemStateChanged
@@ -426,8 +441,9 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
 
     private void bAtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAtrasActionPerformed
         // TODO add your handling code here:
+        row_selected = -1;
         pagActual--;
-        lPag.setText("Pagina "+pagActual+"/"+pagsTotales);
+        lPag.setText("Página "+pagActual+"/"+pagsTotales);
 
         if (pisoInclusivo + MAX_FILAS >= pasajerosDTO.size())
                 techoExclusivo -= pasajerosDTO.size() - pisoInclusivo;
@@ -443,8 +459,9 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
 
     private void bAdelanteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAdelanteActionPerformed
         // TODO add your handling code here:
+        row_selected = -1;
         pagActual++;
-        lPag.setText("Pagina "+pagActual+"/"+pagsTotales);
+        lPag.setText("Página "+pagActual+"/"+pagsTotales);
 
         pisoInclusivo += MAX_FILAS;
         bAtras.setEnabled(true);
@@ -459,20 +476,14 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
         cargarPagina();
     }//GEN-LAST:event_bAdelanteActionPerformed
 
-    private void JTextNombreKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JTextNombreKeyReleased
+    private void JTextDocumentoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JTextDocumentoKeyTyped
         // TODO add your handling code here:
-        //Para que el ingreso de los datos sea siempre en mayuscula
-//        int position = JTextNombre.getCaretPosition();
-//        JTextNombre.setText(JTextNombre.getText().toUpperCase());
-//        JTextNombre.setCaretPosition(position);
-    }//GEN-LAST:event_JTextNombreKeyReleased
-
-    private void JTextApellidoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JTextApellidoKeyReleased
-        // TODO add your handling code here:
-//        int position = JTextApellido.getCaretPosition();
-//        JTextApellido.setText(JTextApellido.getText().toUpperCase());
-//        JTextApellido.setCaretPosition(position);
-    }//GEN-LAST:event_JTextApellidoKeyReleased
+        //Para que se ingrese solo valores numericos
+        char c = evt.getKeyChar();
+        if(!Character.isDigit(c)){
+            evt.consume();
+        }
+    }//GEN-LAST:event_JTextDocumentoKeyTyped
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
