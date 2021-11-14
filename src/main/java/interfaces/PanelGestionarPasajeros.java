@@ -47,7 +47,7 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
         this.frame = frame;
         initComponents();
         limitarCampos();        
-        cargarModelo();        
+        cargarModelo(); 
     }
     
     private void limitarCampos(){
@@ -295,7 +295,7 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(284, 284, 284)
                         .addComponent(filler2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)

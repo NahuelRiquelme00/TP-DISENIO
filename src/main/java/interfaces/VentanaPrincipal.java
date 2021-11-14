@@ -16,6 +16,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     public static final int PANE_MENU_PRINCIPAL = 0;
     public static final int PANE_GESTIONAR_PASAJEROS = 1;
     public static final int PANE_DAR_ALTA_PASAJERO = 2;
+    public static final int PANE_OCUPAR_HABITACION = 3;
 
     /**
      * Creates new form VentanaPrincipal
@@ -38,6 +39,12 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             case PANE_DAR_ALTA_PASAJERO:
                 this.setContentPane(new PanelDarAltaPasajero(this));
                 this.setTitle("Dar alta pasajero");
+                break;
+            case PANE_OCUPAR_HABITACION:
+                this.setContentPane(new PanelOcuparHabitacion(this));
+                this.setTitle("Ocupar habitacion");
+                this.pack();
+                this.setLocationRelativeTo(null);
                 break;
         }
         this.getContentPane().setVisible(false);
@@ -102,7 +109,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             frame.setVisible(true);
             frame.setTitle("Hotel Premier");
             frame.setLocationRelativeTo(null);
-            frame.cambiarPanel(1);
+            frame.cambiarPanel(1);      
         });
     }
 

@@ -14,7 +14,7 @@ import javax.swing.table.AbstractTableModel;
  *
  * @author Nahuel Riquelme
  */
-public class PasajerosTableModel extends AbstractTableModel {
+public class PasajerosTableModel2 extends AbstractTableModel {
 
     private List<PersonaFisicaDTO> datos = new ArrayList<>();
 
@@ -41,7 +41,8 @@ public class PasajerosTableModel extends AbstractTableModel {
         case 0: return "Nombre(s)";
         case 1: return "Apellido(s)";
         case 2: return "Tipo de documento";
-        case 3: return "Número de documento";		
+        case 3: return "Numero de documento";
+        case 4: return "Categoria";
         default: return "Error al cargar nombres";
         }
     }
@@ -53,7 +54,7 @@ public class PasajerosTableModel extends AbstractTableModel {
 
     @Override
     public int getColumnCount() {
-        return 4;
+        return 5;
     }
 
     @Override
@@ -64,6 +65,7 @@ public class PasajerosTableModel extends AbstractTableModel {
             case 1: return persona.getApellido();
             case 2: return persona.getTipoDocumento();
             case 3: return persona.getNroDocumento();
+            case 4: return persona.getCategoria();
             default: return "Error al cargar los datos";
         }
     }    
