@@ -2,12 +2,31 @@
 <persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence  http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
   <persistence-unit name="MiBaseDeDatos" transaction-type="RESOURCE_LOCAL">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-    <class>entidades.TipoPosicionFrenteIVA</class>
     <class>entidades.Direccion</class>
     <class>entidades.Localidad</class>
     <class>entidades.Pais</class>
-    <class>entidades.Provincia</class>
     <class>entidades.PersonaFisica</class>
+    <class>entidades.Provincia</class>
+    <class>entidades.TipoPosicionFrenteIVA</class>
+    <class>entidades.Factura</class>
+    <class>entidades.NotaDeCredito</class>
+    <class>entidades.PersonaJuridica</class>
+    <class>entidades.Efectivo</class>
+    <class>entidades.MedioDePago</class>
+    <class>entidades.Pago</class>
+    <class>entidades.Cheque</class>
+    <class>entidades.Tarjeta</class>
+    <class>entidades.TarjetaDeCredito</class>
+    <class>entidades.TarjetaDeDebito</class>
+    <class>entidades.Banco</class>
+    <class>entidades.Estadia</class>
+    <class>entidades.ServicioPrestado</class>
+    <class>entidades.ServicioFacturado</class>
+    <class>entidades.Usuario</class>
+    <class>entidades.Habitacion</class>
+    <class>entidades.TipoHabitacion</class>
+    <class>entidades.Reserva</class>
+    <class>entidades.PeriodoReserva</class>
     <properties>
       <!-- Configuring JDBC properties -->
       <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/postgres"/>
