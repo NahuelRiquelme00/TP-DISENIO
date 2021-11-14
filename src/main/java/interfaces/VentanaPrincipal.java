@@ -102,7 +102,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             frame.setVisible(true);
             frame.setTitle("Hotel Premier");
             frame.setLocationRelativeTo(null);
-            frame.cambiarPanel(0);
+            frame.cambiarPanel(1);
         });
     }
 
