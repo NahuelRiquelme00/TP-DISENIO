@@ -6,7 +6,7 @@
 package entidades;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -14,7 +14,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -70,9 +69,41 @@ public class TipoPosicionFrenteIVA implements Serializable {
     }
 
     @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 59 * hash + Objects.hashCode(this.idTipoPosicionFrenteIVA);
+        hash = 59 * hash + Objects.hashCode(this.nombre);
+        hash = 59 * hash + Objects.hashCode(this.tipoFactura);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final TipoPosicionFrenteIVA other = (TipoPosicionFrenteIVA) obj;
+        if (!Objects.equals(this.nombre, other.nombre)) {
+            return false;
+        }
+        if (!Objects.equals(this.idTipoPosicionFrenteIVA, other.idTipoPosicionFrenteIVA)) {
+            return false;
+        }
+        if (this.tipoFactura != other.tipoFactura) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public String toString() {
         return nombre + " (" + tipoFactura + ")" ;
-    }
-    
+    }  
     
 }

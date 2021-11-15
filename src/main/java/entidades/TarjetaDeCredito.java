@@ -10,5 +10,6 @@ import javax.persistence.*;
 @Entity
 @Table(name="tarjeta_credito")
 public class TarjetaDeCredito extends Tarjeta{
+    
 
 }

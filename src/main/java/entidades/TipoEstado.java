@@ -10,5 +10,5 @@ package entidades;
  * @author Nahuel Riquelme
  */
 public enum TipoEstado {
-    RESERVADA,DISPONIBLE,OCUPADA,FUERA_DE_SERVICIO
+    RESERVADA, DISPONIBLE, OCUPADA, FUERA_DE_SERVICIO
 }

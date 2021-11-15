@@ -6,14 +6,12 @@
 package entidades;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -23,6 +21,7 @@ import javax.persistence.Table;
 @Entity
 @Table (name="pais")
 public class Pais implements Serializable {
+    
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column (name = "id_pais")
@@ -30,9 +29,6 @@ public class Pais implements Serializable {
     
     @Column (name = "nombre_pais")
     String nombre;
-    
-//    @OneToMany(mappedBy= "pais")
-//    List<Provincia> provincias;
 
     public Integer getIdPais() {
         return idPais;
@@ -49,6 +45,32 @@ public class Pais implements Serializable {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 31 * hash + Objects.hashCode(this.idPais);
+        hash = 31 * hash + Objects.hashCode(this.nombre);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Pais other = (Pais) obj;
+        if (!Objects.equals(this.nombre, other.nombre)) {
+            return false;
+        }
+        return Objects.equals(this.idPais, other.idPais);
+    } 
 
     @Override
     public String toString() {

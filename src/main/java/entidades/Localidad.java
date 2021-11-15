@@ -7,6 +7,7 @@ package entidades;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -25,6 +26,7 @@ import javax.persistence.Table;
 @Entity
 @Table (name="localidad")
 public class Localidad implements Serializable {
+    
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column (name = "id_localidad")
@@ -63,6 +65,40 @@ public class Localidad implements Serializable {
     public void setProvincia(Provincia provincia) {
         this.provincia = provincia;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 97 * hash + Objects.hashCode(this.idLocalidad);
+        hash = 97 * hash + Objects.hashCode(this.nombre);
+        hash = 97 * hash + Objects.hashCode(this.provincia);
+        hash = 97 * hash + Objects.hashCode(this.direcciones);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Localidad other = (Localidad) obj;
+        if (!Objects.equals(this.nombre, other.nombre)) {
+            return false;
+        }
+        if (!Objects.equals(this.idLocalidad, other.idLocalidad)) {
+            return false;
+        }
+        if (!Objects.equals(this.provincia, other.provincia)) {
+            return false;
+        }
+        return Objects.equals(this.direcciones, other.direcciones);
+    }  
 
     @Override
     public String toString() {

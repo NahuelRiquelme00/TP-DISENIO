@@ -8,6 +8,7 @@ package entidades;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -26,6 +27,7 @@ import javax.persistence.Table;
 @Entity
 @Table (name="persona_fisica")
 public class PersonaFisica extends Persona implements Serializable {
+    
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name="id_persona_fisica")
@@ -163,6 +165,79 @@ public class PersonaFisica extends Persona implements Serializable {
         this.telefono = telefono;
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 67 * hash + Objects.hashCode(this.idPersonaFisica);
+        hash = 67 * hash + Objects.hashCode(this.apellido);
+        hash = 67 * hash + Objects.hashCode(this.nombres);
+        hash = 67 * hash + Objects.hashCode(this.tipoDocumento);
+        hash = 67 * hash + Objects.hashCode(this.nroDocumento);
+        hash = 67 * hash + Objects.hashCode(this.fechaNacimiento);
+        hash = 67 * hash + Objects.hashCode(this.email);
+        hash = 67 * hash + Objects.hashCode(this.ocupacion);
+        hash = 67 * hash + Objects.hashCode(this.nacionalidad);
+        hash = 67 * hash + Objects.hashCode(this.telefono);
+        hash = 67 * hash + Objects.hashCode(this.factura);
+        hash = 67 * hash + Objects.hashCode(this.estadiasResponsable);
+        hash = 67 * hash + Objects.hashCode(this.estadiasAcompañante);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final PersonaFisica other = (PersonaFisica) obj;
+        if (!Objects.equals(this.apellido, other.apellido)) {
+            return false;
+        }
+        if (!Objects.equals(this.nombres, other.nombres)) {
+            return false;
+        }
+        if (!Objects.equals(this.email, other.email)) {
+            return false;
+        }
+        if (!Objects.equals(this.ocupacion, other.ocupacion)) {
+            return false;
+        }
+        if (!Objects.equals(this.nacionalidad, other.nacionalidad)) {
+            return false;
+        }
+        if (!Objects.equals(this.telefono, other.telefono)) {
+            return false;
+        }
+        if (!Objects.equals(this.idPersonaFisica, other.idPersonaFisica)) {
+            return false;
+        }
+        if (this.tipoDocumento != other.tipoDocumento) {
+            return false;
+        }
+        if (!Objects.equals(this.nroDocumento, other.nroDocumento)) {
+            return false;
+        }
+        if (!Objects.equals(this.fechaNacimiento, other.fechaNacimiento)) {
+            return false;
+        }
+        if (!Objects.equals(this.factura, other.factura)) {
+            return false;
+        }
+        if (!Objects.equals(this.estadiasResponsable, other.estadiasResponsable)) {
+            return false;
+        }
+        if (!Objects.equals(this.estadiasAcompañante, other.estadiasAcompañante)) {
+            return false;
+        }
+        return true;
+    }
+    
     @Override
     public String toString() {
         return "PersonaFisica{" + "apellido=" + apellido + ", nombres=" + nombres + ", direccion=" + direccion + ", tipoPosicionFrenteIVA=" + tipoPosicionFrenteIVA + '}';

@@ -12,5 +12,4 @@ import javax.persistence.*;
 @Table(name="efectivo")
 public class Efectivo extends MedioDePago implements Serializable {
 
-	
 }

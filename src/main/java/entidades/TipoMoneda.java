@@ -10,5 +10,5 @@ package entidades;
  * @author Nahuel Riquelme
  */
 public enum TipoMoneda {
-    USD,EUR,BRL,ARS,UYU
+    USD, EUR, BRL, ARS, UYU
 }

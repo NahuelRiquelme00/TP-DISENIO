@@ -6,6 +6,7 @@
 package entidades;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -114,9 +115,53 @@ public class Direccion implements Serializable {
     }
 
     @Override
-    public String toString() {
-        return "Direccion{" + "calle=" + calle + ", numero=" + numero + '}';
+    public int hashCode() {
+        int hash = 3;
+        hash = 59 * hash + Objects.hashCode(this.calle);
+        hash = 59 * hash + Objects.hashCode(this.numero);
+        hash = 59 * hash + Objects.hashCode(this.departamento);
+        hash = 59 * hash + Objects.hashCode(this.piso);
+        hash = 59 * hash + Objects.hashCode(this.codigoPostal);
+        hash = 59 * hash + Objects.hashCode(this.localidad);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Direccion other = (Direccion) obj;
+        if (!Objects.equals(this.calle, other.calle)) {
+            return false;
+        }
+        if (!Objects.equals(this.departamento, other.departamento)) {
+            return false;
+        }
+        if (!Objects.equals(this.piso, other.piso)) {
+            return false;
+        }
+        if (!Objects.equals(this.numero, other.numero)) {
+            return false;
+        }
+        if (!Objects.equals(this.codigoPostal, other.codigoPostal)) {
+            return false;
+        }
+        if (!Objects.equals(this.localidad, other.localidad)) {
+            return false;
+        }
+        return true;
     }
     
+    @Override
+    public String toString() {
+        return "Direccion{" + "calle=" + calle + ", numero=" + numero + '}';
+    }  
     
 }

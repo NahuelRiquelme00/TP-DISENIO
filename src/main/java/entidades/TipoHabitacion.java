@@ -6,6 +6,7 @@
 package entidades;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.*;
 import org.joda.money.Money;
 
@@ -13,12 +14,61 @@ import org.joda.money.Money;
 @Table(name="tipo_habitacion")
 public class TipoHabitacion implements Serializable {
 
-	@Id
-	@Column(name="nombre")
-	String nombre;
-	
-	@Column(name="precio_actual", columnDefinition="bytea")
-	Money precioActual;
+    @Id
+    @Column(name="nombre")
+    String nombre;
+
+    @Column(name="precio_actual", columnDefinition="bytea")
+    Money precioActual;
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public Money getPrecioActual() {
+        return precioActual;
+    }
+
+    public void setPrecioActual(Money precioActual) {
+        this.precioActual = precioActual;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 59 * hash + Objects.hashCode(this.nombre);
+        hash = 59 * hash + Objects.hashCode(this.precioActual);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final TipoHabitacion other = (TipoHabitacion) obj;
+        if (!Objects.equals(this.nombre, other.nombre)) {
+            return false;
+        }
+        return Objects.equals(this.precioActual, other.precioActual);
+    }
+
+    @Override
+    public String toString() {
+        return "TipoHabitacion{" + "nombre=" + nombre + ", precioActual=" + precioActual + '}';
+    }
+    
+    
 	
 }
 

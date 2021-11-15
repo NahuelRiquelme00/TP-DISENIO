@@ -16,6 +16,7 @@ import javax.persistence.MappedSuperclass;
  */
 @MappedSuperclass
 public class Persona {
+    
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "id_direccion", referencedColumnName = "id_direccion")
     Direccion direccion;
@@ -39,7 +40,5 @@ public class Persona {
     public void setDireccion(Direccion direccion) {
         this.direccion = direccion;
     }
-    
-    
     
 }

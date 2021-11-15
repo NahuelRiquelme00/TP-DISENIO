@@ -6,7 +6,7 @@
 package entidades;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,7 +14,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -25,6 +24,7 @@ import javax.persistence.Table;
 @Entity
 @Table (name="provincia")
 public class Provincia implements Serializable {
+    
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column (name = "id_provincia")
@@ -32,9 +32,6 @@ public class Provincia implements Serializable {
     
     @Column (name = "nombre_provincia")
     String nombre;
-    
-//    @OneToMany(mappedBy= "provincia")
-//    List<Localidad> localidades;
     
     @ManyToOne
     @JoinColumn(name = "id_pais", referencedColumnName = "id_pais")
@@ -62,6 +59,39 @@ public class Provincia implements Serializable {
 
     public void setPais(Pais pais) {
         this.pais = pais;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 37 * hash + Objects.hashCode(this.idProvincia);
+        hash = 37 * hash + Objects.hashCode(this.nombre);
+        hash = 37 * hash + Objects.hashCode(this.pais);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Provincia other = (Provincia) obj;
+        if (!Objects.equals(this.nombre, other.nombre)) {
+            return false;
+        }
+        if (!Objects.equals(this.idProvincia, other.idProvincia)) {
+            return false;
+        }
+        if (!Objects.equals(this.pais, other.pais)) {
+            return false;
+        }
+        return true;
     }
 
     @Override
