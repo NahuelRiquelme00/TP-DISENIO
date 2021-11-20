@@ -7,6 +7,7 @@ package entidades;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -46,11 +47,12 @@ public class Estadia implements Serializable {
     @JoinColumn(name="id_persona_fisica", referencedColumnName="id_persona_fisica")
     PersonaFisica pasajeroResponsable;       
 
-    @ManyToMany(cascade=CascadeType.ALL)
-    @JoinTable(name="pasajero",
-    joinColumns=@JoinColumn(name="id_estadia",referencedColumnName="id_estadia"),
-    inverseJoinColumns=@JoinColumn(name="id_persona_fisica",referencedColumnName="id_persona_fisica"))
-    List<PersonaFisica> pasajeroAcompañante;      
+    @ManyToMany(cascade=CascadeType.MERGE)
+    @JoinTable(
+        name="pasajero",
+        joinColumns=@JoinColumn(name="id_estadia",referencedColumnName="id_estadia"),
+        inverseJoinColumns=@JoinColumn(name="id_persona_fisica",referencedColumnName="id_persona_fisica"))
+    List<PersonaFisica> pasajeroAcompañante = new ArrayList<>();      
 
     @OneToMany
     @JoinColumn(name="id_estadia", referencedColumnName="id_estadia")
@@ -130,6 +132,10 @@ public class Estadia implements Serializable {
 
     public void setPasajeroAcompañante(List<PersonaFisica> pasajeroAcompañante) {
         this.pasajeroAcompañante = pasajeroAcompañante;
+    }
+    
+    public void addPasajeroAcompañante(PersonaFisica p){
+        this.pasajeroAcompañante.add(p);
     }
 
     public List<ServicioPrestado> getServiciosPrestados() {

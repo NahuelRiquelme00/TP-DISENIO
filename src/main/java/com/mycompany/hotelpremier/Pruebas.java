@@ -5,20 +5,25 @@
  */
 package com.mycompany.hotelpremier;
 
+import dto.EstadiaDTO;
 import dto.PersonaFisicaDTO;
 import entidades.PersonaFisica;
+import gestores.GestorDeAlojamientos;
 import gestores.GestorDePersonas;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
  *
  * @author Nahuel Riquelme
  */
-public class App {
+public class Pruebas {
     private static final GestorDePersonas gestorPersonas = GestorDePersonas.getInstance();
+    private static final GestorDeAlojamientos gestorAlojamientos = GestorDeAlojamientos.getInstance();
     public static void main(String[] args) {
         
-        System.out.println(gestorPersonas.getAllPaises().get(0).getIdPais());
              
           /* Para listar pasajeros */
 //        System.out.println("Lista de personas:");
@@ -30,15 +35,6 @@ public class App {
 //        
 //        System.out.println("\nPersona con id: 9");
 //        System.out.println(p);
-//        
-//        System.out.println("\n Localidad:");
-//        System.out.println(p.getDireccion().getLocalidad());
-//        
-//        System.out.println("\n Provincia:");
-//        System.out.println(p.getDireccion().getLocalidad().getProvincia());
-//        
-//        System.out.println("\n Pais:");
-//        System.out.println(p.getDireccion().getLocalidad().getProvincia().getPais());
 
 
         /* Para crear un pasajero */
@@ -48,7 +44,17 @@ public class App {
 //                "departamento", "piso", 3000, 7,3,1,1);        
 //                gestorPersonas.createPersonaFisica(p); 
 //        }
-
+        
+        EstadiaDTO e = new EstadiaDTO();
+        e.setFechaInicio(LocalDate.now().toString());
+        e.setFechaFin(LocalDate.of(2021, 11, 29).toString());
+        e.setIdHabitacion(1);
+        e.setIdPasajeroResponsable(3);
+        List<Integer> idsPasajeroAcompañante = new ArrayList<>();
+        idsPasajeroAcompañante.add(4);
+        idsPasajeroAcompañante.add(5);
+        e.setIdsPasajeroAcompañante(idsPasajeroAcompañante);
+        gestorAlojamientos.createEstadia(e);
 
 
         /* Para modificar un pasajero */

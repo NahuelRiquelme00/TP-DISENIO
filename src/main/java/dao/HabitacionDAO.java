@@ -5,10 +5,26 @@
  */
 package dao;
 
+import daoImpl.exceptions.NonexistentEntityException;
+import entidades.Habitacion;
+import java.util.List;
+
 /**
  *
  * @author Nahuel Riquelme
  */
-public class HabitacionDAO {
+public interface HabitacionDAO {
+    
+    public void createHabitacion(Habitacion habitacion);
+    
+    public void updateHabitacion(Habitacion habitacion) throws NonexistentEntityException, Exception;
+    
+    public void deleteHabitacion(Integer id) throws NonexistentEntityException;
+    
+    public List<Habitacion> findHabitacionEntities();
+    
+    public Habitacion findHabitacion(Integer id);
+    
+    public void close();
     
 }

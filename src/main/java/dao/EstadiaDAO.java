@@ -5,10 +5,26 @@
  */
 package dao;
 
+import daoImpl.exceptions.NonexistentEntityException;
+import entidades.Estadia;
+import java.util.List;
+
 /**
  *
  * @author Nahuel Riquelme
  */
-public class EstadiaDAO {
+public interface EstadiaDAO {
+    
+    public void createEstadia(Estadia estadia);
+    
+    public void updateEstadia(Estadia estadia) throws NonexistentEntityException, Exception;
+    
+    public void deleteEstadia(Integer id) throws NonexistentEntityException;
+    
+    public Estadia findEstadia(Integer id);
+    
+    public List<Estadia> findEstadiaEntities();
+    
+    public void close();
     
 }

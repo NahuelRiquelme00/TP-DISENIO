@@ -27,14 +27,14 @@ public class Habitacion implements Serializable {
     @Column(name="capacidad")
     Integer capacidad;
 
-    @OneToMany(mappedBy="habitacion")
+    @OneToMany(fetch = FetchType.LAZY,mappedBy="habitacion")
     List<Estadia>estadias;
 
     @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name="tipo_habitacion", referencedColumnName="nombre")
     TipoHabitacion tipoHabitacion;
 
-    @OneToMany(mappedBy="habitacion")
+    @OneToMany(fetch = FetchType.LAZY,mappedBy="habitacion")
     List<PeriodoReserva> periodosReserva;
 
     public Habitacion() {
