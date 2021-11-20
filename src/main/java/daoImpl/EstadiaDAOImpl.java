@@ -14,10 +14,19 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import entidades.Factura;
 import entidades.Habitacion;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 
 /**
  *
@@ -247,5 +256,42 @@ public class EstadiaDAOImpl implements EstadiaDAO {
 //            em.close();
 //        }
 //    }
+    
+    public List<Estadia> getEstadiasEntreFechas(LocalDate fechaInicioGui, LocalDate fechaFinGui)
+    {
+        EntityManager em = getEntityManager();
+        
+        try 
+        {
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery cq = cb.createQuery();
+            Root r = cq.from(Estadia.class);
+            
+            // https://www.baeldung.com/hibernate-criteria-queries
+            
+            
+            // Ver realmente como salvarlo :(
+            
+            Long fechaInicioMillis = ZonedDateTime.of(fechaInicioGui, LocalTime.MIN, ZoneId.systemDefault()).toInstant().toEpochMilli();
+            Long fechaFinMillis = ZonedDateTime.of(fechaFinGui, LocalTime.MIN, ZoneId.systemDefault()).toInstant().toEpochMilli();
+            
+            Predicate[] conds = new Predicate[3];
+            conds[0] = cb.between(ZonedDateTime.of(r<LocalDate>.get("fechaInicio"), LocalTime.MIN, ZoneId.systemDefault()).toInstant().toEpochMilli(), fechaInicioMillis, fechaFinMillis);
+            
+            
+            
+            cq.select(r)where(conds);
+
+            // https://stackoverflow.com/questions/9449003/compare-date-entities-in-jpa-criteria-api
+            // predicates.add(builder.lessThanOrEqualTo(root.<Date>get("dateCreated"), param));
+            
+            Query q = em.createQuery(cq);
+            
+            
+            return q.getResultList();
+        } finally {
+            em.close();
+        }
+    }
     
 }

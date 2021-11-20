@@ -109,12 +109,7 @@ public class GestorDeAlojamientos {
     }
     
     
-    public List<Estadia> getEstadiasEntreFechas(LocalDate fechaInicioGui, LocalDate fechaFinGui)
-    {
-        
-        return null;
-    }
-    
+    // Mover a un eventual ReservaDAOImpl
     public List<PeriodoReserva> getPeriodosReservaEntreFechas(LocalDate fechaInicioGui, LocalDate fechaFinGui)
     {
         
@@ -123,11 +118,13 @@ public class GestorDeAlojamientos {
     
     public Object[][] llenarGrilla(LocalDate fechaInicioGui, LocalDate fechaFinGui)
     {
-        HabitacionDAO habitacionDAO = new  HabitacionDAOImpl();
+        HabitacionDAO habitacionDAO = new HabitacionDAOImpl();
+        EstadiaDAO estadiaDAO = new EstadiaDAOImpl();
+        //ReservaDAO reservaDAO = new ReservaDAOImpl();
         
         List<Habitacion> habitaciones = habitacionDAO.findHabitacionEntities();
-        List<Estadia> estadias = this.getEstadiasEntreFechas(fechaInicioGui, fechaFinGui);
-        List<PeriodoReserva> periodosReserva = this.getPeriodosReservaEntreFechas(fechaInicioGui, fechaFinGui);
+        List<Estadia> estadias = estadiaDAO.getEstadiasEntreFechas(fechaInicioGui, fechaFinGui);
+        //List<PeriodoReserva> periodosReserva = reservaDAO.getPeriodosReservaEntreFechas(fechaInicioGui, fechaFinGui);
           
      
         
