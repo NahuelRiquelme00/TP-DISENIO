@@ -15,6 +15,7 @@ import daoImpl.PersonaDAOImpl;
 import dto.EstadiaDTO;
 import entidades.Estadia;
 import entidades.Habitacion;
+import entidades.PeriodoReserva;
 import entidades.PersonaFisica;
 import entidades.TipoEstado;
 import java.time.LocalDate;
@@ -105,5 +106,31 @@ public class GestorDeAlojamientos {
     
     public void deleteEstadia(){
         
+    }
+    
+    
+    public List<Estadia> getEstadiasEntreFechas(LocalDate fechaInicioGui, LocalDate fechaFinGui)
+    {
+        
+        return null;
+    }
+    
+    public List<PeriodoReserva> getPeriodosReservaEntreFechas(LocalDate fechaInicioGui, LocalDate fechaFinGui)
+    {
+        
+        return null;
+    }
+    
+    public Object[][] llenarGrilla(LocalDate fechaInicioGui, LocalDate fechaFinGui)
+    {
+        HabitacionDAO habitacionDAO = new  HabitacionDAOImpl();
+        
+        List<Habitacion> habitaciones = habitacionDAO.findHabitacionEntities();
+        List<Estadia> estadias = this.getEstadiasEntreFechas(fechaInicioGui, fechaFinGui);
+        List<PeriodoReserva> periodosReserva = this.getPeriodosReservaEntreFechas(fechaInicioGui, fechaFinGui);
+          
+     
+        
+        return null;
     }
 }

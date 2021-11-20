@@ -29,7 +29,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         previousPane = this.getContentPane();
         switch(panel){
             case PANE_MENU_PRINCIPAL:
-                this.setContentPane(new PanelMenuPrincipal(this));
+                this.setContentPane(new PanelMostrarEstadoHabitacion());
+                //this.setContentPane(new PanelMenuPrincipal(this));
                 this.setTitle("Menú principal");
                 break;
             case PANE_GESTIONAR_PASAJEROS:
