@@ -40,7 +40,9 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
    //buscarHabitacionesAgrupadasPorTipoHabitacion();estos son las columnas
    //buscarTipoHabitacion();estos son los grupos
    
-    String[] habitaciones = new String[]{"H1", "H2", "H3", "H4", "H5", "H6", "H7", "H8", "H9", "H10", "H11", "H12", "H13", "H14", "H15", "H16", "H17", "H18", "H19", "H20", "H21", "H22", "H23", "H24", "H25", "H26", "H27", "H28", "H29", "H30", "H31", "H32", "H33", "H34", "H35", "H36", "H37", "H38", "H39", "H40", "H41", "H42", "H43", "H44", "H45", "H46", "H47", "H48"};
+   //http://www.java2s.com/Code/Java/Swing-Components/GroupableGroupHeaderExample.htm
+   
+   String[] habitaciones = new String[]{"H1", "H2", "H3", "H4", "H5", "H6", "H7", "H8", "H9", "H10", "H11", "H12", "H13", "H14", "H15", "H16", "H17", "H18", "H19", "H20", "H21", "H22", "H23", "H24", "H25", "H26", "H27", "H28", "H29", "H30", "H31", "H32", "H33", "H34", "H35", "H36", "H37", "H38", "H39", "H40", "H41", "H42", "H43", "H44", "H45", "H46", "H47", "H48"};
    
    modeloTabla.addColumn("Fecha");
    
@@ -216,6 +218,7 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
         modeloTabla = new DefaultTableModel();
         tablaEstadoHabitaciones.setModel(modeloTabla);
         tablaEstadoHabitaciones.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        tablaEstadoHabitaciones.setCellSelectionEnabled(true);
         panelDatosHabitaciones.setViewportView(tablaEstadoHabitaciones);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);

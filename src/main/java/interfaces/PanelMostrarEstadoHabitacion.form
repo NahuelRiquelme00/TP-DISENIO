@@ -281,6 +281,7 @@
               <Connection code="modeloTabla" type="code"/>
             </Property>
             <Property name="autoResizeMode" type="int" value="0"/>
+            <Property name="cellSelectionEnabled" type="boolean" value="true"/>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JTable() {&#xa;    protected JTableHeader createDefaultTableHeader() {&#xa;          return new GroupableTableHeader(columnModel);&#xa;    }&#xa;}"/>
