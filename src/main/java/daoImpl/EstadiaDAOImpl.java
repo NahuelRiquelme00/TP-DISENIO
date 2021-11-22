@@ -276,11 +276,11 @@ public class EstadiaDAOImpl implements EstadiaDAO {
             Long fechaFinMillis = ZonedDateTime.of(fechaFinGui, LocalTime.MIN, ZoneId.systemDefault()).toInstant().toEpochMilli();
             
             Predicate[] conds = new Predicate[3];
-            conds[0] = cb.between(ZonedDateTime.of(r<LocalDate>.get("fechaInicio"), LocalTime.MIN, ZoneId.systemDefault()).toInstant().toEpochMilli(), fechaInicioMillis, fechaFinMillis);
+           // conds[0] = cb.between(ZonedDateTime.of(r<LocalDate>.get("fechaInicio"), LocalTime.MIN, ZoneId.systemDefault()).toInstant().toEpochMilli(), fechaInicioMillis, fechaFinMillis);
             
             
             
-            cq.select(r)where(conds);
+            //cq.select(r)where(conds);
 
             // https://stackoverflow.com/questions/9449003/compare-date-entities-in-jpa-criteria-api
             // predicates.add(builder.lessThanOrEqualTo(root.<Date>get("dateCreated"), param));

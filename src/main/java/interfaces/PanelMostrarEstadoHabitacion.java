@@ -4,10 +4,22 @@
  */
 package interfaces;
 
+import dao.HabitacionDAO;
+import daoImpl.HabitacionDAOImpl;
+import entidades.Habitacion;
 import java.awt.Color;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumnModel;
+import misc.GroupableTableHeader;
+import misc.ColumnGroup;
 
 /**
  *
@@ -20,8 +32,58 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
      */
     public PanelMostrarEstadoHabitacion() {
         initComponents();
+        configurarTabla();
     }
 
+    private void configurarTabla() {
+        
+   //buscarHabitacionesAgrupadasPorTipoHabitacion();estos son las columnas
+   //buscarTipoHabitacion();estos son los grupos
+   
+    String[] habitaciones = new String[]{"H1", "H2", "H3", "H4", "H5", "H6", "H7", "H8", "H9", "H10", "H11", "H12", "H13", "H14", "H15", "H16", "H17", "H18", "H19", "H20", "H21", "H22", "H23", "H24", "H25", "H26", "H27", "H28", "H29", "H30", "H31", "H32", "H33", "H34", "H35", "H36", "H37", "H38", "H39", "H40", "H41", "H42", "H43", "H44", "H45", "H46", "H47", "H48"};
+   
+   modeloTabla.addColumn("Fecha");
+   
+   for(String h : habitaciones) {
+       modeloTabla.addColumn(h);
+   }
+    
+
+    TableColumnModel cm = tablaEstadoHabitaciones.getColumnModel();
+    ColumnGroup g_individualEstandar = new ColumnGroup("Individual Estándar");
+    
+    for(int i=1; i<=10; i++){
+    g_individualEstandar.add(cm.getColumn(i));
+    }
+    
+    ColumnGroup g_dobleEstandar = new ColumnGroup("Doble Estándar");
+    for(int i=11; i<=28; i++){
+    g_dobleEstandar.add(cm.getColumn(i));
+    }
+    
+    ColumnGroup g_dobleSuperior = new ColumnGroup("Doble Superior");
+    for(int i=29; i<=36; i++){
+    g_dobleSuperior.add(cm.getColumn(i));
+    }
+    
+    ColumnGroup g_superiorFamilyPlan = new ColumnGroup("Superior Family Plan");
+    for(int i=37; i<=46; i++){
+    g_superiorFamilyPlan.add(cm.getColumn(i));
+    }
+    
+    ColumnGroup g_suiteDoble = new ColumnGroup("Suite Doble");
+    for(int i=47; i<=48; i++){
+    g_suiteDoble.add(cm.getColumn(i));
+    }
+    
+    GroupableTableHeader header = (GroupableTableHeader)tablaEstadoHabitaciones.getTableHeader();
+    header.addColumnGroup(g_individualEstandar);
+    header.addColumnGroup(g_dobleEstandar);
+    header.addColumnGroup(g_dobleSuperior);
+    header.addColumnGroup(g_superiorFamilyPlan);
+    header.addColumnGroup(g_suiteDoble);
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -50,8 +112,14 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
         cuadVerde = new javax.swing.JLabel();
         cuadAzul = new javax.swing.JLabel();
         siguiente = new javax.swing.JButton();
-        PanelDatosHabitaciones = new javax.swing.JScrollPane();
-        jTable1 = new ColorGrilla();//new javax.swing.JTable();
+        panelDatosHabitaciones = new javax.swing.JScrollPane();
+        tablaEstadoHabitaciones = new javax.swing.JTable() {
+            protected JTableHeader createDefaultTableHeader() {
+                return new GroupableTableHeader(columnModel);
+            }
+        };
+
+        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         panelRangoFechas.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         panelRangoFechas.setLayout(new java.awt.GridBagLayout());
@@ -145,51 +213,22 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
             }
         });
 
-        PanelDatosHabitaciones.setBorder(null);
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {"11/20/2021", 0xFF0000, 0x63db18, 0x0000FF},
-                {"11/21/2021", 0xFF0000, 0x63db18, 0xFF0000},
-                {"11/22/2021", 0xFF0000, 0x63db18, 0xFFFF00},
-                {"11/23/2021", 0xFF0000, 0x63db18, 0xFF0000}
-            },
-            new String [] {
-                "Fecha", "H1", "H2", "H3"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        PanelDatosHabitaciones.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(0).setResizable(false);
-            jTable1.getColumnModel().getColumn(1).setResizable(false);
-            jTable1.getColumnModel().getColumn(2).setResizable(false);
-            jTable1.getColumnModel().getColumn(3).setResizable(false);
-        }
+        modeloTabla = new DefaultTableModel();
+        tablaEstadoHabitaciones.setModel(modeloTabla);
+        tablaEstadoHabitaciones.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        panelDatosHabitaciones.setViewportView(tablaEstadoHabitaciones);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(14, 14, 14)
+                .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
+                    .addComponent(panelRangoFechas, javax.swing.GroupLayout.PREFERRED_SIZE, 1070, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
+                    .addComponent(panelDatosHabitaciones, javax.swing.GroupLayout.PREFERRED_SIZE, 1070, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(cuadRojo)
                         .addGap(6, 6, 6)
@@ -209,11 +248,7 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
                         .addGap(491, 491, 491)
                         .addComponent(siguiente)
                         .addGap(11, 11, 11)
-                        .addComponent(cancelar))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(PanelDatosHabitaciones, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(panelRangoFechas, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 1070, Short.MAX_VALUE)))
-                .addGap(21, 21, 21))
+                        .addComponent(cancelar))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -225,8 +260,8 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addComponent(jLabel4)
                 .addGap(6, 6, 6)
-                .addComponent(PanelDatosHabitaciones, javax.swing.GroupLayout.PREFERRED_SIZE, 568, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(20, 20, 20)
+                .addComponent(panelDatosHabitaciones, javax.swing.GroupLayout.PREFERRED_SIZE, 568, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(6, 6, 6)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(1, 1, 1)
@@ -296,7 +331,6 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane PanelDatosHabitaciones;
     private javax.swing.JButton buscar;
     private javax.swing.JButton cancelar;
     private javax.swing.JLabel cuadAmarillo;
@@ -307,14 +341,16 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
     private com.toedter.calendar.JDateChooser dpFechaHasta;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JTable jTable1;
     private javax.swing.JLabel lblDisponible;
     private javax.swing.JLabel lblFechaDesde;
     private javax.swing.JLabel lblFechaHasta;
     private javax.swing.JLabel lblFueraDeServicio;
     private javax.swing.JLabel lblOcupada;
     private javax.swing.JLabel lblReservada;
+    private javax.swing.JScrollPane panelDatosHabitaciones;
     private javax.swing.JPanel panelRangoFechas;
     private javax.swing.JButton siguiente;
+    private javax.swing.JTable tablaEstadoHabitaciones;
+    private javax.swing.table.DefaultTableModel modeloTabla;
     // End of variables declaration//GEN-END:variables
 }

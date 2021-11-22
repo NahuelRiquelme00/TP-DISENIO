@@ -30,6 +30,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         switch(panel){
             case PANE_MENU_PRINCIPAL:
                 this.setContentPane(new PanelMostrarEstadoHabitacion());
+                this.setSize(1150,850);
                 //this.setContentPane(new PanelMenuPrincipal(this));
                 this.setTitle("Menú principal");
                 break;
@@ -42,7 +43,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 this.setTitle("Dar alta pasajero");
                 break;
             case PANE_OCUPAR_HABITACION:
-                this.setContentPane(new PanelOcuparHabitacion(this));
+                this.setContentPane(new PanelOcuparHabitacion(this));            
                 this.setTitle("Ocupar habitacion");
                 this.pack();
                 this.setLocationRelativeTo(null);
