@@ -263,30 +263,35 @@ public class EstadiaDAOImpl implements EstadiaDAO {
         
         try 
         {
+            // https://www.baeldung.com/hibernate-criteria-queries
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery cq = cb.createQuery();
-            Root r = cq.from(Estadia.class);
+            Root<Estadia> r = cq.from(Estadia.class);
             
-            // https://www.baeldung.com/hibernate-criteria-queries
-            
-            
-            // Ver realmente como salvarlo :(
-            
+            /*
             Long fechaInicioMillis = ZonedDateTime.of(fechaInicioGui, LocalTime.MIN, ZoneId.systemDefault()).toInstant().toEpochMilli();
             Long fechaFinMillis = ZonedDateTime.of(fechaFinGui, LocalTime.MIN, ZoneId.systemDefault()).toInstant().toEpochMilli();
-            
+             
             Predicate[] conds = new Predicate[3];
-           // conds[0] = cb.between(ZonedDateTime.of(r<LocalDate>.get("fechaInicio"), LocalTime.MIN, ZoneId.systemDefault()).toInstant().toEpochMilli(), fechaInicioMillis, fechaFinMillis);
+            conds[0] = cb.between(
+                ZonedDateTime.of(r<LocalDate>.get("fechaInicio"), LocalTime.MIN, ZoneId.systemDefault())
+                    .toInstant().toEpochMilli(), 
+                fechaInicioMillis, 
+                fechaFinMillis
+            );
+            */
             
-            
-            
-            //cq.select(r)where(conds);
-
             // https://stackoverflow.com/questions/9449003/compare-date-entities-in-jpa-criteria-api
-            // predicates.add(builder.lessThanOrEqualTo(root.<Date>get("dateCreated"), param));
+            Predicate[] conds = new Predicate[3];
+            conds[0] = cb.between(r.<LocalDate>get("fechaInicio"), fechaInicioGui, fechaFinGui);
+            conds[1] = cb.between(r.<LocalDate>get("fechaFin"), fechaInicioGui, fechaFinGui);
+            conds[2] = cb.and(
+                    cb.lessThan(r.<LocalDate>get("fechaInicio"), fechaInicioGui),
+                    cb.greaterThan(r.<LocalDate>get("fechaFin"), fechaFinGui)
+            );
             
+            cq.select(r).where(conds);
             Query q = em.createQuery(cq);
-            
             
             return q.getResultList();
         } finally {
