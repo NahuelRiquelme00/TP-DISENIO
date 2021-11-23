@@ -15,6 +15,11 @@ import javax.swing.table.TableCellRenderer;
  */
 public class ColorGrilla extends JTable
 {
+    public static final int COLOR_DISPONIBLE = 0x63db18;
+    public static final int COLOR_OCUPADA = 0xff0000;
+    public static final int COLOR_RESERVADA = 0xffff00;
+    public static final int COLOR_FUERA_DE_SERVICIO = 0x0000ff;
+    
     @Override
     public Component prepareRenderer(TableCellRenderer rend, int rowInd, int colInd)
     {

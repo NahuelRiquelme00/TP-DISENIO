@@ -21,7 +21,7 @@ public interface HabitacionDAO {
     
     public void deleteHabitacion(Integer id) throws NonexistentEntityException;
     
-    public List<Habitacion> findHabitacionEntities();
+    public List<Habitacion> getAllHabitaciones();
     
     public Habitacion findHabitacion(Integer id);
     

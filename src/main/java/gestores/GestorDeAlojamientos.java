@@ -12,13 +12,16 @@ import dao.ReservaDAO;
 import daoImpl.EstadiaDAOImpl;
 import daoImpl.HabitacionDAOImpl;
 import daoImpl.PersonaDAOImpl;
+import daoImpl.ReservaDAOImpl;
 import dto.EstadiaDTO;
 import entidades.Estadia;
 import entidades.Habitacion;
 import entidades.PeriodoReserva;
 import entidades.PersonaFisica;
 import entidades.TipoEstado;
+import interfaces.ColorGrilla;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -28,7 +31,10 @@ import java.util.logging.Logger;
  *
  * @author Nahuel Riquelme
  */
-public class GestorDeAlojamientos {
+public class GestorDeAlojamientos 
+{
+    public static final int CANT_HABITACIONES = 48;
+    
     private static GestorDeAlojamientos instance;
     private EstadiaDAO estadiaDAO;
     private HabitacionDAO habitacionDAO;
@@ -109,25 +115,86 @@ public class GestorDeAlojamientos {
     }
     
     
-    // Mover a un eventual ReservaDAOImpl
-    public List<PeriodoReserva> getPeriodosReservaEntreFechas(LocalDate fechaInicioGui, LocalDate fechaFinGui)
-    {
-        
-        return null;
-    }
-    
     public Object[][] llenarGrilla(LocalDate fechaInicioGui, LocalDate fechaFinGui)
     {
-        HabitacionDAO habitacionDAO = new HabitacionDAOImpl();
-        EstadiaDAO estadiaDAO = new EstadiaDAOImpl();
-        //ReservaDAO reservaDAO = new ReservaDAOImpl();
+        // Inicializar grilla con las fechas colocadas
+        int rangoFechas = (int) fechaInicioGui.until(fechaFinGui, ChronoUnit.DAYS) + 1;
+        Object[][] grilla = new Object[rangoFechas][CANT_HABITACIONES + 1]; 
         
-        List<Habitacion> habitaciones = habitacionDAO.findHabitacionEntities();
+        for (int i = 0; i < rangoFechas; i++)
+            grilla[i][0] = fechaInicioGui.plusDays(i);
+        
+        // Recuperar habitaciones, estadias y periodos de reserva
+        habitacionDAO = new HabitacionDAOImpl();
+        estadiaDAO = new EstadiaDAOImpl();
+        reservaDAO = new ReservaDAOImpl();
+        
+        List<Habitacion> habitaciones = habitacionDAO.getAllHabitaciones();
         List<Estadia> estadias = estadiaDAO.getEstadiasEntreFechas(fechaInicioGui, fechaFinGui);
-        //List<PeriodoReserva> periodosReserva = reservaDAO.getPeriodosReservaEntreFechas(fechaInicioGui, fechaFinGui);
+        List<PeriodoReserva> periodosReserva = reservaDAO.getPeriodosReservaEntreFechas(fechaInicioGui, fechaFinGui);
           
-     
+        // Loop principal SD
+        for (Habitacion hab : habitaciones)
+        {
+            this.completarEstadoEntre(grilla, hab, fechaInicioGui, fechaFinGui, fechaInicioGui, fechaFinGui, TipoEstado.DISPONIBLE);
+            
+            if (hab.getEstado() == TipoEstado.FUERA_DE_SERVICIO)
+                this.completarEstadoEntre(grilla, hab, fechaInicioGui, fechaFinGui, LocalDate.now(), fechaFinGui, TipoEstado.FUERA_DE_SERVICIO);
+            else
+            {
+                // "Contiene" del SD (¿cambiar el SD?)
+                for (PeriodoReserva perRes : periodosReserva)
+                    if (perRes.getHabitacion().equals(hab))
+                        this.completarEstadoEntre(grilla, hab, fechaInicioGui, fechaFinGui, perRes.getFechaInicio(), perRes.getFechaFin(), TipoEstado.RESERVADA);
+                
+                for (Estadia est : estadias)
+                    if (est.getHabitacion().equals(hab))
+                        this.completarEstadoEntre(grilla, hab, fechaInicioGui, fechaFinGui, est.getFechaInicio(), est.getFechaFin(), TipoEstado.OCUPADA);
+            }
+        }
         
-        return null;
+        return grilla;
+    }
+    
+    private void completarEstadoEntre(Object[][] grilla, Habitacion hab, LocalDate cotaInf, LocalDate cotaSup, LocalDate fechaDesde, LocalDate fechaHasta, TipoEstado estado)
+    {
+        int indIni = Math.max(
+            (int) cotaInf.until(fechaDesde, ChronoUnit.DAYS),   // Si fechaDesde < cotaInf, el resultado es (-)
+            0
+        );
+        int indFin = Math.min(                                  // No excederse del tamanio de la matriz
+            (int) cotaInf.until(fechaHasta, ChronoUnit.DAYS),
+            (int) cotaInf.until(cotaSup, ChronoUnit.DAYS)
+        );
+        int indHab = hab.getNumero();
+        
+        for (int i = indIni; i < indFin; i++)
+            grilla[i][indHab] = this.getColorGrilla(estado);
+    }
+    
+    private int getColorGrilla(TipoEstado est)
+    {
+        int res;
+        
+        switch(est)
+        {
+            case DISPONIBLE: 
+                res = ColorGrilla.COLOR_DISPONIBLE;
+                break;
+            case RESERVADA:
+                res = ColorGrilla.COLOR_RESERVADA;
+                break;
+            case OCUPADA:
+                res = ColorGrilla.COLOR_OCUPADA;
+                break;
+            case FUERA_DE_SERVICIO:
+                res = ColorGrilla.COLOR_FUERA_DE_SERVICIO;
+                break;
+            default: // No se deberia llegar aca
+                res = 0x000000;
+                break;
+        }
+        
+        return res;
     }
 }

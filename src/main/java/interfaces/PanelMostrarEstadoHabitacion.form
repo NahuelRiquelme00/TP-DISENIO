@@ -3,7 +3,7 @@
 <Form version="1.5" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <Properties>
     <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
-      <Color id="Cursor Por defecto"/>
+      <Color id="Default Cursor"/>
     </Property>
   </Properties>
   <AuxValues>
@@ -29,19 +29,19 @@
                   <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
                   <Component id="panelDatosHabitaciones" min="-2" pref="1070" max="-2" attributes="0"/>
                   <Group type="102" attributes="0">
-                      <Component id="cuadRojo" min="-2" max="-2" attributes="0"/>
+                      <Component id="cuadOcupada" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
                       <Component id="lblOcupada" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="26" pref="26" max="-2" attributes="0"/>
-                      <Component id="cuadAmarillo" min="-2" max="-2" attributes="0"/>
+                      <Component id="cuadReservada" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
                       <Component id="lblReservada" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="24" pref="24" max="-2" attributes="0"/>
-                      <Component id="cuadVerde" min="-2" max="-2" attributes="0"/>
+                      <Component id="cuadDisponible" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
                       <Component id="lblDisponible" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="32" pref="32" max="-2" attributes="0"/>
-                      <Component id="cuadAzul" min="-2" max="-2" attributes="0"/>
+                      <Component id="cuadFueraDeServicio" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
                       <Component id="lblFueraDeServicio" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="491" pref="491" max="-2" attributes="0"/>
@@ -68,7 +68,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <EmptySpace min="1" pref="1" max="-2" attributes="0"/>
-                      <Component id="cuadRojo" min="-2" max="-2" attributes="0"/>
+                      <Component id="cuadOcupada" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" attributes="0">
                       <EmptySpace min="8" pref="8" max="-2" attributes="0"/>
@@ -76,7 +76,7 @@
                   </Group>
                   <Group type="102" attributes="0">
                       <EmptySpace min="1" pref="1" max="-2" attributes="0"/>
-                      <Component id="cuadAmarillo" min="-2" max="-2" attributes="0"/>
+                      <Component id="cuadReservada" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" attributes="0">
                       <EmptySpace min="8" pref="8" max="-2" attributes="0"/>
@@ -84,7 +84,7 @@
                   </Group>
                   <Group type="102" attributes="0">
                       <EmptySpace min="1" pref="1" max="-2" attributes="0"/>
-                      <Component id="cuadVerde" min="-2" max="-2" attributes="0"/>
+                      <Component id="cuadDisponible" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" attributes="0">
                       <EmptySpace min="8" pref="8" max="-2" attributes="0"/>
@@ -92,7 +92,7 @@
                   </Group>
                   <Group type="102" attributes="0">
                       <EmptySpace min="1" pref="1" max="-2" attributes="0"/>
-                      <Component id="cuadAzul" min="-2" max="-2" attributes="0"/>
+                      <Component id="cuadFueraDeServicio" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" attributes="0">
                       <EmptySpace min="8" pref="8" max="-2" attributes="0"/>
@@ -207,7 +207,7 @@
         <Property name="text" type="java.lang.String" value="Reservada"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="cuadRojo">
+    <Component class="javax.swing.JLabel" name="cuadOcupada">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="0" green="0" red="ff" type="rgb"/>
@@ -221,7 +221,7 @@
         <Property name="text" type="java.lang.String" value="&#x25a0;"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="cuadAmarillo">
+    <Component class="javax.swing.JLabel" name="cuadReservada">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="0" green="ff" red="ff" type="rgb"/>
@@ -235,7 +235,7 @@
         <Property name="text" type="java.lang.String" value="&#x25a0;"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="cuadVerde">
+    <Component class="javax.swing.JLabel" name="cuadDisponible">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="18" green="db" red="63" type="rgb"/>
@@ -249,7 +249,7 @@
         <Property name="text" type="java.lang.String" value="&#x25a0;"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="cuadAzul">
+    <Component class="javax.swing.JLabel" name="cuadFueraDeServicio">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="ff" green="0" red="0" type="rgb"/>

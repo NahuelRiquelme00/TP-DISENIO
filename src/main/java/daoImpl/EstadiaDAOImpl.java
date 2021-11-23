@@ -15,18 +15,12 @@ import javax.persistence.criteria.Root;
 import entidades.Factura;
 import entidades.Habitacion;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 
 /**
  *
@@ -257,46 +251,42 @@ public class EstadiaDAOImpl implements EstadiaDAO {
 //        }
 //    }
     
+    @Override
     public List<Estadia> getEstadiasEntreFechas(LocalDate fechaInicioGui, LocalDate fechaFinGui)
     {
+        // https://www.baeldung.com/hibernate-criteria-queries
         EntityManager em = getEntityManager();
-        
-        try 
-        {
-            // https://www.baeldung.com/hibernate-criteria-queries
-            CriteriaBuilder cb = em.getCriteriaBuilder();
-            CriteriaQuery cq = cb.createQuery();
-            Root<Estadia> r = cq.from(Estadia.class);
-            
-            /*
-            Long fechaInicioMillis = ZonedDateTime.of(fechaInicioGui, LocalTime.MIN, ZoneId.systemDefault()).toInstant().toEpochMilli();
-            Long fechaFinMillis = ZonedDateTime.of(fechaFinGui, LocalTime.MIN, ZoneId.systemDefault()).toInstant().toEpochMilli();
-             
-            Predicate[] conds = new Predicate[3];
-            conds[0] = cb.between(
-                ZonedDateTime.of(r<LocalDate>.get("fechaInicio"), LocalTime.MIN, ZoneId.systemDefault())
-                    .toInstant().toEpochMilli(), 
-                fechaInicioMillis, 
-                fechaFinMillis
-            );
-            */
-            
-            // https://stackoverflow.com/questions/9449003/compare-date-entities-in-jpa-criteria-api
-            Predicate[] conds = new Predicate[3];
-            conds[0] = cb.between(r.<LocalDate>get("fechaInicio"), fechaInicioGui, fechaFinGui);
-            conds[1] = cb.between(r.<LocalDate>get("fechaFin"), fechaInicioGui, fechaFinGui);
-            conds[2] = cb.and(
-                    cb.lessThan(r.<LocalDate>get("fechaInicio"), fechaInicioGui),
-                    cb.greaterThan(r.<LocalDate>get("fechaFin"), fechaFinGui)
-            );
-            
-            cq.select(r).where(conds);
-            Query q = em.createQuery(cq);
-            
-            return q.getResultList();
-        } finally {
-            em.close();
-        }
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery cq = cb.createQuery();
+        Root<Estadia> r = cq.from(Estadia.class);
+
+        /*
+        Long fechaInicioMillis = ZonedDateTime.of(fechaInicioGui, LocalTime.MIN, ZoneId.systemDefault()).toInstant().toEpochMilli();
+        Long fechaFinMillis = ZonedDateTime.of(fechaFinGui, LocalTime.MIN, ZoneId.systemDefault()).toInstant().toEpochMilli();
+
+        Predicate[] conds = new Predicate[3];
+        conds[0] = cb.between(
+            ZonedDateTime.of(r<LocalDate>.get("fechaInicio"), LocalTime.MIN, ZoneId.systemDefault())
+                .toInstant().toEpochMilli(), 
+            fechaInicioMillis, 
+            fechaFinMillis
+        );
+        */
+
+        // https://stackoverflow.com/questions/9449003/compare-date-entities-in-jpa-criteria-api
+        Predicate[] conds = new Predicate[3];
+        conds[0] = cb.between(r.<LocalDate>get("fechaInicio"), fechaInicioGui, fechaFinGui);
+        conds[1] = cb.between(r.<LocalDate>get("fechaFin"), fechaInicioGui, fechaFinGui);
+        conds[2] = cb.and(
+                cb.lessThan(r.<LocalDate>get("fechaInicio"), fechaInicioGui),
+                cb.greaterThan(r.<LocalDate>get("fechaFin"), fechaFinGui)
+        );
+
+        cq.select(r).where(conds);
+        Query q = em.createQuery(cq);
+
+        em.close();
+
+        return q.getResultList();
     }
-    
 }

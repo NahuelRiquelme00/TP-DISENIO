@@ -7,6 +7,7 @@ package dao;
 
 import daoImpl.exceptions.NonexistentEntityException;
 import entidades.Estadia;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -25,6 +26,7 @@ public interface EstadiaDAO {
     
     public List<Estadia> findEstadiaEntities();
     
-    public void close();
+    public List<Estadia> getEstadiasEntreFechas(LocalDate fechaInicioGui, LocalDate fechaFinGui);
     
+    public void close();
 }

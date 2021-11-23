@@ -7,6 +7,7 @@ package interfaces;
 import dao.HabitacionDAO;
 import daoImpl.HabitacionDAOImpl;
 import entidades.Habitacion;
+import gestores.GestorDeAlojamientos;
 import java.awt.Color;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -109,10 +110,10 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
         lblDisponible = new javax.swing.JLabel();
         lblFueraDeServicio = new javax.swing.JLabel();
         lblReservada = new javax.swing.JLabel();
-        cuadRojo = new javax.swing.JLabel();
-        cuadAmarillo = new javax.swing.JLabel();
-        cuadVerde = new javax.swing.JLabel();
-        cuadAzul = new javax.swing.JLabel();
+        cuadOcupada = new javax.swing.JLabel();
+        cuadReservada = new javax.swing.JLabel();
+        cuadDisponible = new javax.swing.JLabel();
+        cuadFueraDeServicio = new javax.swing.JLabel();
         siguiente = new javax.swing.JButton();
         panelDatosHabitaciones = new javax.swing.JScrollPane();
         tablaEstadoHabitaciones = new javax.swing.JTable() {
@@ -188,25 +189,25 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
 
         lblReservada.setText("Reservada");
 
-        cuadRojo.setBackground(new java.awt.Color(255, 0, 0));
-        cuadRojo.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        cuadRojo.setForeground(new java.awt.Color(255, 0, 0));
-        cuadRojo.setText("■");
+        cuadOcupada.setBackground(new java.awt.Color(255, 0, 0));
+        cuadOcupada.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        cuadOcupada.setForeground(new java.awt.Color(255, 0, 0));
+        cuadOcupada.setText("■");
 
-        cuadAmarillo.setBackground(new java.awt.Color(255, 255, 0));
-        cuadAmarillo.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        cuadAmarillo.setForeground(new java.awt.Color(255, 255, 0));
-        cuadAmarillo.setText("■");
+        cuadReservada.setBackground(new java.awt.Color(255, 255, 0));
+        cuadReservada.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        cuadReservada.setForeground(new java.awt.Color(255, 255, 0));
+        cuadReservada.setText("■");
 
-        cuadVerde.setBackground(new java.awt.Color(99, 219, 24));
-        cuadVerde.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        cuadVerde.setForeground(new java.awt.Color(99, 219, 24));
-        cuadVerde.setText("■");
+        cuadDisponible.setBackground(new java.awt.Color(99, 219, 24));
+        cuadDisponible.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        cuadDisponible.setForeground(new java.awt.Color(99, 219, 24));
+        cuadDisponible.setText("■");
 
-        cuadAzul.setBackground(new java.awt.Color(0, 0, 255));
-        cuadAzul.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        cuadAzul.setForeground(new java.awt.Color(0, 0, 255));
-        cuadAzul.setText("■");
+        cuadFueraDeServicio.setBackground(new java.awt.Color(0, 0, 255));
+        cuadFueraDeServicio.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        cuadFueraDeServicio.setForeground(new java.awt.Color(0, 0, 255));
+        cuadFueraDeServicio.setText("■");
 
         siguiente.setText("Siguiente");
         siguiente.addActionListener(new java.awt.event.ActionListener() {
@@ -233,19 +234,19 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
                     .addComponent(jLabel4)
                     .addComponent(panelDatosHabitaciones, javax.swing.GroupLayout.PREFERRED_SIZE, 1070, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(cuadRojo)
+                        .addComponent(cuadOcupada)
                         .addGap(6, 6, 6)
                         .addComponent(lblOcupada)
                         .addGap(26, 26, 26)
-                        .addComponent(cuadAmarillo)
+                        .addComponent(cuadReservada)
                         .addGap(6, 6, 6)
                         .addComponent(lblReservada)
                         .addGap(24, 24, 24)
-                        .addComponent(cuadVerde)
+                        .addComponent(cuadDisponible)
                         .addGap(6, 6, 6)
                         .addComponent(lblDisponible)
                         .addGap(32, 32, 32)
-                        .addComponent(cuadAzul)
+                        .addComponent(cuadFueraDeServicio)
                         .addGap(6, 6, 6)
                         .addComponent(lblFueraDeServicio)
                         .addGap(491, 491, 491)
@@ -268,25 +269,25 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(1, 1, 1)
-                        .addComponent(cuadRojo))
+                        .addComponent(cuadOcupada))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(8, 8, 8)
                         .addComponent(lblOcupada))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(1, 1, 1)
-                        .addComponent(cuadAmarillo))
+                        .addComponent(cuadReservada))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(8, 8, 8)
                         .addComponent(lblReservada))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(1, 1, 1)
-                        .addComponent(cuadVerde))
+                        .addComponent(cuadDisponible))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(8, 8, 8)
                         .addComponent(lblDisponible))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(1, 1, 1)
-                        .addComponent(cuadAzul))
+                        .addComponent(cuadFueraDeServicio))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(8, 8, 8)
                         .addComponent(lblFueraDeServicio))
@@ -326,20 +327,27 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(null, "Rango de fechas inválido.", "Error", JOptionPane.ERROR_MESSAGE);
             lblFechaHasta.setForeground(Color.RED);
         }
+        else
+        {
+            GestorDeAlojamientos gesAl = GestorDeAlojamientos.getInstance();
+            
+            Object[][] datos = gesAl.llenarGrilla(ldFechaDesde, ldFechaHasta); // ¿Como llenar la tabla? xd
+        }
     }//GEN-LAST:event_buscarActionPerformed
 
     private void siguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_siguienteActionPerformed
-        // TODO add your handling code here:
+        
+        
     }//GEN-LAST:event_siguienteActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton buscar;
     private javax.swing.JButton cancelar;
-    private javax.swing.JLabel cuadAmarillo;
-    private javax.swing.JLabel cuadAzul;
-    private javax.swing.JLabel cuadRojo;
-    private javax.swing.JLabel cuadVerde;
+    private javax.swing.JLabel cuadDisponible;
+    private javax.swing.JLabel cuadFueraDeServicio;
+    private javax.swing.JLabel cuadOcupada;
+    private javax.swing.JLabel cuadReservada;
     private com.toedter.calendar.JDateChooser dpFechaDesde;
     private com.toedter.calendar.JDateChooser dpFechaHasta;
     private javax.swing.JLabel jLabel1;
@@ -356,4 +364,3 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
     private javax.swing.JTable tablaEstadoHabitaciones;
     private javax.swing.table.DefaultTableModel modeloTabla;
     // End of variables declaration//GEN-END:variables
-}

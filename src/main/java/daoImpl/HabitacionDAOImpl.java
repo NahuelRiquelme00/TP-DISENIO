@@ -197,7 +197,7 @@ public class HabitacionDAOImpl implements HabitacionDAO {
     }
 
     @Override
-    public List<Habitacion> findHabitacionEntities() {
+    public List<Habitacion> getAllHabitaciones() {
         return findHabitacionEntities(true, -1, -1);
     }
 
