@@ -300,9 +300,6 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
         
         LocalDate ldFechaDesde = null, ldFechaHasta = null;
         
-        System.out.println(dpFechaDesde.getDate());
-        System.out.println(dpFechaHasta.getDate());
-        
         if (dpFechaDesde.getDate() != null)
             ldFechaDesde = dpFechaDesde.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         if (dpFechaHasta.getDate() != null)
@@ -317,7 +314,7 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
             if (ldFechaHasta == null)
                 lblFechaHasta.setForeground(Color.RED);
         }
-            else if (ldFechaDesde.isBefore(LocalDate.now()))
+        else if (ldFechaDesde.isBefore(LocalDate.now()))
         {
             JOptionPane.showMessageDialog(null, "\"Fecha desde\" debe ser de hoy en adelante.", "Error", JOptionPane.ERROR_MESSAGE);
             lblFechaDesde.setForeground(Color.RED);
@@ -329,9 +326,16 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
         }
         else
         {
+            lblFechaDesde.setForeground(Color.BLACK);
+            lblFechaHasta.setForeground(Color.BLACK);
+
+            System.out.println("yay!");
+                
             GestorDeAlojamientos gesAl = GestorDeAlojamientos.getInstance();
             
-            Object[][] datos = gesAl.llenarGrilla(ldFechaDesde, ldFechaHasta); // ¿Como llenar la tabla? xd
+            for (Object[] col : gesAl.llenarGrilla(ldFechaDesde, ldFechaHasta)) 
+                modeloTabla.addRow(col);
+            modeloTabla.fireTableDataChanged();
         }
     }//GEN-LAST:event_buscarActionPerformed
 
@@ -364,3 +368,4 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
     private javax.swing.JTable tablaEstadoHabitaciones;
     private javax.swing.table.DefaultTableModel modeloTabla;
     // End of variables declaration//GEN-END:variables
+}
