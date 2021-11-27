@@ -13,7 +13,7 @@ import javax.swing.table.TableCellRenderer;
  *
  * @author Federico Pacheco
  */
-public class ColorGrilla extends JTable
+public class TablaColoreada extends JTable
 {
     public static final int COLOR_DISPONIBLE = 0x63db18;
     public static final int COLOR_OCUPADA = 0xff0000;

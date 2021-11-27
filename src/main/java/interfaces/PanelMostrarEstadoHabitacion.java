@@ -7,6 +7,7 @@ package interfaces;
 import dao.HabitacionDAO;
 import daoImpl.HabitacionDAOImpl;
 import entidades.Habitacion;
+import entidades.TipoHabitacion;
 import gestores.GestorDeAlojamientos;
 import java.awt.Color;
 import java.time.LocalDate;
@@ -36,55 +37,43 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
         configurarTabla();
     }
 
-    private void configurarTabla() {
-        
-   //buscarHabitacionesAgrupadasPorTipoHabitacion();estos son las columnas
-   //buscarTipoHabitacion();estos son los grupos
-   
-   //http://www.java2s.com/Code/Java/Swing-Components/GroupableGroupHeaderExample.htm
-   
-   String[] habitaciones = new String[]{"H1", "H2", "H3", "H4", "H5", "H6", "H7", "H8", "H9", "H10", "H11", "H12", "H13", "H14", "H15", "H16", "H17", "H18", "H19", "H20", "H21", "H22", "H23", "H24", "H25", "H26", "H27", "H28", "H29", "H30", "H31", "H32", "H33", "H34", "H35", "H36", "H37", "H38", "H39", "H40", "H41", "H42", "H43", "H44", "H45", "H46", "H47", "H48"};
-   
-   modeloTabla.addColumn("Fecha");
-   
-   for(String h : habitaciones) {
-       modeloTabla.addColumn(h);
-   }
-    
+    private void configurarTabla() 
+    {
+        //buscarHabitacionesAgrupadasPorTipoHabitacion();estos son las columnas
+        //buscarTipoHabitacion();estos son los grupos
 
-    TableColumnModel cm = tablaEstadoHabitaciones.getColumnModel();
-    ColumnGroup g_individualEstandar = new ColumnGroup("Individual Estándar");
-    
-    for(int i=1; i<=10; i++){
-    g_individualEstandar.add(cm.getColumn(i));
-    }
-    
-    ColumnGroup g_dobleEstandar = new ColumnGroup("Doble Estándar");
-    for(int i=11; i<=28; i++){
-    g_dobleEstandar.add(cm.getColumn(i));
-    }
-    
-    ColumnGroup g_dobleSuperior = new ColumnGroup("Doble Superior");
-    for(int i=29; i<=36; i++){
-    g_dobleSuperior.add(cm.getColumn(i));
-    }
-    
-    ColumnGroup g_superiorFamilyPlan = new ColumnGroup("Superior Family Plan");
-    for(int i=37; i<=46; i++){
-    g_superiorFamilyPlan.add(cm.getColumn(i));
-    }
-    
-    ColumnGroup g_suiteDoble = new ColumnGroup("Suite Doble");
-    for(int i=47; i<=48; i++){
-    g_suiteDoble.add(cm.getColumn(i));
-    }
-    
-    GroupableTableHeader header = (GroupableTableHeader)tablaEstadoHabitaciones.getTableHeader();
-    header.addColumnGroup(g_individualEstandar);
-    header.addColumnGroup(g_dobleEstandar);
-    header.addColumnGroup(g_dobleSuperior);
-    header.addColumnGroup(g_superiorFamilyPlan);
-    header.addColumnGroup(g_suiteDoble);
+        HabitacionDAO habDAO = new HabitacionDAOImpl();
+        List<Habitacion> habs = habDAO.getAllHabitaciones();
+
+        //http://www.java2s.com/Code/Java/Swing-Components/GroupableGroupHeaderExample.htm    
+        
+        modeloTabla.addColumn("Fecha");
+        for (int i = 0; i < habs.size(); i++) // Deben colocarse las columnas por anticipado
+            modeloTabla.addColumn("");
+        TableColumnModel colMod = tablaEstadoHabitaciones.getColumnModel();
+        GroupableTableHeader header = (GroupableTableHeader) tablaEstadoHabitaciones.getTableHeader();
+
+        int j = 1;
+        boolean hayHabsEnGr;  
+        for (TipoHabitacion tipHab : habDAO.getAllTiposHabitacion())
+        {
+            ColumnGroup colGr = new ColumnGroup(tipHab.getNombre());
+
+            hayHabsEnGr = false;
+            for (Habitacion hab : habs)
+            {
+                if (hab.getTipoHabitacion().equals(tipHab)) 
+                {
+                    colMod.getColumn(j).setHeaderValue("H" + hab.getNumero().toString()); // Cambiar nombre por "H(...)"
+                    colGr.add(colMod.getColumn(j));
+                    j++;
+                    hayHabsEnGr = true;
+                }
+            }
+
+            if (hayHabsEnGr)
+                header.addColumnGroup(colGr);
+        }
     }
     
     /**
@@ -116,7 +105,7 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
         cuadFueraDeServicio = new javax.swing.JLabel();
         siguiente = new javax.swing.JButton();
         panelDatosHabitaciones = new javax.swing.JScrollPane();
-        tablaEstadoHabitaciones = new javax.swing.JTable() {
+        tablaEstadoHabitaciones = new TablaColoreada() {
             protected JTableHeader createDefaultTableHeader() {
                 return new GroupableTableHeader(columnModel);
             }
@@ -328,9 +317,7 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
         {
             lblFechaDesde.setForeground(Color.BLACK);
             lblFechaHasta.setForeground(Color.BLACK);
-
-            System.out.println("yay!");
-                
+            
             GestorDeAlojamientos gesAl = GestorDeAlojamientos.getInstance();
             
             for (Object[] col : gesAl.llenarGrilla(ldFechaDesde, ldFechaHasta)) 

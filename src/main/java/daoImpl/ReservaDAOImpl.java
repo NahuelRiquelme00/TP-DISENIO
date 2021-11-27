@@ -48,7 +48,8 @@ public class ReservaDAOImpl implements ReservaDAO
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery cq = cb.createQuery();
             Root<PeriodoReserva> r = cq.from(PeriodoReserva.class);
-
+            
+            /*
             // https://stackoverflow.com/questions/9449003/compare-date-entities-in-jpa-criteria-api
             Predicate[] conds = new Predicate[3];
             conds[0] = cb.between(r.<LocalDate>get("fechaInicio"), fechaInicioGui, fechaFinGui);
@@ -57,8 +58,10 @@ public class ReservaDAOImpl implements ReservaDAO
                     cb.lessThan(r.<LocalDate>get("fechaInicio"), fechaInicioGui),
                     cb.greaterThan(r.<LocalDate>get("fechaFin"), fechaFinGui)
             );
-
+            
             cq.select(r).where(conds);
+            */
+            cq.select(r);
             Query q = em.createQuery(cq);
         
             return q.getResultList();

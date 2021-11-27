@@ -64,19 +64,19 @@ CREATE TABLE persona_fisica(
 INSERT INTO tipo_posicion_frente_IVA
 VALUES (DEFAULT, 'RESPONSABLE INSCRIPTO', 'A'),(DEFAULT, 'CONSUMIDOR FINAL', 'B'), (DEFAULT, 'MONOTRIBUTISTA', 'A'), (DEFAULT, 'SUJETO EXENTO', 'B'), (DEFAULT, 'EXTRANJERO', 'E');
 
-/*	   
+	   
 INSERT INTO persona_fisica
 VALUES (DEFAULT,
 		'DNI',
 		40587514,
 		'RIQUELME',
 		'NAHUEL',
-		'09-12-1999',
+		'1999-12-09',
 		'NAHUELRIQUIELME@GMAIL.COM',
 		'ESTUDIANTE',
 		'ARGENTINA',
 		'3425684598',
-	   	1,
+	   	null,
 	   	1);
 		
 INSERT INTO persona_fisica
@@ -85,12 +85,12 @@ VALUES (DEFAULT,
 		34227524,
 		'GOMEZ',
 		'ALEJANDRO',
-		'15-01-1988',
+		'1988-01-15',
 		'ALEJANDROGOMEZ@GMAIL.COM',
 		'ABOGADO',
 		'ARGENTINA',
 		'3425684547',
-	   	1,
+	   	null,
 	   	1);
 		
 INSERT INTO persona_fisica
@@ -99,12 +99,12 @@ VALUES (DEFAULT,
 		34227524,
 		'DE PAUL',
 		'RODRIGO',
-		'24-05-1994',
+		'1994-05-24',
 		'RODEPAUL@GMAIL.COM',
 		'PROFESOR',
 		'ARGENTINA',
 		'3425684315',
-	   	1,
+	   	null,
 	   	1);
 
 INSERT INTO persona_fisica
@@ -113,12 +113,12 @@ VALUES (DEFAULT,
 		34227524,
 		'MORENO',
 		'MARIANO',
-		'18-06-1987',
+		'1987-06-18',
 		'MARIANOMORENO@GMAIL.COM',
 		'ARQUITECTO',
 		'BOLIVIANO',
 		'3421472589',
-	   	1,
+	   	null,
 	   	1);
 
 INSERT INTO persona_fisica
@@ -127,14 +127,14 @@ VALUES (DEFAULT,
 		34227524,
 		'BECKER',
 		'ALISSON',
-		'02-10-1992',
+		'1992-10-02',
 		'ALIBECKER@GMAIL.COM',
 		'INGENIERO',
 		'BRASILERO',
 		'3429466178',
-	   	1,
+	   	null,
 	   	1);
-*/
+
 
 --DROP TABLE pais;
 --DROP TABLE provincia;

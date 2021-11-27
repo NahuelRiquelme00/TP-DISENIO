@@ -19,7 +19,7 @@ import entidades.Habitacion;
 import entidades.PeriodoReserva;
 import entidades.PersonaFisica;
 import entidades.TipoEstado;
-import interfaces.ColorGrilla;
+import interfaces.TablaColoreada;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -33,8 +33,6 @@ import java.util.logging.Logger;
  */
 public class GestorDeAlojamientos 
 {
-    public static final int CANT_HABITACIONES = 48;
-    
     private static GestorDeAlojamientos instance;
     private EstadiaDAO estadiaDAO;
     private HabitacionDAO habitacionDAO;
@@ -117,13 +115,6 @@ public class GestorDeAlojamientos
     
     public Object[][] llenarGrilla(LocalDate fechaInicioGui, LocalDate fechaFinGui)
     {
-        // Inicializar grilla con las fechas colocadas
-        int rangoFechas = (int) fechaInicioGui.until(fechaFinGui, ChronoUnit.DAYS) + 1;
-        Object[][] grilla = new Object[rangoFechas][CANT_HABITACIONES + 1]; 
-        
-        for (int i = 0; i < rangoFechas; i++)
-            grilla[i][0] = fechaInicioGui.plusDays(i);
-        
         // Recuperar habitaciones, estadias y periodos de reserva
         habitacionDAO = new HabitacionDAOImpl();
         estadiaDAO = new EstadiaDAOImpl();
@@ -132,6 +123,13 @@ public class GestorDeAlojamientos
         List<Habitacion> habitaciones = habitacionDAO.getAllHabitaciones();
         List<Estadia> estadias = estadiaDAO.getEstadiasEntreFechas(fechaInicioGui, fechaFinGui);
         List<PeriodoReserva> periodosReserva = reservaDAO.getPeriodosReservaEntreFechas(fechaInicioGui, fechaFinGui);
+        
+        // Inicializar grilla con las fechas colocadas
+        int rangoFechas = (int) fechaInicioGui.until(fechaFinGui, ChronoUnit.DAYS) + 1;
+        Object[][] grilla = new Object[rangoFechas][habitaciones.size() + 1]; 
+        
+        for (int i = 0; i < rangoFechas; i++)
+            grilla[i][0] = fechaInicioGui.plusDays(i);
           
         // Loop principal SD
         for (Habitacion hab : habitaciones)
@@ -144,11 +142,13 @@ public class GestorDeAlojamientos
             {
                 // "Contiene" del SD (¿cambiar el SD?)
                 for (PeriodoReserva perRes : periodosReserva)
-                    if (perRes.getHabitacion().equals(hab))
+                    //if (perRes.getHabitacion().equals(hab))
+                    if (perRes.getHabitacion().getNumero().equals(hab.getNumero()))
                         this.completarEstadoEntre(grilla, hab, fechaInicioGui, fechaFinGui, perRes.getFechaInicio(), perRes.getFechaFin(), TipoEstado.RESERVADA);
                 
                 for (Estadia est : estadias)
-                    if (est.getHabitacion().equals(hab))
+                    //if (est.getHabitacion().equals(hab))
+                    if (est.getHabitacion().getNumero().equals(hab.getNumero()))
                         this.completarEstadoEntre(grilla, hab, fechaInicioGui, fechaFinGui, est.getFechaInicio(), est.getFechaFin(), TipoEstado.OCUPADA);
             }
         }
@@ -163,8 +163,8 @@ public class GestorDeAlojamientos
             0
         );
         int indFin = Math.min(                                  // No excederse del tamanio de la matriz
-            (int) cotaInf.until(fechaHasta, ChronoUnit.DAYS),
-            (int) cotaInf.until(cotaSup, ChronoUnit.DAYS)
+            (int) cotaInf.until(fechaHasta, ChronoUnit.DAYS) + 1,
+            (int) cotaInf.until(cotaSup, ChronoUnit.DAYS) + 1
         );
         int indHab = hab.getNumero();
         
@@ -179,16 +179,16 @@ public class GestorDeAlojamientos
         switch(est)
         {
             case DISPONIBLE: 
-                res = ColorGrilla.COLOR_DISPONIBLE;
+                res = TablaColoreada.COLOR_DISPONIBLE;
                 break;
             case RESERVADA:
-                res = ColorGrilla.COLOR_RESERVADA;
+                res = TablaColoreada.COLOR_RESERVADA;
                 break;
             case OCUPADA:
-                res = ColorGrilla.COLOR_OCUPADA;
+                res = TablaColoreada.COLOR_OCUPADA;
                 break;
             case FUERA_DE_SERVICIO:
-                res = ColorGrilla.COLOR_FUERA_DE_SERVICIO;
+                res = TablaColoreada.COLOR_FUERA_DE_SERVICIO;
                 break;
             default: // No se deberia llegar aca
                 res = 0x000000;

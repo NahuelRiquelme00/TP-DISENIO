@@ -284,7 +284,7 @@
             <Property name="cellSelectionEnabled" type="boolean" value="true"/>
           </Properties>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JTable() {&#xa;    protected JTableHeader createDefaultTableHeader() {&#xa;          return new GroupableTableHeader(columnModel);&#xa;    }&#xa;}"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new TablaColoreada() {&#xa;    protected JTableHeader createDefaultTableHeader() {&#xa;        return new GroupableTableHeader(columnModel);&#xa;    }&#xa;}"/>
             <AuxValue name="JavaCodeGenerator_DeclarationPost" type="java.lang.String" value="private javax.swing.table.DefaultTableModel modeloTabla;"/>
             <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="modeloTabla = new DefaultTableModel();"/>
           </AuxValues>
