@@ -27,21 +27,26 @@ public class TablaColoreada extends JTable
     @Override
     public Component prepareRenderer(TableCellRenderer rend, int rowInd, int colInd)
     {
-        Component comp = super.prepareRenderer(rend, rowInd, colInd);
+        Component celda = super.prepareRenderer(rend, rowInd, colInd);
         Object val = getValueAt(rowInd, colInd);
         
         if (val != null && colInd > 0) 
         {
             color = new Color((int) val);
-            comp.setBackground(color);
-            comp.setForeground(color);
+            // https://stackoverflow.com/a/20472101
+            if (this.isRowSelected(rowInd) && this.isColumnSelected(colInd))
+                // https://docs.oracle.com/javase/7/docs/api/java/awt/Color.html#darker()
+                color = color.darker(); 
+                
+            celda.setBackground(color);
+            celda.setForeground(color);
         }
         else
         {      
-            comp.setBackground(Color.WHITE);
-            comp.setForeground(Color.BLACK);
+            celda.setBackground(Color.WHITE);
+            celda.setForeground(Color.BLACK);
         }
         
-        return comp;
+        return celda;
     }
 }

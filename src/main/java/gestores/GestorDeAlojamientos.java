@@ -128,18 +128,7 @@ public class GestorDeAlojamientos
         List<Habitacion> habitaciones = habitacionDAO.getAllHabitaciones();
         List<Estadia> estadias = estadiaDAO.getEstadiasEntreFechas(fechaInicioGui, fechaFinGui);
         List<PeriodoReserva> periodosReserva = reservaDAO.getPeriodosReservaEntreFechas(fechaInicioGui, fechaFinGui);
-        
-        System.out.println("---------------------\n" + periodosReserva);
-        
-        /*
-        // Inicializar grilla con las fechas colocadas
-        int cantDias = (int) fechaInicioGui.until(fechaFinGui, ChronoUnit.DAYS) + 1;
-        Object[][] grilla = new Object[cantDias][habitaciones.size() + 1]; 
-        
-        for (int i = 0; i < cantDias; i++)
-            grilla[i][0] = fechaInicioGui.plusDays(i);
-        */
-        
+       
         // Inicializar mapa de mapas con fechas colocadas
         int cantDias = (int) fechaInicioGui.until(fechaFinGui, ChronoUnit.DAYS) + 1;
         Map<LocalDate, HashMap<Integer, TipoEstado>> estadosHabitaciones = new HashMap<LocalDate, HashMap<Integer, TipoEstado>>(); 
@@ -149,29 +138,29 @@ public class GestorDeAlojamientos
         // Loop principal SD
         for (Habitacion hab : habitaciones)
         {
-            this.completarEstadoEntre(/*grilla*/estadosHabitaciones, hab, fechaInicioGui, fechaFinGui, fechaInicioGui, fechaFinGui, TipoEstado.DISPONIBLE);
+            this.completarEstadoEntre(estadosHabitaciones, hab, fechaInicioGui, fechaFinGui, fechaInicioGui, fechaFinGui, TipoEstado.DISPONIBLE);
             
             if (hab.getEstado() == TipoEstado.FUERA_DE_SERVICIO)
-                this.completarEstadoEntre(/*grilla*/estadosHabitaciones, hab, fechaInicioGui, fechaFinGui, LocalDate.now(), fechaFinGui, TipoEstado.FUERA_DE_SERVICIO);
+                this.completarEstadoEntre(estadosHabitaciones, hab, fechaInicioGui, fechaFinGui, LocalDate.now(), fechaFinGui, TipoEstado.FUERA_DE_SERVICIO);
             else
             {
                 // Cambiar "Contiene" del SD
                 for (PeriodoReserva perRes : periodosReserva)
                     //if (perRes.getHabitacion().equals(hab))
                     if (perRes.getHabitacion().getNumero().equals(hab.getNumero()))
-                        this.completarEstadoEntre(/*grilla*/estadosHabitaciones, hab, fechaInicioGui, fechaFinGui, perRes.getFechaInicio(), perRes.getFechaFin(), TipoEstado.RESERVADA);
+                        this.completarEstadoEntre(estadosHabitaciones, hab, fechaInicioGui, fechaFinGui, perRes.getFechaInicio(), perRes.getFechaFin(), TipoEstado.RESERVADA);
                 
                 for (Estadia est : estadias)
                     //if (est.getHabitacion().equals(hab))
                     if (est.getHabitacion().getNumero().equals(hab.getNumero()))
-                        this.completarEstadoEntre(/*grilla*/estadosHabitaciones, hab, fechaInicioGui, fechaFinGui, est.getFechaInicio(), est.getFechaFin(), TipoEstado.OCUPADA);
+                        this.completarEstadoEntre(estadosHabitaciones, hab, fechaInicioGui, fechaFinGui, est.getFechaInicio(), est.getFechaFin(), TipoEstado.OCUPADA);
             }
         }
         
         return /*grilla*/estadosHabitaciones;
     }
     
-    private void completarEstadoEntre(/*Object[][] grilla*/Map<LocalDate, HashMap<Integer, TipoEstado>> estadosHabitaciones, Habitacion hab, LocalDate cotaInf, LocalDate cotaSup, LocalDate fechaDesde, LocalDate fechaHasta, TipoEstado estado)
+    private void completarEstadoEntre(Map<LocalDate, HashMap<Integer, TipoEstado>> estadosHabitaciones, Habitacion hab, LocalDate cotaInf, LocalDate cotaSup, LocalDate fechaDesde, LocalDate fechaHasta, TipoEstado estado)
     {
         int indIni = Math.max(
             (int) cotaInf.until(fechaDesde, ChronoUnit.DAYS),   // Si fechaDesde < cotaInf, el resultado es (-)
@@ -182,43 +171,10 @@ public class GestorDeAlojamientos
             (int) cotaInf.until(cotaSup, ChronoUnit.DAYS) + 1
         );
         int indHab = hab.getNumero();
-        
-        /*
-        for (int i = indIni; i < indFin; i++)
-            grilla[i][indHab] = this.getColorGrilla(estado);
-        */
 
         for (int i = indIni; i < indFin; i++)
             estadosHabitaciones.get(cotaInf.plusDays(i)).put(hab.getNumero(), estado);
     }
-    
-    /*
-    private int getColorGrilla(TipoEstado est)
-    {
-        int res;
-        
-        switch(est)
-        {
-            case DISPONIBLE: 
-                res = TablaColoreada.COLOR_DISPONIBLE;
-                break;
-            case RESERVADA:
-                res = TablaColoreada.COLOR_RESERVADA;
-                break;
-            case OCUPADA:
-                res = TablaColoreada.COLOR_OCUPADA;
-                break;
-            case FUERA_DE_SERVICIO:
-                res = TablaColoreada.COLOR_FUERA_DE_SERVICIO;
-                break;
-            default: // No se deberia llegar aca
-                res = 0x000000;
-                break;
-        }
-        
-        return res;
-    }
-    */
     
     public List<Dupla<String, LinkedList<Integer>>> getTiposYHabitaciones()
     {

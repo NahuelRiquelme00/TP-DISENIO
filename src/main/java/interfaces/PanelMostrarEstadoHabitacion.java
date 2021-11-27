@@ -4,25 +4,19 @@
  */
 package interfaces;
 
-import dao.HabitacionDAO;
-import daoImpl.HabitacionDAOImpl;
-import entidades.Habitacion;
 import entidades.TipoEstado;
-import entidades.TipoHabitacion;
 import gestores.GestorDeAlojamientos;
 import java.awt.Color;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
@@ -36,71 +30,41 @@ import misc.Dupla;
  */
 public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
 
-    /**
-     * Creates new form PanelMostrarEstadoHabitacion
-     */
-    public PanelMostrarEstadoHabitacion() {
+    private boolean paraReservar; // Reservar: true; ocupar: false
+    
+    private GestorDeAlojamientos gesAl;
+    Map<LocalDate, HashMap<Integer, TipoEstado>> estadosHabitaciones;
+    
+    private List<Integer> idHabsTabla = null;
+    private List<LocalDate> fechasTabla = null;
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    
+    public PanelMostrarEstadoHabitacion(boolean paraReservar) 
+    {
         initComponents();
-        configurarTabla();
+        gesAl = GestorDeAlojamientos.getInstance();
+        this.paraReservar = paraReservar;
+        
+        armarTabla();
+        dcFechaDesde.setDate(new Date(System.currentTimeMillis()));
+        dcFechaHasta.setDate(new Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000)); // Fecha de hoy + 7 dias
+        this.completarTabla(LocalDate.now(), LocalDate.now().plusDays(7));
     }
 
-    private List<Integer> habsTabla = null;  
-    
-    private void configurarTabla() 
+    private void armarTabla() 
     {
-        /*
-        // ¿Es correcto que la gui "sepa" de las habitaciones, tipoHabitacion, ...?
-        
-        HabitacionDAO habDAO = new HabitacionDAOImpl();
-        List<Habitacion> habs = habDAO.getAllHabitaciones();
-
-        //http://www.java2s.com/Code/Java/Swing-Components/GroupableGroupHeaderExample.htm    
-     
-        habsTabla = new LinkedList<Integer>();
-        modeloTabla.addColumn("Fecha");
-        for (int i = 0; i < habs.size(); i++) // Deben colocarse las columnas por anticipado
-            modeloTabla.addColumn("");
-        TableColumnModel colMod = tablaEstadoHabitaciones.getColumnModel();
-        GroupableTableHeader header = (GroupableTableHeader) tablaEstadoHabitaciones.getTableHeader();
-
-        int j = 1;
-        boolean hayHabsEnGr;  
-        for (TipoHabitacion tipHab : habDAO.getAllTiposHabitacion())
-        {
-            ColumnGroup colGr = new ColumnGroup(tipHab.getNombre());
-
-            hayHabsEnGr = false;
-            for (Habitacion hab : habs)
-            {
-                if (hab.getTipoHabitacion().equals(tipHab)) 
-                {
-                    habsTabla.add(hab.getNumero());
-                    colMod.getColumn(j).setHeaderValue("H" + hab.getNumero()); // Cambiar nombre por "H(...)"
-                    colGr.add(colMod.getColumn(j));
-                    j++;
-                    hayHabsEnGr = true;
-                }
-            }
-
-            if (hayHabsEnGr)
-                header.addColumnGroup(colGr);
-        }
-        
-        */
-        
-        GestorDeAlojamientos gesAl = GestorDeAlojamientos.getInstance();
         List<Dupla<String, LinkedList<Integer>>> tiposYHabitaciones = gesAl.getTiposYHabitaciones();
         
         //http://www.java2s.com/Code/Java/Swing-Components/GroupableGroupHeaderExample.htm    
      
         // Columnas "H(...)"
-        habsTabla = new LinkedList<Integer>();
+        idHabsTabla = new LinkedList<Integer>();
         modeloTabla.addColumn("Fecha");
         for (Dupla<String, LinkedList<Integer>> d : tiposYHabitaciones) // (Tristemente) deben colocarse las columnas por anticipado 
         {
             for (Integer habNro : d.segundo) 
             {
-                habsTabla.add(habNro);
+                idHabsTabla.add(habNro);
                 modeloTabla.addColumn("H" + habNro);
             }
         }
@@ -124,18 +88,32 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
         }
     }
     
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    
     private Object[] getFila(Map<LocalDate, HashMap<Integer, TipoEstado>> estadosHabitaciones, LocalDate fecha)
     {
-        Object[] fila = new Object[habsTabla.size() + 1];
+        Object[] fila = new Object[idHabsTabla.size() + 1];
         
         // https://www.baeldung.com/java-datetimeformatter
         fila[0] = formatter.format(fecha);
-        for (int j = 0; j < habsTabla.size(); j++)
-            fila[j + 1] = this.getColorGrilla(estadosHabitaciones.get(fecha).get(habsTabla.get(j)));
+        for (int j = 0; j < idHabsTabla.size(); j++)
+            fila[j + 1] = this.getColorGrilla(estadosHabitaciones.get(fecha).get(idHabsTabla.get(j)));
         
         return fila;
+    }
+    
+    private void completarTabla(LocalDate fechaIni, LocalDate fechaFin)
+    {
+        fechasTabla = new LinkedList<LocalDate>();
+        
+        estadosHabitaciones = gesAl.getEstadosHabitaciones(fechaIni, fechaFin);
+        int cantDias = (int) fechaIni.until(fechaFin, ChronoUnit.DAYS) + 1;
+            
+        modeloTabla.setRowCount(0); // Eliminar datos anteriores
+        for (int i = 0; i < cantDias; i++)
+        {
+            modeloTabla.addRow(this.getFila(estadosHabitaciones, fechaIni.plusDays(i)));
+            fechasTabla.add(fechaIni.plusDays(i));
+        }
+        modeloTabla.fireTableDataChanged();
     }
     
     private int getColorGrilla(TipoEstado est)
@@ -164,6 +142,64 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
         return res;
     }
     
+    public boolean verificarDisponibilidad()
+    {
+        boolean disponibles;
+        
+        int[] filasSelec = tablaEstadoHabitaciones.getSelectedRows();
+        int[] colsSelec = tablaEstadoHabitaciones.getSelectedColumns(); 
+        
+        int i, iIni, iFin;
+        int j, jIni, jFin;
+      
+        // No contempla selecciones no contiguas :(
+        
+        // REFORMULAR
+        
+        if (filasSelec.length == 0 || colsSelec.length == 0)
+            disponibles = false;
+        else if (colsSelec.length == 1 && colsSelec[0] == 0)
+            disponibles = false;
+        else
+        {
+            iIni = filasSelec[0];
+            iFin = filasSelec[filasSelec.length - 1];
+        
+            // Evitar problemas con la col. de las fechas
+            if (colsSelec.length == 1)    
+                jIni = colsSelec[0];
+            else
+            {
+                if (colsSelec[0] == 0)
+                    jIni = colsSelec[1];
+                else
+                    jIni = colsSelec[0];
+            }   
+            jFin = colsSelec[colsSelec.length - 1]; 
+  
+            
+            TipoEstado est;
+            i = iIni;
+            disponibles = true;
+            while (i <= iFin && disponibles)
+            {
+                j = jIni;
+                while (j <= jFin && disponibles)
+                {
+                    est = estadosHabitaciones.get(fechasTabla.get(i)).get(idHabsTabla.get(j));
+                    if (!est.equals(TipoEstado.DISPONIBLE))
+                        disponibles = false;
+                    else
+                        j++;
+                }
+            
+                i++;
+            }
+        }
+             
+        return disponibles;
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -177,8 +213,8 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
         panelRangoFechas = new javax.swing.JPanel();
         lblFechaDesde = new javax.swing.JLabel();
         lblFechaHasta = new javax.swing.JLabel();
-        dpFechaDesde = new com.toedter.calendar.JDateChooser();
-        dpFechaHasta = new com.toedter.calendar.JDateChooser();
+        dcFechaDesde = new com.toedter.calendar.JDateChooser();
+        dcFechaHasta = new com.toedter.calendar.JDateChooser();
         buscar = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -220,7 +256,7 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(21, 110, 0, 0);
         panelRangoFechas.add(lblFechaHasta, gridBagConstraints);
 
-        dpFechaDesde.setDateFormatString("dd/MM/yyyy"); // custom
+        dcFechaDesde.setDateFormatString("dd/MM/yyyy"); // https://www.youtube.com/watch?v=kmZXUlp5F5Q
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
@@ -228,9 +264,9 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
         gridBagConstraints.ipadx = 85;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(21, 12, 16, 0);
-        panelRangoFechas.add(dpFechaDesde, gridBagConstraints);
+        panelRangoFechas.add(dcFechaDesde, gridBagConstraints);
 
-        dpFechaHasta.setDateFormatString("dd/MM/yyyy"); // custom
+        dcFechaHasta.setDateFormatString("dd/MM/yyyy"); // https://www.youtube.com/watch?v=kmZXUlp5F5Q
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 0;
@@ -238,7 +274,7 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
         gridBagConstraints.ipadx = 85;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(21, 18, 16, 0);
-        panelRangoFechas.add(dpFechaHasta, gridBagConstraints);
+        panelRangoFechas.add(dcFechaHasta, gridBagConstraints);
 
         buscar.setText("Buscar");
         buscar.addActionListener(new java.awt.event.ActionListener() {
@@ -297,10 +333,20 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
             }
         });
 
-        modeloTabla = new DefaultTableModel();
+        modeloTabla = new DefaultTableModel() { // https://stackoverflow.com/questions/1990817/how-to-make-a-jtable-non-editable
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         tablaEstadoHabitaciones.setModel(modeloTabla);
         tablaEstadoHabitaciones.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         tablaEstadoHabitaciones.setCellSelectionEnabled(true);
+        tablaEstadoHabitaciones.setRowHeight(25);
+        tablaEstadoHabitaciones.setSelectionBackground(new java.awt.Color(255, 255, 255));
+        tablaEstadoHabitaciones.setSelectionForeground(new java.awt.Color(0, 0, 0));
+        tablaEstadoHabitaciones.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        tablaEstadoHabitaciones.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         panelDatosHabitaciones.setViewportView(tablaEstadoHabitaciones);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -378,10 +424,10 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
         
         LocalDate ldFechaDesde = null, ldFechaHasta = null;
         
-        if (dpFechaDesde.getDate() != null)
-            ldFechaDesde = dpFechaDesde.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        if (dpFechaHasta.getDate() != null)
-            ldFechaHasta = dpFechaHasta.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        if (dcFechaDesde.getDate() != null)
+            ldFechaDesde = dcFechaDesde.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        if (dcFechaHasta.getDate() != null)
+            ldFechaHasta = dcFechaHasta.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         
         if (ldFechaDesde == null || ldFechaHasta == null)
         {
@@ -407,26 +453,19 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
             lblFechaDesde.setForeground(Color.BLACK);
             lblFechaHasta.setForeground(Color.BLACK);
             
-            GestorDeAlojamientos gesAl = GestorDeAlojamientos.getInstance();
-            
-            /*
-            for (Object[] col : gesAl.getEstadosHabitaciones(ldFechaDesde, ldFechaHasta)) 
-                modeloTabla.addRow(col);
-            modeloTabla.fireTableDataChanged();
-            */
-            
-            Map<LocalDate, HashMap<Integer, TipoEstado>> estadosHabitaciones = gesAl.getEstadosHabitaciones(ldFechaDesde, ldFechaHasta);
-            int cantDias = (int) ldFechaDesde.until(ldFechaHasta, ChronoUnit.DAYS) + 1;
-            
-            modeloTabla.setRowCount(0); // Eliminar datos anteriores
-            for (int i = 0; i < cantDias; i++)
-                modeloTabla.addRow(this.getFila(estadosHabitaciones, ldFechaDesde.plusDays(i)));
-            modeloTabla.fireTableDataChanged();
+            this.completarTabla(ldFechaDesde, ldFechaHasta);
         }
     }//GEN-LAST:event_buscarActionPerformed
 
     private void siguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_siguienteActionPerformed
         
+        if (paraReservar)
+            if (!this.verificarDisponibilidad())
+                JOptionPane.showMessageDialog(null, "No todas las habitaciones están disponibles en el rango de fechas seleccionado.", "Error", JOptionPane.ERROR_MESSAGE);
+        else
+        {
+                    
+        }       
         
     }//GEN-LAST:event_siguienteActionPerformed
 
@@ -438,8 +477,8 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
     private javax.swing.JLabel cuadFueraDeServicio;
     private javax.swing.JLabel cuadOcupada;
     private javax.swing.JLabel cuadReservada;
-    private com.toedter.calendar.JDateChooser dpFechaDesde;
-    private com.toedter.calendar.JDateChooser dpFechaHasta;
+    private com.toedter.calendar.JDateChooser dcFechaDesde;
+    private com.toedter.calendar.JDateChooser dcFechaHasta;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel lblDisponible;
