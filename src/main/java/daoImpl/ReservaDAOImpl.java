@@ -40,25 +40,25 @@ public class ReservaDAOImpl implements ReservaDAO
     @Override
     public List<PeriodoReserva> getPeriodosReservaEntreFechas(LocalDate fechaInicioGui, LocalDate fechaFinGui) 
     {
-        // https://www.baeldung.com/hibernate-criteria-queries
         EntityManager em = getEntityManager();
         
         try
         {
+            // https://www.baeldung.com/hibernate-criteria-queries
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery cq = cb.createQuery();
             Root<PeriodoReserva> r = cq.from(PeriodoReserva.class);
-
+            
             // https://stackoverflow.com/questions/9449003/compare-date-entities-in-jpa-criteria-api
             Predicate[] conds = new Predicate[3];
             conds[0] = cb.between(r.<LocalDate>get("fechaInicio"), fechaInicioGui, fechaFinGui);
             conds[1] = cb.between(r.<LocalDate>get("fechaFin"), fechaInicioGui, fechaFinGui);
             conds[2] = cb.and(
-                    cb.lessThan(r.<LocalDate>get("fechaInicio"), fechaInicioGui),
-                    cb.greaterThan(r.<LocalDate>get("fechaFin"), fechaFinGui)
+                cb.lessThan(r.<LocalDate>get("fechaInicio"), fechaInicioGui),
+                cb.greaterThan(r.<LocalDate>get("fechaFin"), fechaFinGui)
             );
 
-            cq.select(r).where(conds);
+            cq.select(r).where(cb.or(conds));
             Query q = em.createQuery(cq);
         
             return q.getResultList();

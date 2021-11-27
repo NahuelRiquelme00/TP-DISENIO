@@ -7,6 +7,7 @@ package dao;
 
 import daoImpl.exceptions.NonexistentEntityException;
 import entidades.Habitacion;
+import entidades.TipoHabitacion;
 import java.util.List;
 
 /**
@@ -24,6 +25,8 @@ public interface HabitacionDAO {
     public List<Habitacion> getAllHabitaciones();
     
     public Habitacion findHabitacion(Integer id);
+    
+    public List<TipoHabitacion> getAllTiposHabitacion();
     
     public void close();
     

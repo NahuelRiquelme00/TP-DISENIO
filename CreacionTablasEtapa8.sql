@@ -171,13 +171,13 @@ CREATE TABLE usuario(
 
 INSERT INTO tipo_habitacion VALUES ('Individual Estándar',null),('Doble Estándar',null),('Doble Superior',null),('Superior Family Plan',null),('Suite Doble',null);
 
-INSERT INTO habitacion VALUES (1,'Disponible',1,'Individual Estándar'),(2,'Reservada',2,'Doble Estándar'),(3,'Ocupada',2,'Doble Superior'),(4,'Fuera de servicio',5,'Superior Family Plan');
+INSERT INTO habitacion VALUES (1,'DISPONIBLE',1,'Individual Estándar'),(2,'RESERVADA',2,'Doble Estándar'),(3,'OCUPADA',2,'Doble Superior'),(4,'FUERA_DE_SERVICIO',5,'Superior Family Plan');
 
 INSERT INTO estadia VALUES (1,'2021-12-15','2021-12-20',null,null,null,1,1,null),(2,'2021-12-15','2021-12-20',null,null,null,2,2,null),(3,'2021-12-15','2021-12-20',null,null,null,3,3,null),(4,'2021-12-15','2021-12-20',null,null,null,4,4,null);
 
 INSERT INTO reserva VALUES (1,'NAHUEL','RIQUELME',1),(2,'ALEJANDRO','GOMEZ',2),(3,'RODRIGO','DE PAUL',3),(4,'MARIANO','MORENO',4);
 
-INSERT INTO periodo_reserva VALUES (1,'2021-12-15','2021-12-20',1,1),(2,'2021-12-15','2021-12-20',2,2),(3,'2021-12-15','2021-12-20',3,3),(4,'2021-12-15','2021-12-20',4,4);
+INSERT INTO periodo_reserva VALUES (1,'2021-12-21','2021-12-25',1,1),(2,'2021-12-21','2021-12-25',2,2),(3,'2021-12-21','2021-12-25',3,3),(4,'2021-12-21','2021-12-25',4,4);
 
 
 

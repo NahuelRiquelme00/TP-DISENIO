@@ -19,13 +19,18 @@ import entidades.Habitacion;
 import entidades.PeriodoReserva;
 import entidades.PersonaFisica;
 import entidades.TipoEstado;
-import interfaces.ColorGrilla;
+import entidades.TipoHabitacion;
+import interfaces.TablaColoreada;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import misc.Dupla;
 
 /**
  *
@@ -33,8 +38,6 @@ import java.util.logging.Logger;
  */
 public class GestorDeAlojamientos 
 {
-    public static final int CANT_HABITACIONES = 48;
-    
     private static GestorDeAlojamientos instance;
     private EstadiaDAO estadiaDAO;
     private HabitacionDAO habitacionDAO;
@@ -115,15 +118,8 @@ public class GestorDeAlojamientos
     }
     
     
-    public Object[][] llenarGrilla(LocalDate fechaInicioGui, LocalDate fechaFinGui)
+    public Map<LocalDate, HashMap<Integer, TipoEstado>>/*Object[][] llenarGrilla*/getEstadosHabitaciones(LocalDate fechaInicioGui, LocalDate fechaFinGui)
     {
-        // Inicializar grilla con las fechas colocadas
-        int rangoFechas = (int) fechaInicioGui.until(fechaFinGui, ChronoUnit.DAYS) + 1;
-        Object[][] grilla = new Object[rangoFechas][CANT_HABITACIONES + 1]; 
-        
-        for (int i = 0; i < rangoFechas; i++)
-            grilla[i][0] = fechaInicioGui.plusDays(i);
-        
         // Recuperar habitaciones, estadias y periodos de reserva
         habitacionDAO = new HabitacionDAOImpl();
         estadiaDAO = new EstadiaDAOImpl();
@@ -132,46 +128,71 @@ public class GestorDeAlojamientos
         List<Habitacion> habitaciones = habitacionDAO.getAllHabitaciones();
         List<Estadia> estadias = estadiaDAO.getEstadiasEntreFechas(fechaInicioGui, fechaFinGui);
         List<PeriodoReserva> periodosReserva = reservaDAO.getPeriodosReservaEntreFechas(fechaInicioGui, fechaFinGui);
-          
+        
+        System.out.println("---------------------\n" + periodosReserva);
+        
+        /*
+        // Inicializar grilla con las fechas colocadas
+        int cantDias = (int) fechaInicioGui.until(fechaFinGui, ChronoUnit.DAYS) + 1;
+        Object[][] grilla = new Object[cantDias][habitaciones.size() + 1]; 
+        
+        for (int i = 0; i < cantDias; i++)
+            grilla[i][0] = fechaInicioGui.plusDays(i);
+        */
+        
+        // Inicializar mapa de mapas con fechas colocadas
+        int cantDias = (int) fechaInicioGui.until(fechaFinGui, ChronoUnit.DAYS) + 1;
+        Map<LocalDate, HashMap<Integer, TipoEstado>> estadosHabitaciones = new HashMap<LocalDate, HashMap<Integer, TipoEstado>>(); 
+        for (int i = 0; i < cantDias; i++)
+            estadosHabitaciones.put(fechaInicioGui.plusDays(i), new HashMap());
+        
         // Loop principal SD
         for (Habitacion hab : habitaciones)
         {
-            this.completarEstadoEntre(grilla, hab, fechaInicioGui, fechaFinGui, fechaInicioGui, fechaFinGui, TipoEstado.DISPONIBLE);
+            this.completarEstadoEntre(/*grilla*/estadosHabitaciones, hab, fechaInicioGui, fechaFinGui, fechaInicioGui, fechaFinGui, TipoEstado.DISPONIBLE);
             
             if (hab.getEstado() == TipoEstado.FUERA_DE_SERVICIO)
-                this.completarEstadoEntre(grilla, hab, fechaInicioGui, fechaFinGui, LocalDate.now(), fechaFinGui, TipoEstado.FUERA_DE_SERVICIO);
+                this.completarEstadoEntre(/*grilla*/estadosHabitaciones, hab, fechaInicioGui, fechaFinGui, LocalDate.now(), fechaFinGui, TipoEstado.FUERA_DE_SERVICIO);
             else
             {
-                // "Contiene" del SD (¿cambiar el SD?)
+                // Cambiar "Contiene" del SD
                 for (PeriodoReserva perRes : periodosReserva)
-                    if (perRes.getHabitacion().equals(hab))
-                        this.completarEstadoEntre(grilla, hab, fechaInicioGui, fechaFinGui, perRes.getFechaInicio(), perRes.getFechaFin(), TipoEstado.RESERVADA);
+                    //if (perRes.getHabitacion().equals(hab))
+                    if (perRes.getHabitacion().getNumero().equals(hab.getNumero()))
+                        this.completarEstadoEntre(/*grilla*/estadosHabitaciones, hab, fechaInicioGui, fechaFinGui, perRes.getFechaInicio(), perRes.getFechaFin(), TipoEstado.RESERVADA);
                 
                 for (Estadia est : estadias)
-                    if (est.getHabitacion().equals(hab))
-                        this.completarEstadoEntre(grilla, hab, fechaInicioGui, fechaFinGui, est.getFechaInicio(), est.getFechaFin(), TipoEstado.OCUPADA);
+                    //if (est.getHabitacion().equals(hab))
+                    if (est.getHabitacion().getNumero().equals(hab.getNumero()))
+                        this.completarEstadoEntre(/*grilla*/estadosHabitaciones, hab, fechaInicioGui, fechaFinGui, est.getFechaInicio(), est.getFechaFin(), TipoEstado.OCUPADA);
             }
         }
         
-        return grilla;
+        return /*grilla*/estadosHabitaciones;
     }
     
-    private void completarEstadoEntre(Object[][] grilla, Habitacion hab, LocalDate cotaInf, LocalDate cotaSup, LocalDate fechaDesde, LocalDate fechaHasta, TipoEstado estado)
+    private void completarEstadoEntre(/*Object[][] grilla*/Map<LocalDate, HashMap<Integer, TipoEstado>> estadosHabitaciones, Habitacion hab, LocalDate cotaInf, LocalDate cotaSup, LocalDate fechaDesde, LocalDate fechaHasta, TipoEstado estado)
     {
         int indIni = Math.max(
             (int) cotaInf.until(fechaDesde, ChronoUnit.DAYS),   // Si fechaDesde < cotaInf, el resultado es (-)
             0
         );
-        int indFin = Math.min(                                  // No excederse del tamanio de la matriz
-            (int) cotaInf.until(fechaHasta, ChronoUnit.DAYS),
-            (int) cotaInf.until(cotaSup, ChronoUnit.DAYS)
+        int indFin = Math.min(                                  // No excederse del tamanio
+            (int) cotaInf.until(fechaHasta, ChronoUnit.DAYS) + 1,
+            (int) cotaInf.until(cotaSup, ChronoUnit.DAYS) + 1
         );
         int indHab = hab.getNumero();
         
+        /*
         for (int i = indIni; i < indFin; i++)
             grilla[i][indHab] = this.getColorGrilla(estado);
+        */
+
+        for (int i = indIni; i < indFin; i++)
+            estadosHabitaciones.get(cotaInf.plusDays(i)).put(hab.getNumero(), estado);
     }
     
+    /*
     private int getColorGrilla(TipoEstado est)
     {
         int res;
@@ -179,16 +200,16 @@ public class GestorDeAlojamientos
         switch(est)
         {
             case DISPONIBLE: 
-                res = ColorGrilla.COLOR_DISPONIBLE;
+                res = TablaColoreada.COLOR_DISPONIBLE;
                 break;
             case RESERVADA:
-                res = ColorGrilla.COLOR_RESERVADA;
+                res = TablaColoreada.COLOR_RESERVADA;
                 break;
             case OCUPADA:
-                res = ColorGrilla.COLOR_OCUPADA;
+                res = TablaColoreada.COLOR_OCUPADA;
                 break;
             case FUERA_DE_SERVICIO:
-                res = ColorGrilla.COLOR_FUERA_DE_SERVICIO;
+                res = TablaColoreada.COLOR_FUERA_DE_SERVICIO;
                 break;
             default: // No se deberia llegar aca
                 res = 0x000000;
@@ -196,5 +217,29 @@ public class GestorDeAlojamientos
         }
         
         return res;
+    }
+    */
+    
+    public List<Dupla<String, LinkedList<Integer>>> getTiposYHabitaciones()
+    {
+        HabitacionDAO habDAO = new HabitacionDAOImpl();
+        List<Habitacion> habs = habDAO.getAllHabitaciones();
+        List<TipoHabitacion> tiposHab = habDAO.getAllTiposHabitacion();
+        
+        List<Dupla<String, LinkedList<Integer>>> tiposYHabitaciones = new LinkedList<Dupla<String, LinkedList<Integer>>>();
+        
+        for (TipoHabitacion t : tiposHab)
+        {
+            Dupla<String, LinkedList<Integer>> d = 
+                new Dupla<String, LinkedList<Integer>>(t.getNombre(), new LinkedList<Integer>());
+        
+            for (Habitacion hab : habs)
+                if (hab.getTipoHabitacion().equals(t)) 
+                    d.segundo.add(hab.getNumero());
+            
+            tiposYHabitaciones.add(d);
+        }
+        
+        return tiposYHabitaciones;
     }
 }
