@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<Form version="1.5" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+<Form version="1.6" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <Properties>
     <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
       <Color id="Default Cursor"/>
@@ -134,10 +134,10 @@
             </Constraint>
           </Constraints>
         </Component>
-        <Component class="com.toedter.calendar.JDateChooser" name="dpFechaDesde">
+        <Component class="com.toedter.calendar.JDateChooser" name="dcFechaDesde">
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new com.toedter.calendar.JDateChooser()"/>
-            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="dpFechaDesde.setDateFormatString(&quot;dd/MM/yyyy&quot;); // custom"/>
+            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="dcFechaDesde.setDateFormatString(&quot;dd/MM/yyyy&quot;); // https://www.youtube.com/watch?v=kmZXUlp5F5Q"/>
           </AuxValues>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
@@ -145,10 +145,10 @@
             </Constraint>
           </Constraints>
         </Component>
-        <Component class="com.toedter.calendar.JDateChooser" name="dpFechaHasta">
+        <Component class="com.toedter.calendar.JDateChooser" name="dcFechaHasta">
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new com.toedter.calendar.JDateChooser()"/>
-            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="dpFechaHasta.setDateFormatString(&quot;dd/MM/yyyy&quot;); // custom"/>
+            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="dcFechaHasta.setDateFormatString(&quot;dd/MM/yyyy&quot;); // https://www.youtube.com/watch?v=kmZXUlp5F5Q"/>
           </AuxValues>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
@@ -287,11 +287,22 @@
             </Property>
             <Property name="autoResizeMode" type="int" value="0"/>
             <Property name="cellSelectionEnabled" type="boolean" value="true"/>
+            <Property name="rowHeight" type="int" value="25"/>
+            <Property name="selectionBackground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="ff" green="ff" red="ff" type="rgb"/>
+            </Property>
+            <Property name="selectionForeground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="0" green="0" red="0" type="rgb"/>
+            </Property>
+            <Property name="selectionMode" type="int" value="2"/>
+            <Property name="selectionModel" type="javax.swing.ListSelectionModel" editor="org.netbeans.modules.form.editors2.JTableSelectionModelEditor">
+              <JTableSelectionModel selectionMode="2"/>
+            </Property>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new TablaColoreada() {&#xa;    protected JTableHeader createDefaultTableHeader() {&#xa;        return new GroupableTableHeader(columnModel);&#xa;    }&#xa;}"/>
             <AuxValue name="JavaCodeGenerator_DeclarationPost" type="java.lang.String" value="private javax.swing.table.DefaultTableModel modeloTabla;"/>
-            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="modeloTabla = new DefaultTableModel();"/>
+            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="modeloTabla = new DefaultTableModel() { // https://stackoverflow.com/questions/1990817/how-to-make-a-jtable-non-editable&#xa;    @Override&#xa;    public boolean isCellEditable(int row, int column) {&#xa;       return false;&#xa;    }&#xa;};"/>
           </AuxValues>
         </Component>
       </SubComponents>
