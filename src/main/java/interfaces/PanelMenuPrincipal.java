@@ -180,6 +180,7 @@ public class PanelMenuPrincipal extends javax.swing.JPanel {
 
     private void jButtonFacturarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFacturarActionPerformed
         // TODO add your handling code here:
+        frame.cambiarPanel(VentanaPrincipal.PANE_SELECCIONAR_RESPONSABLE);
     }//GEN-LAST:event_jButtonFacturarActionPerformed
 
     private void jButtonIngresarPagoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonIngresarPagoActionPerformed
