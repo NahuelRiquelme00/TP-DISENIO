@@ -135,6 +135,9 @@
           </Constraints>
         </Component>
         <Component class="com.toedter.calendar.JDateChooser" name="dcFechaDesde">
+          <Events>
+            <EventHandler event="propertyChange" listener="java.beans.PropertyChangeListener" parameters="java.beans.PropertyChangeEvent" handler="dcFechaDesdePropertyChange"/>
+          </Events>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new com.toedter.calendar.JDateChooser()"/>
             <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="dcFechaDesde.setDateFormatString(&quot;dd/MM/yyyy&quot;); // https://www.youtube.com/watch?v=kmZXUlp5F5Q"/>
@@ -146,6 +149,9 @@
           </Constraints>
         </Component>
         <Component class="com.toedter.calendar.JDateChooser" name="dcFechaHasta">
+          <Events>
+            <EventHandler event="propertyChange" listener="java.beans.PropertyChangeListener" parameters="java.beans.PropertyChangeEvent" handler="dcFechaHastaPropertyChange"/>
+          </Events>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new com.toedter.calendar.JDateChooser()"/>
             <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="dcFechaHasta.setDateFormatString(&quot;dd/MM/yyyy&quot;); // https://www.youtube.com/watch?v=kmZXUlp5F5Q"/>
@@ -191,6 +197,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Cancelar"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cancelarActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="lblOcupada">
       <Properties>
@@ -300,7 +309,7 @@
             </Property>
           </Properties>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new TablaColoreada() {&#xa;    protected JTableHeader createDefaultTableHeader() {&#xa;        return new GroupableTableHeader(columnModel);&#xa;    }&#xa;}"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new TablaColoreada()&#xa;"/>
             <AuxValue name="JavaCodeGenerator_DeclarationPost" type="java.lang.String" value="private javax.swing.table.DefaultTableModel modeloTabla;"/>
             <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="modeloTabla = new DefaultTableModel() { // https://stackoverflow.com/questions/1990817/how-to-make-a-jtable-non-editable&#xa;    @Override&#xa;    public boolean isCellEditable(int row, int column) {&#xa;       return false;&#xa;    }&#xa;};"/>
           </AuxValues>

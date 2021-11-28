@@ -20,10 +20,8 @@ import entidades.PeriodoReserva;
 import entidades.PersonaFisica;
 import entidades.TipoEstado;
 import entidades.TipoHabitacion;
-import interfaces.TablaColoreada;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -131,7 +129,7 @@ public class GestorDeAlojamientos
        
         // Inicializar mapa de mapas con fechas colocadas
         int cantDias = (int) fechaInicioGui.until(fechaFinGui, ChronoUnit.DAYS) + 1;
-        Map<LocalDate, HashMap<Integer, TipoEstado>> estadosHabitaciones = new HashMap<LocalDate, HashMap<Integer, TipoEstado>>(); 
+        Map<LocalDate, HashMap<Integer, TipoEstado>> estadosHabitaciones = new HashMap<>(); 
         for (int i = 0; i < cantDias; i++)
             estadosHabitaciones.put(fechaInicioGui.plusDays(i), new HashMap());
         
@@ -176,18 +174,22 @@ public class GestorDeAlojamientos
             estadosHabitaciones.get(cotaInf.plusDays(i)).put(hab.getNumero(), estado);
     }
     
+    /*
+        En una dupla dada:
+            primero: nombre del tipo de habitacion
+            segundo: lista con los ids de las habitaciones de ese tipo
+    */
     public List<Dupla<String, LinkedList<Integer>>> getTiposYHabitaciones()
     {
         HabitacionDAO habDAO = new HabitacionDAOImpl();
         List<Habitacion> habs = habDAO.getAllHabitaciones();
         List<TipoHabitacion> tiposHab = habDAO.getAllTiposHabitacion();
         
-        List<Dupla<String, LinkedList<Integer>>> tiposYHabitaciones = new LinkedList<Dupla<String, LinkedList<Integer>>>();
+        List<Dupla<String, LinkedList<Integer>>> tiposYHabitaciones = new LinkedList<>();
         
         for (TipoHabitacion t : tiposHab)
         {
-            Dupla<String, LinkedList<Integer>> d = 
-                new Dupla<String, LinkedList<Integer>>(t.getNombre(), new LinkedList<Integer>());
+            Dupla<String, LinkedList<Integer>> d = new Dupla<>(t.getNombre(), new LinkedList<>());
         
             for (Habitacion hab : habs)
                 if (hab.getTipoHabitacion().equals(t)) 
