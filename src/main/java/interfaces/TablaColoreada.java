@@ -6,9 +6,10 @@ package interfaces;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.time.format.DateTimeFormatter;
 import javax.swing.JTable;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
+import misc.GroupableTableHeader;
 
 /**
  *
@@ -23,7 +24,8 @@ public class TablaColoreada extends JTable
     public static final int COLOR_ERROR = 0x000000;
     
     private Color color;
-        
+    
+    
     @Override
     public Component prepareRenderer(TableCellRenderer rend, int rowInd, int colInd)
     {
@@ -48,5 +50,10 @@ public class TablaColoreada extends JTable
         }
         
         return celda;
+    }
+    
+    @Override
+    protected JTableHeader createDefaultTableHeader() {
+        return new GroupableTableHeader(columnModel);
     }
 }

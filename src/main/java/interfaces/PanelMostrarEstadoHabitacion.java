@@ -11,18 +11,22 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.swing.JOptionPane;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
 import misc.GroupableTableHeader;
 import misc.ColumnGroup;
 import misc.Dupla;
+import misc.Tripleta;
 
 /**
  *
@@ -33,11 +37,25 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
     private boolean paraReservar; // Reservar: true; ocupar: false
     
     private GestorDeAlojamientos gesAl;
-    Map<LocalDate, HashMap<Integer, TipoEstado>> estadosHabitaciones;
+    private Map<LocalDate, HashMap<Integer, TipoEstado>> estadosHabitaciones;
     
+    private List<Integer> filasSelec = null;
+    private List<Integer> colsSelec = null;
     private List<Integer> idHabsTabla = null;
     private List<LocalDate> fechasTabla = null;
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private static final int adelantoDias = 7; // i.e. cuantos dias extras se suman a fecha desde para obtener fecha hasta 
+    
+    /* 
+        Reservas o estadias, segun corresponda.
+        En una tripleta dada:
+            primero: id de la habitacion
+            segundo: fecha desde
+            tercero: fecha hasta
+    */
+    private List<Tripleta<Integer, LocalDate, LocalDate>> resultado = null;
+    
     
     public PanelMostrarEstadoHabitacion(boolean paraReservar) 
     {
@@ -47,7 +65,7 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
         
         armarTabla();
         dcFechaDesde.setDate(new Date(System.currentTimeMillis()));
-        dcFechaHasta.setDate(new Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000)); // Fecha de hoy + 7 dias
+        //dcFechaHasta.setDate(new Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000)); // Fecha de hoy + 7 dias
         this.completarTabla(LocalDate.now(), LocalDate.now().plusDays(7));
     }
 
@@ -58,7 +76,7 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
         //http://www.java2s.com/Code/Java/Swing-Components/GroupableGroupHeaderExample.htm    
      
         // Columnas "H(...)"
-        idHabsTabla = new LinkedList<Integer>();
+        idHabsTabla = new LinkedList<>();
         modeloTabla.addColumn("Fecha");
         for (Dupla<String, LinkedList<Integer>> d : tiposYHabitaciones) // (Tristemente) deben colocarse las columnas por anticipado 
         {
@@ -86,6 +104,12 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
                 header.addColumnGroup(colGr);
             }
         }
+        
+        // Centrar fechas
+        // https://stackoverflow.com/questions/7433602/how-to-center-in-jtable-cell-a-value
+        DefaultTableCellRenderer rend = new DefaultTableCellRenderer();
+        rend.setHorizontalAlignment(SwingConstants.CENTER);
+        tablaEstadoHabitaciones.getColumnModel().getColumn(0).setCellRenderer(rend);
     }
     
     private Object[] getFila(Map<LocalDate, HashMap<Integer, TipoEstado>> estadosHabitaciones, LocalDate fecha)
@@ -102,7 +126,7 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
     
     private void completarTabla(LocalDate fechaIni, LocalDate fechaFin)
     {
-        fechasTabla = new LinkedList<LocalDate>();
+        fechasTabla = new LinkedList<>();
         
         estadosHabitaciones = gesAl.getEstadosHabitaciones(fechaIni, fechaFin);
         int cantDias = (int) fechaIni.until(fechaFin, ChronoUnit.DAYS) + 1;
@@ -142,64 +166,133 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
         return res;
     }
     
-    public boolean verificarDisponibilidad()
+    /*
+        En la dupla:
+            primero: habitaciones y rango de fechas validos
+            segundo: se taparan reservas en caso de ocupar
+    */
+    public Dupla<Boolean, Boolean> verificarDisponibilidad()
     {
-        boolean disponibles;
+        int i, j;
+        TipoEstado est;
+        Dupla<Boolean, Boolean> res = new Dupla<Boolean, Boolean>();
         
-        int[] filasSelec = tablaEstadoHabitaciones.getSelectedRows();
-        int[] colsSelec = tablaEstadoHabitaciones.getSelectedColumns(); 
+        filasSelec = this.arrToList(tablaEstadoHabitaciones.getSelectedRows()); 
+        colsSelec = this.arrToList(tablaEstadoHabitaciones.getSelectedColumns());
         
-        int i, iIni, iFin;
-        int j, jIni, jFin;
-      
-        // No contempla selecciones no contiguas :(
+        // Salvar el problema de la fecha en la primera columna
+        Integer colFechas = 0;
+        colsSelec.remove(colFechas);
+        for (j = 0; j < colsSelec.size(); j++) 
+            colsSelec.set(j, colsSelec.get(j) - 1);
+       
         
-        // REFORMULAR
-        
-        if (filasSelec.length == 0 || colsSelec.length == 0)
-            disponibles = false;
-        else if (colsSelec.length == 1 && colsSelec[0] == 0)
-            disponibles = false;
-        else
+        if (filasSelec.size() > 0 && colsSelec.size() > 0)
         {
-            iIni = filasSelec[0];
-            iFin = filasSelec[filasSelec.length - 1];
-        
-            // Evitar problemas con la col. de las fechas
-            if (colsSelec.length == 1)    
-                jIni = colsSelec[0];
-            else
+            i = 0;
+            res.primero = true;
+            res.segundo = false;
+            while (i < filasSelec.size() && res.primero)
             {
-                if (colsSelec[0] == 0)
-                    jIni = colsSelec[1];
-                else
-                    jIni = colsSelec[0];
-            }   
-            jFin = colsSelec[colsSelec.length - 1]; 
-  
-            
-            TipoEstado est;
-            i = iIni;
-            disponibles = true;
-            while (i <= iFin && disponibles)
-            {
-                j = jIni;
-                while (j <= jFin && disponibles)
+                j = 0;
+                while (j < colsSelec.size() && res.primero)
                 {
-                    est = estadosHabitaciones.get(fechasTabla.get(i)).get(idHabsTabla.get(j));
+                    est = estadosHabitaciones.get(fechasTabla.get(filasSelec.get(i))).get(idHabsTabla.get(colsSelec.get(j)));
+                    
                     if (!est.equals(TipoEstado.DISPONIBLE))
-                        disponibles = false;
-                    else
-                        j++;
-                }
-            
+                    {   
+                        if (paraReservar)
+                            res.primero = false;
+                        else // i.e. para ocupar. Tener en cuenta reservas
+                        {
+                            if (!est.equals(TipoEstado.RESERVADA))
+                                res.primero = false;
+                            else
+                                res.segundo = true;
+                        }
+                    }         
+                        
+                    j++;
+                }    
                 i++;
             }
         }
-             
-        return disponibles;
+        else
+            res.primero = false;
+        
+        return res;
     }
+
+    // Llamar previamente a verificarDisponibilidad()
+    private void calcularResultado()
+    {
+        resultado = new LinkedList<>();
+        int i;
+        Tripleta<Integer, LocalDate, LocalDate> auxT;
+        LocalDate fechaIni;
+        
+        
+        // Para cada habitacion seleccionada...
+        for (Integer idHab : colsSelec)
+        {
+            if (filasSelec.size() > 1)
+            {
+                i = 1;
+                fechaIni = fechasTabla.get(filasSelec.get(0));
+                while(i < filasSelec.size())
+                {
+                    // Condicion de discontinuidad entre fechas seleccionadas
+                    if (!filasSelec.get(i).equals(filasSelec.get(i - 1) + 1))
+                    {
+                        auxT = new Tripleta<>(
+                            idHabsTabla.get(idHab), 
+                            fechaIni, 
+                            fechasTabla.get(filasSelec.get(i - 1))
+                        );
+                        resultado.add(auxT);
+                        
+                        fechaIni = fechasTabla.get(filasSelec.get(i));
+                    }
+                   
+                    i++;
+                }
+                
+                // Caso continuo o ultima discontinuidad
+                auxT = new Tripleta<>(
+                            idHabsTabla.get(idHab), 
+                            fechaIni, 
+                            fechasTabla.get(filasSelec.get(filasSelec.size() - 1))
+                        );
+                resultado.add(auxT);
+            }
+            else // Caso base, una sola fecha
+            {
+                auxT = new Tripleta<>(
+                    idHabsTabla.get(idHab), 
+                    fechasTabla.get(filasSelec.get(0)), 
+                    fechasTabla.get(filasSelec.get(0))
+                );
+                resultado.add(auxT);
+            }
+        }
+        
+        System.out.println("Resultado: " + resultado);
+    }
+
+    // ------------------------------------------------------------------------------------------------------------
+    // Auxiliares:
     
+    // No hay otra forma sencilla. Arrays.asList() no funciona bien.
+    private List<Integer> arrToList (int[] arr)
+    {
+        List<Integer> newArr = new ArrayList<>();
+        for (int i = 0; i < arr.length; i++)
+            newArr.add(arr[i]);
+        return newArr;
+    }
+
+    public List<Tripleta<Integer, LocalDate, LocalDate>> getResultado() { return resultado; }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -229,11 +322,8 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
         cuadFueraDeServicio = new javax.swing.JLabel();
         siguiente = new javax.swing.JButton();
         panelDatosHabitaciones = new javax.swing.JScrollPane();
-        tablaEstadoHabitaciones = new TablaColoreada() {
-            protected JTableHeader createDefaultTableHeader() {
-                return new GroupableTableHeader(columnModel);
-            }
-        };
+        tablaEstadoHabitaciones = new TablaColoreada()
+        ;
 
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
@@ -257,6 +347,11 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
         panelRangoFechas.add(lblFechaHasta, gridBagConstraints);
 
         dcFechaDesde.setDateFormatString("dd/MM/yyyy"); // https://www.youtube.com/watch?v=kmZXUlp5F5Q
+        dcFechaDesde.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                dcFechaDesdePropertyChange(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
@@ -267,6 +362,11 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
         panelRangoFechas.add(dcFechaDesde, gridBagConstraints);
 
         dcFechaHasta.setDateFormatString("dd/MM/yyyy"); // https://www.youtube.com/watch?v=kmZXUlp5F5Q
+        dcFechaHasta.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                dcFechaHastaPropertyChange(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 0;
@@ -297,6 +397,11 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
         jLabel4.setText("Datos de las habitaciones");
 
         cancelar.setText("Cancelar");
+        cancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelarActionPerformed(evt);
+            }
+        });
 
         lblOcupada.setText("Ocupada");
 
@@ -459,15 +564,74 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
 
     private void siguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_siguienteActionPerformed
         
-        if (paraReservar)
-            if (!this.verificarDisponibilidad())
-                JOptionPane.showMessageDialog(null, "No todas las habitaciones están disponibles en el rango de fechas seleccionado.", "Error", JOptionPane.ERROR_MESSAGE);
+        Dupla<Boolean, Boolean> disponibilidad = this.verificarDisponibilidad();
+        
+        if (!disponibilidad.primero) // i.e. rango de fechas y habitaciones invalido
+        {
+            if (paraReservar)
+                JOptionPane.showMessageDialog(
+                    null, 
+                    "Selección inválida. No se seleccionaron habitaciones o no todas ellas están disponibles para el rango de fechas escogido.", 
+                    "Error", 
+                    JOptionPane.ERROR_MESSAGE
+                );
+            else // i.e. ocupar
+                JOptionPane.showMessageDialog(
+                    null, 
+                    "Selección inválida. No se seleccionaron habitaciones o no todas ellas están disponibles o reservadas para el rango de fechas escogido.", 
+                    "Error", 
+                    JOptionPane.ERROR_MESSAGE
+                );
+        }
         else
         {
-                    
-        }       
-        
+            if (paraReservar)
+                this.calcularResultado();
+            else
+            {
+                if (disponibilidad.segundo) // i.e. se tapa una reserva
+                {
+                    Object[] opciones = {"Ocupar igual", "Volver"};
+                    int indOpcionElegida = JOptionPane.showOptionDialog(
+                        null, 
+                        "Se engloban una o más reservas para las habitaciones y rango de fecha escogidos. ¿Desea ocupar igualmente?",
+                        "Cuidado",
+                        JOptionPane.DEFAULT_OPTION,
+                        JOptionPane.WARNING_MESSAGE,
+                        null,
+                        opciones,
+                        opciones[1]
+                    );
+                
+                    if (indOpcionElegida == 0) // i.e. cerrar el panel actual, volver
+                    {
+                        this.calcularResultado();
+                        // TODO pendiente ver como conectar
+                    }
+                }
+                else  // i.e. cerrar el panel actual, volver
+                {    
+                    this.calcularResultado();
+                    // TODO pendiente ver como conectar
+                }
+            }
+        }
     }//GEN-LAST:event_siguienteActionPerformed
+
+    private void cancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelarActionPerformed
+        // TODO pendiente ver como conectar
+    }//GEN-LAST:event_cancelarActionPerformed
+
+    private void dcFechaDesdePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_dcFechaDesdePropertyChange
+        if (dcFechaHasta.getDate() == null || dcFechaHasta.getDate().before(dcFechaDesde.getDate()))
+            dcFechaHasta.setDate(new Date(dcFechaDesde.getDate().getTime() + adelantoDias * 24 * 60 * 60 * 1000));        
+    }//GEN-LAST:event_dcFechaDesdePropertyChange
+
+    private void dcFechaHastaPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_dcFechaHastaPropertyChange
+        if (dcFechaHasta.getDate() != null)
+            if (dcFechaHasta.getDate().before(dcFechaDesde.getDate()))
+                dcFechaHasta.setDate(new Date(dcFechaDesde.getDate().getTime() + adelantoDias * 24 * 60 * 60 * 1000));
+    }//GEN-LAST:event_dcFechaHastaPropertyChange
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
