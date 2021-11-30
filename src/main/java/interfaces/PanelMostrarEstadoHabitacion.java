@@ -21,7 +21,6 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
 import misc.GroupableTableHeader;
 import misc.ColumnGroup;
@@ -44,8 +43,8 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
     private List<Integer> idHabsTabla = null;
     private List<LocalDate> fechasTabla = null;
     
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    private static final int adelantoDias = 7; // i.e. cuantos dias extras se suman a fecha desde para obtener fecha hasta 
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private static final int ADELANTO_DIAS = 7; // i.e. cuantos dias extras se suman a fecha desde para obtener fecha hasta 
     
     /* 
         Reservas o estadias, segun corresponda.
@@ -65,7 +64,6 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
         
         armarTabla();
         dcFechaDesde.setDate(new Date(System.currentTimeMillis()));
-        //dcFechaHasta.setDate(new Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000)); // Fecha de hoy + 7 dias
         this.completarTabla(LocalDate.now(), LocalDate.now().plusDays(7));
     }
 
@@ -73,8 +71,6 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
     {
         List<Dupla<String, LinkedList<Integer>>> tiposYHabitaciones = gesAl.getTiposYHabitaciones();
         
-        //http://www.java2s.com/Code/Java/Swing-Components/GroupableGroupHeaderExample.htm    
-     
         // Columnas "H(...)"
         idHabsTabla = new LinkedList<>();
         modeloTabla.addColumn("Fecha");
@@ -117,7 +113,7 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
         Object[] fila = new Object[idHabsTabla.size() + 1];
         
         // https://www.baeldung.com/java-datetimeformatter
-        fila[0] = formatter.format(fecha);
+        fila[0] = FORMATTER.format(fecha);
         for (int j = 0; j < idHabsTabla.size(); j++)
             fila[j + 1] = this.getColorGrilla(estadosHabitaciones.get(fecha).get(idHabsTabla.get(j)));
         
@@ -175,7 +171,7 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
     {
         int i, j;
         TipoEstado est;
-        Dupla<Boolean, Boolean> res = new Dupla<Boolean, Boolean>();
+        Dupla<Boolean, Boolean> res = new Dupla<>();
         
         filasSelec = this.arrToList(tablaEstadoHabitaciones.getSelectedRows()); 
         colsSelec = this.arrToList(tablaEstadoHabitaciones.getSelectedColumns());
@@ -259,10 +255,10 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
                 
                 // Caso continuo o ultima discontinuidad
                 auxT = new Tripleta<>(
-                            idHabsTabla.get(idHab), 
-                            fechaIni, 
-                            fechasTabla.get(filasSelec.get(filasSelec.size() - 1))
-                        );
+                    idHabsTabla.get(idHab), 
+                    fechaIni, 
+                    fechasTabla.get(filasSelec.get(filasSelec.size() - 1))
+                );
                 resultado.add(auxT);
             }
             else // Caso base, una sola fecha
@@ -452,7 +448,9 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
         tablaEstadoHabitaciones.setSelectionForeground(new java.awt.Color(0, 0, 0));
         tablaEstadoHabitaciones.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         tablaEstadoHabitaciones.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        tablaEstadoHabitaciones.setShowGrid(true);
         panelDatosHabitaciones.setViewportView(tablaEstadoHabitaciones);
+        tablaEstadoHabitaciones.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -484,7 +482,8 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
                         .addGap(479, 479, 479)
                         .addComponent(siguiente)
                         .addGap(11, 11, 11)
-                        .addComponent(cancelar))))
+                        .addComponent(cancelar)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -501,10 +500,9 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(1, 1, 1)
-                        .addComponent(cuadOcupada))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(8, 8, 8)
-                        .addComponent(lblOcupada))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(cuadOcupada)
+                            .addComponent(lblOcupada)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(1, 1, 1)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -624,13 +622,13 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
 
     private void dcFechaDesdePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_dcFechaDesdePropertyChange
         if (dcFechaHasta.getDate() == null || dcFechaHasta.getDate().before(dcFechaDesde.getDate()))
-            dcFechaHasta.setDate(new Date(dcFechaDesde.getDate().getTime() + adelantoDias * 24 * 60 * 60 * 1000));        
+            dcFechaHasta.setDate(new Date(dcFechaDesde.getDate().getTime() + ADELANTO_DIAS * 24 * 60 * 60 * 1000));        
     }//GEN-LAST:event_dcFechaDesdePropertyChange
 
     private void dcFechaHastaPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_dcFechaHastaPropertyChange
         if (dcFechaHasta.getDate() != null)
             if (dcFechaHasta.getDate().before(dcFechaDesde.getDate()))
-                dcFechaHasta.setDate(new Date(dcFechaDesde.getDate().getTime() + adelantoDias * 24 * 60 * 60 * 1000));
+                dcFechaHasta.setDate(new Date(dcFechaDesde.getDate().getTime() + ADELANTO_DIAS * 24 * 60 * 60 * 1000));
     }//GEN-LAST:event_dcFechaHastaPropertyChange
 
 
