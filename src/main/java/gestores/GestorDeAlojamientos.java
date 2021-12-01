@@ -18,7 +18,6 @@ import entidades.Habitacion;
 import entidades.PersonaFisica;
 import entidades.TipoEstado;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -64,6 +63,9 @@ public class GestorDeAlojamientos {
         estadia.setFechaFin(LocalDate.parse(e.getFechaFin()));
         
         Habitacion habitacion = habitacionDAO.findHabitacion(e.getIdHabitacion());
+        
+        estadia.setCostoNoche(habitacion.getTipoHabitacion().getPrecioActual());
+        
         //Le cambio el estado a la habitacion
         habitacion.setEstado(TipoEstado.OCUPADA);
         try {
@@ -72,24 +74,22 @@ public class GestorDeAlojamientos {
             System.out.println("Error al actualizar el estado de la habitacion");
             Logger.getLogger(GestorDeAlojamientos.class.getName()).log(Level.SEVERE, null, ex);
         }
-        estadia.setHabitacion(habitacion);
+        //Cargo la habitacion
+        estadia.setHabitacion(habitacion);         
         
-        
-        estadia.setCostoNoche(habitacion.getTipoHabitacion().getPrecioActual());
-        
+        //Cargo responsable
         PersonaFisica pasajeroResponsable = personaDAO.findPersonaFisica(e.getIdPasajeroResponsable());
         estadia.setPasajeroResponsable(pasajeroResponsable);
         
+        //Cargo acompañantes
         e.getIdsPasajeroAcompañante().forEach(id -> {
               estadia.addPasajeroAcompañante(personaDAO.findPersonaFisica(id));
         });
         
-        
-        
         //Crear estadia        
         try {
             estadiaDAO.createEstadia(estadia);
-            //System.out.println("Estadia creada");            
+            System.out.println("Estadia creada");            
         } catch (Exception ex) {
             System.out.println("Error al crear la estadia, en el gestor");
             ex.printStackTrace();
@@ -104,6 +104,18 @@ public class GestorDeAlojamientos {
     }
     
     public void deleteEstadia(){
+        
+    }
+
+    public void OcuparHabitacion(List<EstadiaDTO> estadiasDTO) {
+    
+        try {
+             estadiasDTO.forEach(estadiaDTO -> {createEstadia(estadiaDTO);});
+             System.out.println("Ocupacion existosa");
+        } catch (Exception e) {
+            System.out.println("Ocupacion fallida");
+            e.printStackTrace();
+        }
         
     }
 }

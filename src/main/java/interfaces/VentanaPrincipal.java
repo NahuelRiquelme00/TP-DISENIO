@@ -5,7 +5,10 @@
  */
 package interfaces;
 
+import dto.EstadiaDTO;
 import java.awt.Container;
+import java.time.LocalDate;
+import java.util.List;
 
 /**
  *
@@ -17,6 +20,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     public static final int PANE_GESTIONAR_PASAJEROS = 1;
     public static final int PANE_DAR_ALTA_PASAJERO = 2;
     public static final int PANE_OCUPAR_HABITACION = 3;
+    public static final int PANE_MOSTRAR_ESTADO_HABIACION  = 4;
 
     /**
      * Creates new form VentanaPrincipal
@@ -31,6 +35,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             case PANE_MENU_PRINCIPAL:
                 this.setContentPane(new PanelMenuPrincipal(this));
                 this.setTitle("Menú principal");
+                this.pack();
+                this.setLocationRelativeTo(null);
                 break;
             case PANE_GESTIONAR_PASAJEROS:
                 this.setContentPane(new PanelGestionarPasajeros(this));
@@ -41,14 +47,29 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 this.setTitle("Dar alta pasajero");
                 break;
             case PANE_OCUPAR_HABITACION:
-                this.setContentPane(new PanelOcuparHabitacion(this));
-                this.setTitle("Ocupar habitacion");
+                this.setContentPane(new PanelMostrarEstadoHabitacion(this));
+                this.setTitle("Estado de las habitaciones");
                 this.pack();
                 this.setLocationRelativeTo(null);
                 break;
+                //Se debe llamar luego de la ejecucion de la interfaz mostrar estado habitacion
+                //Por lo que se cargan los datos de esa interfaz en una estadiaDTO
+//                EstadiaDTO e = new EstadiaDTO();
+//                e.setFechaInicio(LocalDate.now().toString());
+//                e.setFechaFin(LocalDate.of(2021, 11, 30).toString());
+//                e.setIdHabitacion(1);
+//                this.setContentPane(new PanelOcuparHabitacion(this,e));
+//                this.setTitle("Ocupar habitacion");
+//                this.pack();
+//                this.setLocationRelativeTo(null);
+//                break;
         }
         this.getContentPane().setVisible(false);
         this.getContentPane().setVisible(true);
+    }
+
+    public Container getPreviousPane() {
+        return previousPane;
     }
 
     /**

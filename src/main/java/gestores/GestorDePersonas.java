@@ -136,7 +136,7 @@ public class GestorDePersonas {
         personaDAO.close();
         return convertirADTO(listaPersonas);        
     }
-    
+   
     public List<PersonaFisicaDTO> convertirADTO(List<PersonaFisica> listaPersonas){
         List<PersonaFisicaDTO> pasajerosDTO = new ArrayList<>();
         listaPersonas.stream().map(p -> new PersonaFisicaDTO(p.getIdPersonaFisica(),p.getApellido(), p.getNombres(), p.getTipoDocumento().toString(), p.getNroDocumento())).forEachOrdered(dto -> {
@@ -256,5 +256,21 @@ public class GestorDePersonas {
             
 	}
         return hayCamposIncompletos;
+    }
+
+    public Boolean NoExisteAcompañante(Integer id){
+        personaDAO = new PersonaDAOImpl();
+        try{
+            return personaDAO.NoExisteAcompañante(id);
+        }finally{
+            personaDAO.close();
+        }        
+    }
+    
+    public Long countAll(String nombre, String apellido, String tipoDocumento, String nroDocumento){
+        personaDAO = new PersonaDAOImpl();
+        Long cantidad = personaDAO.countAll(nombre, apellido, tipoDocumento, nroDocumento);
+        personaDAO.close();
+        return cantidad;
     }
 }

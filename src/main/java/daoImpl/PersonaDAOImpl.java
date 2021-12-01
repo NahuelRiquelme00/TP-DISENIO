@@ -21,6 +21,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -141,45 +142,6 @@ public class PersonaDAOImpl implements PersonaDAO {
             
             CriteriaQuery<PersonaFisica> configPersonas = cb.createQuery(PersonaFisica.class);
             Root<PersonaFisica> raizPersona = configPersonas.from(PersonaFisica.class);
-            
-//            configPersonas.select(raizPersona);            
-//            Predicate[] predicates = new Predicate[4];
-//            predicates[0] = cb.equal(raizPersona.get("nombres"),nombre);
-//            predicates[1] = cb.equal(raizPersona.get("apellido"),apellido);
-//            predicates[2] = cb.equal(raizPersona.get("tipoDocumento"),TipoDocumento.valueOf(tipoDocumento));
-//            predicates[3] = cb.equal(raizPersona.get("nroDocumento"),nroDocumento);
-//            configPersonas.where(predicates);
-
-//            if(!nombre.isBlank() && !apellido.isBlank() && !tipoDocumento.isBlank() && !nroDocumento.isBlank()){
-//                //Busca por todos los atributos
-//                Integer nro = Integer.parseInt(nroDocumento);
-//                Predicate predicateNombre = cb.like(raizPersona.get("nombres"),nombre+"%");
-//                Predicate predicateApellido = cb.like(raizPersona.get("apellido"),apellido+"%");
-//                Predicate predicateTipoDoc = cb.equal(raizPersona.get("tipoDocumento"),TipoDocumento.valueOf(tipoDocumento));
-//                Predicate predicateNumDoc = cb.equal(raizPersona.get("nroDocumento"),nro);
-//                configPersonas.select(raizPersona).where(cb.and(predicateNombre,predicateApellido,predicateTipoDoc,predicateNumDoc));
-//            } else if (tipoDocumento.isBlank() && !nombre.isBlank() && !apellido.isBlank() ){
-//                //Busca por nombre y apellido
-//                Predicate predicateNombre = cb.like(raizPersona.get("nombres"),nombre+"%");
-//                Predicate predicateApellido = cb.like(raizPersona.get("apellido"),apellido+"%");
-//                configPersonas.select(raizPersona).where(cb.and(predicateNombre,predicateApellido));
-//            } else if (apellido.isBlank() && !nombre.isBlank()){
-//                //Busca por nombre
-//                //Predicate predicateNombre = cb.equal(raizPersona.get("nombres"),nombre);
-//                Predicate predicateNombre = cb.like(raizPersona.get("nombres"),nombre+"%");
-//                configPersonas.select(raizPersona).where(predicateNombre);
-//            } else if (nombre.isBlank() && !apellido.isBlank()){
-//                //Busca por apellido
-//                Predicate predicateApellido = cb.like(raizPersona.get("apellido"),apellido+"%");
-//                configPersonas.select(raizPersona).where(predicateApellido);
-//            } else if (nombre.isBlank() && apellido.isBlank() && !tipoDocumento.isBlank() && !nroDocumento.isBlank() ){
-//                //Buscar por tipo y nro
-//                Integer nro = Integer.parseInt(nroDocumento);
-//                Predicate predicateTipoDoc = cb.equal(raizPersona.get("tipoDocumento"),TipoDocumento.valueOf(tipoDocumento));
-//                Predicate predicateNumDoc = cb.equal(raizPersona.get("nroDocumento"),nro);
-//                configPersonas.select(raizPersona).where(cb.and(predicateTipoDoc,predicateNumDoc));
-//            }else configPersonas.select(raizPersona); //Carga todas las personas 
-//            //Faltarian otras combinaciones
 
             Predicate predicateNombre;
             Predicate predicateApellido;
@@ -356,5 +318,77 @@ public class PersonaDAOImpl implements PersonaDAO {
             em.close();
         }  
     }
+
+    @Override
+    public Boolean NoExisteAcompañante(Integer id) {
+        /*
+        Esta consulta debe devolver si existe una relacion entre la persona del id y una estadia
+        en proceso, es decir, cuya fecha de finalizacion se superior a la fecha actual.
+        */
+        EntityManager em = getEntityManager();
+        
+        try{         
+            String hql = "SELECT pf.idPersonaFisica from Estadia es JOIN es.pasajeroAcompañante pf WHERE es.fechaFin > CURRENT_DATE AND pf.idPersonaFisica = :idPersona";
+            Query query = em.createQuery(hql);
+            query.setParameter("idPersona", id);       
+            List result = query.getResultList();            
+            if(result.isEmpty()){
+                return true;
+            }
+            
+        }finally{
+            em.close();
+        }        
+        
+        return false;
+    }
     
+    @Override
+    public Long countAll(String nombre, String apellido, String tipoDocumento, String nroDocumento){
+        EntityManager em = getEntityManager();
+        try{
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<Long> criteriaQuery = cb.createQuery(Long.class);
+            Root<PersonaFisica> root = criteriaQuery.from(PersonaFisica.class);
+            
+            Predicate predicateNombre;
+            Predicate predicateApellido;
+            Predicate predicateTipoDoc;
+            Predicate predicateNumDoc;
+            ArrayList<Predicate> condiciones = new ArrayList<>();
+
+            if(!nombre.isBlank()) {
+                predicateNombre = cb.like(root.get("nombres"),nombre+"%");
+                condiciones.add(predicateNombre);
+            }
+
+            if(!apellido.isBlank()) {
+                predicateApellido = cb.like(root.get("apellido"),apellido+"%");
+                condiciones.add(predicateApellido);
+            }
+
+            if(!tipoDocumento.isBlank()) {
+                predicateTipoDoc = cb.equal(root.get("tipoDocumento"),TipoDocumento.valueOf(tipoDocumento));
+                condiciones.add(predicateTipoDoc);
+            }
+
+            if(!nroDocumento.isBlank() && !tipoDocumento.isBlank()) {
+                Integer nro = Integer.parseInt(nroDocumento);
+                predicateNumDoc = cb.equal(root.get("nroDocumento"),nro);
+                condiciones.add(predicateNumDoc);
+            }
+            
+            criteriaQuery.select(cb.count(root)).where(cb.and(condiciones.toArray(new Predicate[condiciones.size()])));
+            
+            //criteriaQuery.select(cb.count(root));
+            
+            Long result = em.createQuery(criteriaQuery).getSingleResult();
+            
+            return result;          
+            
+        } finally {
+            em.close();
+        }
+    }
+     
 }

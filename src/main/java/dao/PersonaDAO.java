@@ -49,5 +49,9 @@ public interface PersonaDAO {
     public List<Localidad> getLocalidadesWith(Integer idProvincia);
 
     public List<TipoPosicionFrenteIVA> getAllPosicionesIVA();
+
+    public Boolean NoExisteAcompañante(Integer id);
+    
+    public Long countAll(String nombre, String apellido, String tipoDocumento, String nroDocumento);
     
 }

@@ -34,8 +34,8 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
     private List<PersonaFisicaDTO> pasajerosDTO;
     private List<PersonaFisicaDTO> paginado;
     public static int MAX_FILAS = 10;
-    private int pisoInclusivo = 0;
     private int techoExclusivo =  MAX_FILAS;
+    private int pisoInclusivo = 0;
     private int pagActual;
     private int pagsTotales;
 
@@ -109,7 +109,7 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
     private void cargarPagina(){
         paginado = pasajerosDTO.stream().skip((pagActual-1)*MAX_FILAS).limit(MAX_FILAS).collect(Collectors.toList());
         model.setDatos(paginado);
-        model.fireTableDataChanged(); 
+        model.fireTableDataChanged();
     }
     /**
      * This method is called from within the constructor to initialize the form.

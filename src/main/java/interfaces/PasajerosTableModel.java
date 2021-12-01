@@ -34,6 +34,10 @@ public class PasajerosTableModel extends AbstractTableModel {
         datos.remove(i);
     }
     
+    public PersonaFisicaDTO personaSelecionada(int r){
+        return datos.get(r);
+    }
+    
     @Override
     public String getColumnName(int column) {
         // TODO Auto-generated method stub

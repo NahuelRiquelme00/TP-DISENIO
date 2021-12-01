@@ -5,14 +5,18 @@
  */
 package interfaces;
 
+import dto.EstadiaDTO;
 import dto.PersonaFisicaDTO;
 import entidades.TipoDocumento;
+import gestores.GestorDeAlojamientos;
 import gestores.GestorDePersonas;
 import java.awt.Color;
 import java.awt.Component;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
@@ -26,38 +30,45 @@ import javax.swing.table.TableColumnModel;
 public class PanelOcuparHabitacion extends javax.swing.JPanel {
     private final VentanaPrincipal frame;
     private final GestorDePersonas gestorPersonas = GestorDePersonas.getInstance();
-    private PasajerosTableModel model;
+    private final GestorDeAlojamientos gestorAlojamientos = GestorDeAlojamientos.getInstance();
+    private PasajerosTableModel model1;
     private PasajerosTableModel2 model2;
-    private int row_selected;
+    private int row_selected1;
     private int row_selected2;
     private List<PersonaFisicaDTO> pasajerosDTO;
-    private List<PersonaFisicaDTO> paginado;
-    public static int MAX_FILAS = 10;
-    private int pisoInclusivo = 0;
-    private int techoExclusivo =  MAX_FILAS;
-    private int pagActual;
-    private int pagsTotales;
     private boolean pasajeroCargado;
     private PersonaFisicaDTO personaSeleccionada1;
     private PersonaFisicaDTO personaSeleccionada2;
+    //Para cargar en la lista de estadiasDTO
+    public EstadiaDTO estadiaDTOactual; //Se guarda fechaInicio, fechaFin, habitacion
+    public static List<EstadiaDTO> estadiasDTO = new ArrayList<>(); //Se van guardando las estadias a crear
 
     /**
      * Creates new form OcuparHabitacion
      * @param frame
+     * @param e
      */
-    public PanelOcuparHabitacion(VentanaPrincipal frame) {
+    public PanelOcuparHabitacion(VentanaPrincipal frame, EstadiaDTO e) {
         initComponents();
+        limitarCampos();
         this.frame = frame;
+        this.estadiaDTOactual = e; //Viene desde la interface mostrar estado de habitacion
         cargarModelo();
     }
     
+    private void limitarCampos(){
+        //Limita la longitud de los campos
+        JTextApellido.setDocument(new JTextFieldLimit(32));
+        JTextNombre.setDocument(new JTextFieldLimit(32));
+        JTextDocumento.setDocument(new JTextFieldLimit(16));
+    }
+    
     private void cargarModelo(){
-        model = new PasajerosTableModel();
+        model1 = new PasajerosTableModel();
         model2 = new PasajerosTableModel2();
-        jTable1.setModel(model);
+        jTable1.setModel(model1);
         jTable2.setModel(model2);
         pasajeroCargado = false;
-    
         //Le agrego el radiobutton a las tablas
         agregarRadioButton();        
     }
@@ -88,36 +99,17 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
             tipoDocumento = "";
         }else tipoDocumento = jComboBoxTipoDoc.getSelectedItem().toString();
         String nroDocumento = JTextDocumento.getText();
-        pasajerosDTO = gestorPersonas.buscarPasajero(nombre,apellido,tipoDocumento,nroDocumento);
-        paginarDatos();
+        pasajerosDTO = gestorPersonas.buscarPasajero(nombre,apellido,tipoDocumento,nroDocumento);  
+        actualizarTabla1();
     }
     
-    private void paginarDatos(){
-        //Modifico el jLabel con la cantidad de paginas
-        pagActual = pisoInclusivo / MAX_FILAS + 1;
-        pagsTotales = pasajerosDTO.size() / MAX_FILAS + ((pasajerosDTO.size() % MAX_FILAS == 0)? 0 : 1);
-        lPag.setText("Pagina "+pagActual+"/"+pagsTotales);
-        
-        //Carga la pagina actual
-        cargarPagina();
-        
-        if (pasajerosDTO.size() / MAX_FILAS > 0)
-            bAdelante.setEnabled(true);
-        else
-            bAdelante.setEnabled(false);
+    private void actualizarTabla1(){
+        model1.setDatos(pasajerosDTO);
+        model1.fireTableDataChanged();
     }
-    
-    private void cargarPagina(){
-        paginado = pasajerosDTO.stream().skip((pagActual-1)*MAX_FILAS).limit(MAX_FILAS).collect(Collectors.toList());
-        model.setDatos(paginado);
-        model.fireTableDataChanged(); 
-    }
-    
-    private void filtrarPersonaCargada(){
-        paginado = pasajerosDTO.stream().filter(p -> model2.getDatos().contains(p))
-                .skip((pagActual-1)*MAX_FILAS).limit(MAX_FILAS).collect(Collectors.toList());
-        model.setDatos(paginado);
-        model.fireTableDataChanged();
+   
+    public static void limpiarEstadias(){
+        estadiasDTO.clear();
     }
     
     /**
@@ -154,11 +146,8 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
         jTable1.getTableHeader().setReorderingAllowed(false);
         jButtonCargarAcompañante = new javax.swing.JButton();
         jButtonCargarPasajero = new javax.swing.JButton();
-        bAtras = new javax.swing.JButton();
-        lPag = new javax.swing.JLabel();
-        bAdelante = new javax.swing.JButton();
-        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
         filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
         jPanel5 = new javax.swing.JPanel();
         jButtonQuitar = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -189,11 +178,6 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
         jLabel2.setText("Tipo de documento");
 
         JTextNombre.setNextFocusableComponent(JTextApellido);
-        JTextNombre.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                JTextNombreKeyReleased(evt);
-            }
-        });
 
         jComboBoxTipoDoc.setNextFocusableComponent(JTextDocumento);
         jComboBoxTipoDoc.addItemListener(new java.awt.event.ItemListener() {
@@ -207,13 +191,13 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
         jLabel5.setText("Numero de documento");
 
         JTextApellido.setNextFocusableComponent(jComboBoxTipoDoc);
-        JTextApellido.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                JTextApellidoKeyReleased(evt);
-            }
-        });
 
         JTextDocumento.setNextFocusableComponent(jButtonBuscar);
+        JTextDocumento.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JTextDocumentoKeyTyped(evt);
+            }
+        });
 
         jButtonBuscar.setText("Buscar");
         jButtonBuscar.setNextFocusableComponent(jButtonCargarPasajero);
@@ -286,6 +270,7 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        jTable1.setRowHeight(30);
         jTable1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jTable1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -313,26 +298,6 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
             }
         });
 
-        bAtras.setText("<");
-        bAtras.setDoubleBuffered(true);
-        bAtras.setEnabled(false);
-        bAtras.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bAtrasActionPerformed(evt);
-            }
-        });
-
-        lPag.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        lPag.setText("Pagina 0/0");
-
-        bAdelante.setText(">");
-        bAdelante.setEnabled(false);
-        bAdelante.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bAdelanteActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -340,22 +305,17 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jButtonCargarPasajero, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 550, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(filler2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(bAtras)
+                        .addComponent(jButtonCargarPasajero, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lPag)
+                        .addComponent(jButtonCargarAcompañante, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(bAdelante)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(filler1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonCargarAcompañante, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                        .addComponent(filler1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -365,18 +325,16 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGap(18, 18, 18)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButtonCargarAcompañante)
-                            .addComponent(jButtonCargarPasajero)
-                            .addComponent(lPag)
-                            .addComponent(bAdelante)
-                            .addComponent(bAtras)))
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jButtonCargarAcompañante)
+                                .addComponent(jButtonCargarPasajero))
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addGap(15, 15, 15)
+                                .addComponent(filler2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGap(26, 26, 26)
-                        .addComponent(filler1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGap(27, 27, 27)
-                        .addComponent(filler2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(28, 28, 28)
+                        .addComponent(filler1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 
@@ -402,6 +360,7 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        jTable2.setRowHeight(30);
         jTable2.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jTable2MouseClicked(evt);
@@ -416,7 +375,7 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 550, Short.MAX_VALUE)
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(filler3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -494,15 +453,15 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jButtonAceptar, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(filler5, javax.swing.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE)
+                .addComponent(filler5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButtonSeguir, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(filler6, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
+                .addComponent(filler6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButtonCargarOtra, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(filler7, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
+                .addComponent(filler7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButtonSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -546,23 +505,26 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel7)
+                                .addGap(415, 415, 415)
+                                .addComponent(jLabel8))
+                            .addComponent(jLabel3)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(16, 16, 16))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButtonCancelar))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel7)
-                            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(44, 44, 44)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel8))))
-                .addContainerGap())
+                            .addComponent(jButtonCancelar, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(16, 16, 16))))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -587,14 +549,6 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void JTextNombreKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JTextNombreKeyReleased
-        // TODO add your handling code here:
-        //Para que el ingreso de los datos sea siempre en mayuscula
-        //        int position = JTextNombre.getCaretPosition();
-        //        JTextNombre.setText(JTextNombre.getText().toUpperCase());
-        //        JTextNombre.setCaretPosition(position);
-    }//GEN-LAST:event_JTextNombreKeyReleased
-
     private void jComboBoxTipoDocItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxTipoDocItemStateChanged
         // TODO add your handling code here:
         //Sino se selecciona tipo de documento no se puede poner numero
@@ -606,63 +560,24 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_jComboBoxTipoDocItemStateChanged
 
-    private void JTextApellidoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JTextApellidoKeyReleased
-        // TODO add your handling code here:
-        //        int position = JTextApellido.getCaretPosition();
-        //        JTextApellido.setText(JTextApellido.getText().toUpperCase());
-        //        JTextApellido.setCaretPosition(position);
-    }//GEN-LAST:event_JTextApellidoKeyReleased
-
     private void jButtonBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarActionPerformed
         // TODO add your handling code here:
         //Carga los datos en la tabla
         cargarDatosBusqueda();        
     }//GEN-LAST:event_jButtonBuscarActionPerformed
 
-    private void bAtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAtrasActionPerformed
-        // TODO add your handling code here:
-        pagActual--;
-        lPag.setText("Pagina "+pagActual+"/"+pagsTotales);
-
-        if (pisoInclusivo + MAX_FILAS >= pasajerosDTO.size())
-        techoExclusivo -= pasajerosDTO.size() - pisoInclusivo;
-        else techoExclusivo -= MAX_FILAS; 
-        
-        pisoInclusivo -= MAX_FILAS;
-
-        bAdelante.setEnabled(true);
-        if (pisoInclusivo == 0) bAtras.setEnabled(false);
-
-        cargarPagina();
-    }//GEN-LAST:event_bAtrasActionPerformed
-
-    private void bAdelanteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAdelanteActionPerformed
-        // TODO add your handling code here:
-        pagActual++;
-        lPag.setText("Pagina "+pagActual+"/"+pagsTotales);
-
-        pisoInclusivo += MAX_FILAS;
-        bAtras.setEnabled(true);
-        if (pisoInclusivo + MAX_FILAS >= pasajerosDTO.size())
-        {
-            techoExclusivo += pasajerosDTO.size() - pisoInclusivo;
-            bAdelante.setEnabled(false);
-        }
-        else techoExclusivo += MAX_FILAS;
-
-        cargarPagina();
-    }//GEN-LAST:event_bAdelanteActionPerformed
-
     private void jButtonCargarPasajeroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCargarPasajeroActionPerformed
-        // TODO add your handling code here:
-        pasajerosDTO.get(row_selected).setCategoria("Pasajero");
+        //La persona seleccionada se marca como pasajero
+        personaSeleccionada1.setCategoria("Pasajero");
         //Agrego la persona a la tabla2 de personas cargadas
-        model2.agregarPersona(model.getDatos().get(row_selected));
+        model2.agregarPersona(model1.personaSelecionada(row_selected1));
         model2.fireTableDataChanged();
         pasajeroCargado = true;
         //Elimino la persona de la tabla1 resultados de busqueda
         pasajerosDTO.remove(personaSeleccionada1);
-        cargarPagina();
+        //cargarPagina()
+        model1.fireTableDataChanged();
+        
         //Limpio la seleccion y desactivo botones
         jTable1.clearSelection();
         jButtonCargarAcompañante.setEnabled(false);
@@ -670,53 +585,98 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
     }//GEN-LAST:event_jButtonCargarPasajeroActionPerformed
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
-        // TODO add your handling code here:
-            int filasSeleccionadas = jTable1.getSelectedRowCount();
-            if(filasSeleccionadas == 1){
-                row_selected = jTable1.getSelectedRow();
-                System.out.println(model.getDatos().get(row_selected).getApellido());
-                personaSeleccionada1 = model.getDatos().get(row_selected);
-                if(!pasajeroCargado)jButtonCargarPasajero.setEnabled(true);
-                jButtonCargarAcompañante.setEnabled(true);
-            }
+        //Captura las personas seleccionadas en la tabla1
+        int filasSeleccionadas = jTable1.getSelectedRowCount();
+        if(filasSeleccionadas == 1){
+            row_selected1 = jTable1.getSelectedRow();
+            //Mostrar apellido y id del pasajero clikeado
+            personaSeleccionada1 = model1.personaSelecionada(row_selected1);
+            System.out.println(personaSeleccionada1.getApellido() + " " + personaSeleccionada1.getId());
+            //Si hay alguien seleccionado y todavia no hay pasajero, se activa el boton
+            if(!pasajeroCargado)jButtonCargarPasajero.setEnabled(true);
+            //Si hay alguien seleccionado se activa el boton
+            jButtonCargarAcompañante.setEnabled(true);
+        }
     }//GEN-LAST:event_jTable1MouseClicked
 
     private void jButtonCargarAcompañanteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCargarAcompañanteActionPerformed
-        // TODO add your handling code here:
-        pasajerosDTO.get(row_selected).setCategoria("Acompañante");
-        //Agrego la persona a la tabla2 de personas cargadas
-        model2.agregarPersona(model.getDatos().get(row_selected));
-        model2.fireTableDataChanged();
-        //Elimino la persona de la tabla1 resultados de busqueda
-        pasajerosDTO.remove(personaSeleccionada1);
-        cargarPagina();
-        //Limpio la seleccion y desactivo los botones 
-        jTable1.clearSelection();
-        jButtonCargarAcompañante.setEnabled(false);
-        jButtonCargarPasajero.setEnabled(false);
+        //Ver si la persona ya figura como acompañante en alguna estadia en proceso
+        Boolean condicion = true;
+        for(EstadiaDTO e : estadiasDTO){
+            for(Integer i : e.getIdsPasajeroAcompañante()){
+                if(pasajerosDTO.get(row_selected1).getId().equals(i)){
+                    condicion = false;
+                    break; //Si ya se encuentra la persona, se sale del bucle
+                }
+            }
+        }
+        //Ver si la persona ya figura como acompañante en alguna estadia actual
+        /*
+           Se deben ver solo las estadias en proceso, es decir, aquellas cuya fecha de finalizacion se posterior
+           a la fecha actual y si en ellas existe la persona seleccionada como acompañante, esta no se puede cargar
+        */
+        if(condicion){
+            //Si no existe en la estadia en proceso, se busca en las ya creadas
+            condicion = gestorPersonas.NoExisteAcompañante(pasajerosDTO.get(row_selected1).getId());
+        }
+        
+        //Si no figura como acompañante se carga correctamente
+        if(condicion){
+            //La persona seleccionada se marca como acompañante
+            personaSeleccionada1.setCategoria("Acompañante");
+            //Agrego la persona a la tabla2 de personas cargadas
+            model2.agregarPersona(personaSeleccionada1);
+            model2.fireTableDataChanged();
+            //Elimino la persona de la lista de resultados de busqueda
+            pasajerosDTO.remove(personaSeleccionada1);
+            //Recargo la tabla1 sin la persona eliminada
+            model1.fireTableDataChanged();
+            
+            //Limpio la seleccion y desactivo los botones 
+            jTable1.clearSelection();
+            jButtonCargarAcompañante.setEnabled(false);
+            jButtonCargarPasajero.setEnabled(false);
+        }else{
+            Object opciones[] = {"Aceptar"};
+            JOptionPane.showOptionDialog(
+                null, 
+		"La persona seleccionada ya figura como acompañante en otra habitacion", 
+		"Persona invalida", 
+		JOptionPane.DEFAULT_OPTION, 
+		JOptionPane.INFORMATION_MESSAGE, 
+		null, 
+		opciones,
+		opciones[0]
+            );
+        }
     }//GEN-LAST:event_jButtonCargarAcompañanteActionPerformed
 
     private void jTable2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable2MouseClicked
-        // TODO add your handling code here:
+        //Captura las personas seleccionadas en la tabla2
         int filasSeleccionadas = jTable2.getSelectedRowCount();
         if(filasSeleccionadas == 1){
             row_selected2 = jTable2.getSelectedRow();
-            System.out.println(model2.getDatos().get(row_selected2).getApellido());
-            personaSeleccionada2 = model2.getDatos().get(row_selected2);
+            personaSeleccionada2 = model2.personaSelecionada(row_selected2);
+            System.out.println(personaSeleccionada2.getApellido() + " " + personaSeleccionada2.getId());         
             jButtonQuitar.setEnabled(true);
+        }
+        if(evt.getClickCount()==2){
+            System.out.println("Se ha hecho un doble click");
+            jButtonQuitar.doClick();
         }
     }//GEN-LAST:event_jTable2MouseClicked
 
     private void jButtonQuitarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonQuitarActionPerformed
-        // TODO add your handling code here:
         //Si elimino el pasajero, habilito para que se cargue otro
-        if(model2.getDatos().get(row_selected2).getCategoria().equals("Pasajero"))pasajeroCargado=false;
-        //Agrego la persona a la tabla1 de resultados de busqueda
+        if(personaSeleccionada2.getCategoria().equals("Pasajero"))pasajeroCargado=false;
+        //Agrego la persona a la tabla1 de resultados de busqueda y ordeno los datos
         pasajerosDTO.add(personaSeleccionada2);
         pasajerosDTO.sort((p1,p2) -> p1.compareTo(p2));
-        cargarPagina();
+        //Recargo la tabla1 para agregar a al persona seleccionada
+        model1.fireTableDataChanged();
         //Elimino la persona de la tabla2 de personas cargadas
         model2.quitarPersona(row_selected2);
+        //Recargo la tabla 2 para quitar la persona seleccionada
         model2.fireTableDataChanged();
         //Limpio la seleccion y desactivo el boton
         jTable2.clearSelection();
@@ -725,43 +685,163 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
 
     private void jButtonAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAceptarActionPerformed
         // TODO add your handling code here:
-        //Si se selecciono un pasajero se actualiza la informacion y el estado de las habitaciones
-        //Ademas se activan los demas botones y se desactiva este        
+        
+        //Si no se selecciono un pasajero se muestra el mensaje correspondiente y se pone el foco en resultados de busqueda
+        Boolean condicion = model2.getDatos().stream().filter(p -> p.getCategoria().equals("Pasajero")).collect(Collectors.toList()).isEmpty();
+        if(condicion){
+            Object opciones[] = {"Aceptar"};
+            JOptionPane.showOptionDialog(
+                null, 
+		"Por favor, seleccione un pasajero responsable para continuar", 
+		"Pasajero no seleccionado", 
+		JOptionPane.DEFAULT_OPTION, 
+		JOptionPane.INFORMATION_MESSAGE, 
+		null, 
+		opciones,
+		opciones[0]
+            );
+        }else{
+        //Si se selecciono un pasajero se actualiza la informacion
+        //Y se activan los demas botones        
         jButtonSeguir.setEnabled(true);
         jButtonCargarOtra.setEnabled(true);
         jButtonSalir.setEnabled(true);
         jButtonAceptar.setEnabled(false);
-        //Si no se selecciono un pasajero se muestra el mensaje correspondiente y se pone el foco en resultados de busqueda
+        
+        jButtonBuscar.setEnabled(false);
+        JTextApellido.setEnabled(false);
+        JTextNombre.setEnabled(false);
+        JTextDocumento.setEnabled(false);
+        jComboBoxTipoDoc.setEnabled(false);
+        jTable1.setEnabled(false);
+        jTable1.clearSelection();
+        jButtonCargarPasajero.setEnabled(false);
+        jButtonCargarAcompañante.setEnabled(false);
+        jTable2.setEnabled(false);
+        jTable2.clearSelection();
+        jButtonQuitar.setEnabled(false);
+        
+        jButtonSeguir.setNextFocusableComponent(jButtonCargarOtra);
+        }
     }//GEN-LAST:event_jButtonAceptarActionPerformed
 
     private void jButtonSeguirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSeguirActionPerformed
         // TODO add your handling code here:
         //Se vuelve el enfoque a la pestaña de criterios de busqueda y se limpian los textbox
+        jButtonSeguir.setEnabled(false);
+        jButtonCargarOtra.setEnabled(false);
+        jButtonSalir.setEnabled(false);
+        jButtonAceptar.setEnabled(true);
+        
+        jButtonBuscar.setEnabled(true);
+        JTextApellido.setEnabled(true);
+        JTextApellido.setText(null);
+        JTextNombre.setEnabled(true);
+        JTextNombre.setText(null);
+        JTextDocumento.setEnabled(true);
+        JTextDocumento.setText(null);
+        jComboBoxTipoDoc.setEnabled(true);
+        jTable1.setEnabled(true);
+        jTable2.setEnabled(true);
+        
+        jButtonSeguir.setNextFocusableComponent(JTextNombre);
     }//GEN-LAST:event_jButtonSeguirActionPerformed
 
     private void jButtonCargarOtraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCargarOtraActionPerformed
         // TODO add your handling code here:
+        
+        //Se capturan los datos de la interfaz actual
+        Integer idPasajeroResponsable = null;     
+        for (PersonaFisicaDTO p : model2.getDatos()) {
+            if(p.getCategoria().equals("Pasajero")){
+                idPasajeroResponsable = p.getId();
+            }            
+        }
+        List<Integer> idPasajerosAcompañantes = new ArrayList<>();  
+        model2.getDatos().stream().filter(p -> (p.getCategoria().equals("Acompañante"))).forEachOrdered(p -> {
+            idPasajerosAcompañantes.add(p.getId());
+        });
+        
+        estadiaDTOactual.setIdPasajeroResponsable(idPasajeroResponsable);
+        estadiaDTOactual.setIdsPasajeroAcompañante(idPasajerosAcompañantes);
+        estadiasDTO.add(estadiaDTOactual);
+        
         //Se pasa a la interfaz "Mostrar estado de Habitaciones"
+        frame.cambiarPanel(VentanaPrincipal.PANE_OCUPAR_HABITACION);
+        
     }//GEN-LAST:event_jButtonCargarOtraActionPerformed
 
     private void jButtonSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSalirActionPerformed
         // TODO add your handling code here:
         //Se actualiza la informacion y el estado de las habitaciones seleccionadas
+        
+        //Se capturan los datos de la interfaz actual
+        Integer idPasajeroResponsable = null;     
+        for (PersonaFisicaDTO p : model2.getDatos()) {
+            if(p.getCategoria().equals("Pasajero")){
+                idPasajeroResponsable = p.getId();
+            }            
+        }
+        List<Integer> idPasajerosAcompañantes = new ArrayList<>();  
+        model2.getDatos().stream().filter(p -> (p.getCategoria().equals("Acompañante"))).forEachOrdered(p -> {
+            idPasajerosAcompañantes.add(p.getId());
+        });
+        
+        estadiaDTOactual.setIdPasajeroResponsable(idPasajeroResponsable);
+        estadiaDTOactual.setIdsPasajeroAcompañante(idPasajerosAcompañantes);
+        estadiasDTO.add(estadiaDTOactual);
+        
+        //Se crean las estadias
+        gestorAlojamientos.OcuparHabitacion(estadiasDTO);
+        
+        //Termina el caso de uso
+        try {
+            frame.cambiarPanel(VentanaPrincipal.PANE_MENU_PRINCIPAL);
+            Object opciones[] = {"Aceptar"};
+            JOptionPane.showOptionDialog(
+                null, 
+		"Las estadias fueron creadas correctamente", 
+		"Ocupacion existosa", 
+		JOptionPane.DEFAULT_OPTION, 
+		JOptionPane.INFORMATION_MESSAGE, 
+		null, 
+		opciones,
+		opciones[0]
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+       
+        //Limpias la lista de estadias por crear 
+        limpiarEstadias();
     }//GEN-LAST:event_jButtonSalirActionPerformed
 
     private void jButtonCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelarActionPerformed
-        // TODO add your handling code here:
-        //Se retorna a la interfaz anterior
-        frame.cambiarPanel(VentanaPrincipal.PANE_MENU_PRINCIPAL);
+        Object[] options = { "No", "Si"};
+        int opcion = JOptionPane.showOptionDialog(null, "¿Esta seguro de cancelar la ocupación?", "Cancelar ocupación",
+                     JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+        if(opcion == 1) {
+            //Se retorna a la interfaz anterior
+            System.out.println("Volver al menu principal");
+            frame.cambiarPanel(VentanaPrincipal.PANE_MENU_PRINCIPAL);
+            //Se limpia la lista de estadias por crear 
+            limpiarEstadias();
+        } else System.out.println("Seguir con la ocupación");
     }//GEN-LAST:event_jButtonCancelarActionPerformed
+
+    private void JTextDocumentoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JTextDocumentoKeyTyped
+        //Para que se ingrese solo valores numericos
+        char c = evt.getKeyChar();
+        if(!Character.isDigit(c)){
+            evt.consume();
+        }
+    }//GEN-LAST:event_JTextDocumentoKeyTyped
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField JTextApellido;
     private javax.swing.JTextField JTextDocumento;
     private javax.swing.JTextField JTextNombre;
-    private javax.swing.JButton bAdelante;
-    private javax.swing.JButton bAtras;
     private javax.swing.Box.Filler filler1;
     private javax.swing.Box.Filler filler2;
     private javax.swing.Box.Filler filler3;
@@ -794,6 +874,5 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
-    private javax.swing.JLabel lPag;
     // End of variables declaration//GEN-END:variables
 }

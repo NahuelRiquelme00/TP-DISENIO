@@ -30,6 +30,10 @@ public class PasajerosTableModel2 extends AbstractTableModel {
         datos.add(e);
     }
     
+    public PersonaFisicaDTO personaSelecionada(int r){
+        return datos.get(r);
+    }
+    
     public void quitarPersona(int i){
         datos.remove(i);
     }
