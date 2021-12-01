@@ -27,7 +27,7 @@
                   <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                   <Component id="panelRangoFechas" min="-2" pref="1070" max="-2" attributes="0"/>
                   <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
-                  <Component id="panelDatosHabitaciones" alignment="0" min="-2" pref="1070" max="-2" attributes="0"/>
+                  <Component id="scrollPaneEstadoHabitaciones" alignment="0" min="-2" pref="1070" max="-2" attributes="0"/>
                   <Group type="102" attributes="0">
                       <Component id="cuadOcupada" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
@@ -64,39 +64,32 @@
               <EmptySpace min="18" pref="18" max="-2" attributes="0"/>
               <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
-              <Component id="panelDatosHabitaciones" min="-2" pref="568" max="-2" attributes="0"/>
+              <Component id="scrollPaneEstadoHabitaciones" min="-2" pref="568" max="-2" attributes="0"/>
               <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <EmptySpace min="1" pref="1" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="cuadOcupada" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="lblOcupada" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                  </Group>
-                  <Group type="102" attributes="0">
-                      <EmptySpace min="1" pref="1" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="lblReservada" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="cuadReservada" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                  </Group>
-                  <Group type="102" attributes="0">
-                      <EmptySpace min="1" pref="1" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="cuadDisponible" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="lblDisponible" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                  </Group>
-                  <Group type="102" attributes="0">
-                      <EmptySpace min="1" pref="1" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="cuadFueraDeServicio" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="lblFueraDeServicio" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                  </Group>
                   <Component id="siguiente" min="-2" max="-2" attributes="0"/>
                   <Component id="cancelar" min="-2" max="-2" attributes="0"/>
+                  <Group type="102" attributes="0">
+                      <EmptySpace min="1" pref="1" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="cuadOcupada" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="lblOcupada" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="lblReservada" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="cuadReservada" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="cuadDisponible" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="lblDisponible" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="cuadFueraDeServicio" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="lblFueraDeServicio" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                  </Group>
               </Group>
           </Group>
       </Group>
@@ -223,8 +216,8 @@
     </Component>
     <Component class="javax.swing.JLabel" name="cuadOcupada">
       <Properties>
-        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="0" green="0" red="ff" type="rgb"/>
+        <Property name="background" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="TablaColoreada.COLOR_OCUPADA" type="code"/>
         </Property>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Segoe UI" size="18" style="0"/>
@@ -237,8 +230,8 @@
     </Component>
     <Component class="javax.swing.JLabel" name="cuadReservada">
       <Properties>
-        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="0" green="ff" red="ff" type="rgb"/>
+        <Property name="background" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="TablaColoreada.COLOR_RESERVADA" type="code"/>
         </Property>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Segoe UI" size="18" style="0"/>
@@ -251,8 +244,8 @@
     </Component>
     <Component class="javax.swing.JLabel" name="cuadDisponible">
       <Properties>
-        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="18" green="db" red="63" type="rgb"/>
+        <Property name="background" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="TablaColoreada.COLOR_DISPONIBLE" type="code"/>
         </Property>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Segoe UI" size="18" style="0"/>
@@ -265,8 +258,8 @@
     </Component>
     <Component class="javax.swing.JLabel" name="cuadFueraDeServicio">
       <Properties>
-        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="ff" green="0" red="0" type="rgb"/>
+        <Property name="background" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="TablaColoreada.COLOR_FUERA_DE_SERVICIO" type="code"/>
         </Property>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Segoe UI" size="18" style="0"/>
@@ -285,14 +278,14 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="siguienteActionPerformed"/>
       </Events>
     </Component>
-    <Container class="javax.swing.JScrollPane" name="panelDatosHabitaciones">
+    <Container class="javax.swing.JScrollPane" name="scrollPaneEstadoHabitaciones">
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
         <Component class="javax.swing.JTable" name="tablaEstadoHabitaciones">
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="modeloTabla" type="code"/>
+              <Connection code="modeloTablaEstadoHabitaciones" type="code"/>
             </Property>
             <Property name="autoResizeMode" type="int" value="0"/>
             <Property name="cellSelectionEnabled" type="boolean" value="true"/>
@@ -306,9 +299,9 @@
             <Property name="selectionForeground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="0" green="0" red="0" type="rgb"/>
             </Property>
-            <Property name="selectionMode" type="int" value="2"/>
+            <Property name="selectionMode" type="int" value="0"/>
             <Property name="selectionModel" type="javax.swing.ListSelectionModel" editor="org.netbeans.modules.form.editors2.JTableSelectionModelEditor">
-              <JTableSelectionModel selectionMode="2"/>
+              <JTableSelectionModel selectionMode="1"/>
             </Property>
             <Property name="showGrid" type="boolean" value="true"/>
             <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
@@ -317,8 +310,8 @@
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new TablaColoreada()&#xa;"/>
-            <AuxValue name="JavaCodeGenerator_DeclarationPost" type="java.lang.String" value="private javax.swing.table.DefaultTableModel modeloTabla;"/>
-            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="modeloTabla = new DefaultTableModel() { // https://stackoverflow.com/questions/1990817/how-to-make-a-jtable-non-editable&#xa;    @Override&#xa;    public boolean isCellEditable(int row, int column) {&#xa;       return false;&#xa;    }&#xa;};"/>
+            <AuxValue name="JavaCodeGenerator_DeclarationPost" type="java.lang.String" value="private javax.swing.table.DefaultTableModel modeloTablaEstadoHabitaciones;"/>
+            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="modeloTablaEstadoHabitaciones = new DefaultTableModel() { // https://stackoverflow.com/questions/1990817/how-to-make-a-jtable-non-editable&#xa;    @Override&#xa;    public boolean isCellEditable(int row, int column) {&#xa;       return false;&#xa;    }&#xa;};"/>
           </AuxValues>
         </Component>
       </SubComponents>

@@ -5,7 +5,11 @@
  */
 package interfaces;
 
+import interfaces.mostrarEstadoHabitacion.PanelMostrarEstadoHabitacion;
 import java.awt.Container;
+import java.time.LocalDate;
+import java.util.LinkedList;
+import misc.Tripleta;
 
 /**
  *
@@ -29,7 +33,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         previousPane = this.getContentPane();
         switch(panel){
             case PANE_MENU_PRINCIPAL:
-                this.setContentPane(new PanelMostrarEstadoHabitacion(false));
+                this.setContentPane(new PanelMostrarEstadoHabitacion(false, new LinkedList<Tripleta<Integer, LocalDate, LocalDate>>()));
                 this.setSize(1110,810);
                 //this.setContentPane(new PanelMenuPrincipal(this));
                 this.setTitle("Menú principal");
