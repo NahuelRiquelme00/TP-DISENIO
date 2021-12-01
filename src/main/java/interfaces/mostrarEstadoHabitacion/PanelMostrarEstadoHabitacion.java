@@ -65,12 +65,8 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel
     
     public PanelMostrarEstadoHabitacion(boolean paraReservar, List<Tripleta<Integer, LocalDate, LocalDate>> repintar) 
     {
-        this.paraReservar = true;//paraReservar;
+        this.paraReservar = paraReservar;
         this.reservasUOcupacionesAdicionales = repintar;
-        /*
-        this.repintar = new LinkedList<Tripleta<Integer, LocalDate, LocalDate>>();
-        this.repintar.add(new Tripleta<Integer, LocalDate, LocalDate>(1, LocalDate.now(), LocalDate.now().plusDays(3)));
-        */
         gesAl = GestorDeAlojamientos.getInstance();
         
         initComponents();
