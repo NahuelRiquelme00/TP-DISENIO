@@ -37,7 +37,7 @@ import misc.Tripleta;
 public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel 
 {
     private boolean paraReservar; // Reservar: true; ocupar: false
-    List<Tripleta<Integer, LocalDate, LocalDate>> repintar; // Mismo formato que "resultado"
+    List<Tripleta<Integer, LocalDate, LocalDate>> reservasUOcupacionesAdicionales; // Mismo formato que "resultado"
     
     private GestorDeAlojamientos gesAl;
     private Map<LocalDate, HashMap<Integer, TipoEstado>> estadosHabitaciones;
@@ -65,8 +65,8 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel
     
     public PanelMostrarEstadoHabitacion(boolean paraReservar, List<Tripleta<Integer, LocalDate, LocalDate>> repintar) 
     {
-        this.paraReservar = paraReservar;
-        this.repintar = repintar;
+        this.paraReservar = true;//paraReservar;
+        this.reservasUOcupacionesAdicionales = repintar;
         /*
         this.repintar = new LinkedList<Tripleta<Integer, LocalDate, LocalDate>>();
         this.repintar.add(new Tripleta<Integer, LocalDate, LocalDate>(1, LocalDate.now(), LocalDate.now().plusDays(3)));
@@ -77,7 +77,7 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel
         this.configurarSeleccion();
         this.configurarTabla();
         dcFechaDesde.setDate(new Date(System.currentTimeMillis()));
-        this.completarTabla(LocalDate.now(), LocalDate.now().plusDays(7));
+        this.pintarTabla(LocalDate.now(), LocalDate.now().plusDays(7));
     }
     
     private void configurarSeleccion()
@@ -159,12 +159,12 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel
         // https://www.baeldung.com/java-datetimeformatter
         fila[0] = FORMATTER.format(fecha);   
         for (int j = 0; j < idHabsTabla.size(); j++)
-            fila[j + 1] = this.getColorGrilla(estadosHabitaciones.get(fecha).get(idHabsTabla.get(j)));
+            fila[j + 1] = TablaColoreada.getColorGrilla(estadosHabitaciones.get(fecha).get(idHabsTabla.get(j)));
         
         return fila;
     }
     
-    private void completarTabla(LocalDate fechaIni, LocalDate fechaFin)
+    private void pintarTabla(LocalDate fechaIni, LocalDate fechaFin)
     {
         fechasTabla = new LinkedList<>();
         fechasAIndFechasTabla = new HashMap<>();
@@ -181,9 +181,16 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel
             fechasAIndFechasTabla.put(fechaIni.plusDays(i), i);     // fecha -> ind    ; f^(-1)
         }
         
-        // Completar con datos pasados por el panel Ocupar Habitacion
+        modeloTablaEstadoHabitaciones.fireTableDataChanged();
+        
+        // Completar con los datos adicionales
+        this.repintarTabla(reservasUOcupacionesAdicionales);
+    }
+    
+    private void repintarTabla(List<Tripleta<Integer, LocalDate, LocalDate>> l)
+    {
         int iIni, iFin, i;
-        for (Tripleta<Integer, LocalDate, LocalDate> t : repintar)
+        for (Tripleta<Integer, LocalDate, LocalDate> t : l)
         {
             iIni = fechasAIndFechasTabla.get(t.segundo);
             iFin = fechasAIndFechasTabla.get(t.tercero);
@@ -200,36 +207,9 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel
             }
         }
         
-        // Actualizar tabla
         modeloTablaEstadoHabitaciones.fireTableDataChanged();
     }
-    
-    private Color getColorGrilla(TipoEstado est)
-    {
-        Color res;
         
-        switch(est)
-        {
-            case DISPONIBLE: 
-                res = TablaColoreada.COLOR_DISPONIBLE;
-                break;
-            case RESERVADA:
-                res = TablaColoreada.COLOR_RESERVADA;
-                break;
-            case OCUPADA:
-                res = TablaColoreada.COLOR_OCUPADA;
-                break;
-            case FUERA_DE_SERVICIO:
-                res = TablaColoreada.COLOR_FUERA_DE_SERVICIO;
-                break;
-            default: // No se deberia llegar aca
-                res = TablaColoreada.COLOR_ERROR;
-                break;
-        }
-        
-        return res;
-    }
-    
     /*
         En la dupla:
             primero: habitaciones y rango de fechas validos
@@ -243,15 +223,6 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel
         
         filasSelec = this.arrToList(tablaEstadoHabitaciones.getSelectedRows()); 
         colsSelec = this.arrToList(tablaEstadoHabitaciones.getSelectedColumns());
-        
-        // No necesario. FixedColumnTable elimina de la tabla original las cols. filas
-        /*
-        // Salvar el problema de la fecha en la primera columna
-        Integer colFechas = 0;
-        colsSelec.remove(colFechas);
-        for (j = 0; j < colsSelec.size(); j++) 
-            colsSelec.set(j, colsSelec.get(j) - 1);
-        */
         
         if (filasSelec.size() > 0 && colsSelec.size() > 0)
         {
@@ -384,6 +355,9 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel
             return this;
         }
     }
+    
+    // ---------------------------------------------------------------------------------------------------------------------------------------------
+    // Eventos y codigo autogenerado:
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -647,79 +621,122 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel
             lblFechaDesde.setForeground(Color.BLACK);
             lblFechaHasta.setForeground(Color.BLACK);
             
-            this.completarTabla(ldFechaDesde, ldFechaHasta);
+            this.pintarTabla(ldFechaDesde, ldFechaHasta);
         }
     }//GEN-LAST:event_buscarActionPerformed
 
     private void siguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_siguienteActionPerformed
-        
+
+        if (paraReservar)
+            this.siguienteReservar();
+        else
+            this.siguienteOcupar();
+    }//GEN-LAST:event_siguienteActionPerformed
+
+    private void siguienteReservar()
+    {
         Dupla<Boolean, Boolean> disponibilidad = this.verificarDisponibilidad();
         
         if (!disponibilidad.primero) // i.e. rango de fechas y habitaciones invalido
         {
-            if (paraReservar)
-                JOptionPane.showMessageDialog(
-                    null, 
-                    "Selección inválida. No todas las habitaciones están disponibles para todo el rango de fechas escogido.", 
-                    "Error", 
-                    JOptionPane.ERROR_MESSAGE
-                );
-            else // i.e. ocupar
-                JOptionPane.showMessageDialog(
-                    null, 
-                    "Selección inválida. La habitación no está disponible o reservada para todo el rango de fechas escogido.", 
-                    "Error", 
-                    JOptionPane.ERROR_MESSAGE
-                );
+            JOptionPane.showMessageDialog(
+                null, 
+                "Selección inválida. No todas las habitaciones están disponibles para todo el rango de fechas escogido.", 
+                "Error", 
+                JOptionPane.ERROR_MESSAGE
+            );
         }
         else
         {
-            if (paraReservar)
-                this.calcularResultado();
-            else
+            this.calcularResultado();
+            this.repintarTabla(resultado);
+
+            // No parece poder hacerse el "presione cualquier tecla para continuar"
+            // https://stackoverflow.com/questions/19870467/how-do-i-get-press-any-key-to-continue-to-work-in-my-java-code/25095049
+            JOptionPane.showInternalMessageDialog(
+                null, 
+                "Habitación reservada exitosamente.",
+                "",
+                JOptionPane.INFORMATION_MESSAGE
+            );       
+        }
+    }
+    
+    private void siguienteOcupar()
+    {
+        Dupla<Boolean, Boolean> disponibilidad = this.verificarDisponibilidad();
+        
+        if (!disponibilidad.primero) // i.e. rango de fechas y habitaciones invalido
+        {    
+            JOptionPane.showMessageDialog(
+                null, 
+                "Selección inválida. La habitación no está disponible o reservada para todo el rango de fechas escogido.", 
+                "Error", 
+                JOptionPane.ERROR_MESSAGE
+            );
+        }
+        else
+        {
+            if (disponibilidad.segundo) // i.e. se tapa una reserva
             {
-                if (disponibilidad.segundo) // i.e. se tapa una reserva
+                Object[] opciones = {"Ocupar igual", "Volver"};
+                int indOpcionElegida = JOptionPane.showOptionDialog(
+                    null, 
+                    "Se engloba una reserva para la habitación y rango de fecha escogidos. ¿Desea ocupar igualmente?",
+                    "Cuidado",
+                    JOptionPane.DEFAULT_OPTION,
+                    JOptionPane.WARNING_MESSAGE,
+                    null,
+                    opciones,
+                    opciones[1]
+                );
+
+                if (indOpcionElegida == 0) // i.e. "Ocupar igual"; cerrar el panel actual, volver
                 {
-                    Object[] opciones = {"Ocupar igual", "Volver"};
-                    int indOpcionElegida = JOptionPane.showOptionDialog(
-                        null, 
-                        "Se engloba una reserva para la habitación y rango de fecha escogidos. ¿Desea ocupar igualmente?",
-                        "Cuidado",
-                        JOptionPane.DEFAULT_OPTION,
-                        JOptionPane.WARNING_MESSAGE,
-                        null,
-                        opciones,
-                        opciones[1]
-                    );
-                
-                    if (indOpcionElegida == 0) // i.e. cerrar el panel actual, volver
-                    {
-                        this.calcularResultado();
-                        // TODO pendiente ver como conectar
-                    }
-                }
-                else  // i.e. cerrar el panel actual, volver
-                {    
                     this.calcularResultado();
+                    this.repintarTabla(resultado);
+
+                    JOptionPane.showInternalMessageDialog(
+                        null, 
+                        "Habitación ocupada exitosamente.", 
+                        "", 
+                        JOptionPane.INFORMATION_MESSAGE
+                    );
+                    
                     // TODO pendiente ver como conectar
                 }
             }
-        }
-    }//GEN-LAST:event_siguienteActionPerformed
+            else  // i.e. cerrar el panel actual, volver
+            {    
+                this.calcularResultado();
+                this.repintarTabla(resultado);
 
+                JOptionPane.showInternalMessageDialog(
+                    null, 
+                    "Habitación ocupada exitosamente.", 
+                    "", 
+                    JOptionPane.INFORMATION_MESSAGE
+                );
+                // TODO pendiente ver como conectar
+            }
+        }
+    }
+    
     private void cancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelarActionPerformed
         // TODO pendiente ver como conectar
     }//GEN-LAST:event_cancelarActionPerformed
 
     private void dcFechaDesdePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_dcFechaDesdePropertyChange
-        if (dcFechaHasta.getDate() == null || dcFechaHasta.getDate().before(dcFechaDesde.getDate()))
-            dcFechaHasta.setDate(new Date(dcFechaDesde.getDate().getTime() + ADELANTO_DIAS * 24 * 60 * 60 * 1000));        
+        if (dcFechaHasta.getDate() == null)// || dcFechaHasta.getDate().before(dcFechaDesde.getDate()))
+            dcFechaHasta.setDate(new Date(dcFechaDesde.getDate().getTime() + ADELANTO_DIAS * 24 * 60 * 60 * 1000));
     }//GEN-LAST:event_dcFechaDesdePropertyChange
 
     private void dcFechaHastaPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_dcFechaHastaPropertyChange
+        /*
         if (dcFechaHasta.getDate() != null)
             if (dcFechaHasta.getDate().before(dcFechaDesde.getDate()))
                 dcFechaHasta.setDate(new Date(dcFechaDesde.getDate().getTime() + ADELANTO_DIAS * 24 * 60 * 60 * 1000));
+        */
     }//GEN-LAST:event_dcFechaHastaPropertyChange
 
 
