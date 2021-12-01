@@ -2,11 +2,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-package interfaces;
+package interfaces.mostrarEstadoHabitacion;
 
 import entidades.TipoEstado;
 import gestores.GestorDeAlojamientos;
 import java.awt.Color;
+import java.awt.Component;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -17,13 +18,15 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
-import misc.GroupableTableHeader;
-import misc.ColumnGroup;
 import misc.Dupla;
 import misc.Tripleta;
 
@@ -31,17 +34,20 @@ import misc.Tripleta;
  *
  * @author Federico Pacheco
  */
-public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
-
+public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel 
+{
     private boolean paraReservar; // Reservar: true; ocupar: false
+    List<Tripleta<Integer, LocalDate, LocalDate>> repintar; // Mismo formato que "resultado"
     
     private GestorDeAlojamientos gesAl;
     private Map<LocalDate, HashMap<Integer, TipoEstado>> estadosHabitaciones;
     
-    private List<Integer> filasSelec = null;
-    private List<Integer> colsSelec = null;
-    private List<Integer> idHabsTabla = null;
-    private List<LocalDate> fechasTabla = null;
+    FixedColumnTable tablaFechaYEstadoHabitaciones;
+    private List<Integer> filasSelec;
+    private List<Integer> colsSelec;
+    private List<Integer> idHabsTabla;
+    private List<LocalDate> fechasTabla;
+    private Map<LocalDate, Integer> fechasAIndFechasTabla; 
     
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static final int ADELANTO_DIAS = 7; // i.e. cuantos dias extras se suman a fecha desde para obtener fecha hasta 
@@ -56,40 +62,62 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
     private List<Tripleta<Integer, LocalDate, LocalDate>> resultado = null;
     
     
-    public PanelMostrarEstadoHabitacion(boolean paraReservar) 
+    
+    public PanelMostrarEstadoHabitacion(boolean paraReservar, List<Tripleta<Integer, LocalDate, LocalDate>> repintar) 
     {
-        initComponents();
-        gesAl = GestorDeAlojamientos.getInstance();
         this.paraReservar = paraReservar;
+        this.repintar = repintar;
+        /*
+        this.repintar = new LinkedList<Tripleta<Integer, LocalDate, LocalDate>>();
+        this.repintar.add(new Tripleta<Integer, LocalDate, LocalDate>(1, LocalDate.now(), LocalDate.now().plusDays(3)));
+        */
+        gesAl = GestorDeAlojamientos.getInstance();
         
-        armarTabla();
+        initComponents();
+        this.configurarSeleccion();
+        this.configurarTabla();
         dcFechaDesde.setDate(new Date(System.currentTimeMillis()));
         this.completarTabla(LocalDate.now(), LocalDate.now().plusDays(7));
     }
+    
+    private void configurarSeleccion()
+    {
+        // Seleccionar solo un rango de fechas
+        // Nota: calcular resultado fue programado para el caso mas general, discontinuo con MULTIPLE_INTERVAL_SELECTION
+        tablaEstadoHabitaciones.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);  
+           
+        if (paraReservar)
+            // Seleccionar multiples habitaciones
+            tablaEstadoHabitaciones.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        else
+            // Seleccionar solo una habitacion
+            tablaEstadoHabitaciones.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION); 
+    }
 
-    private void armarTabla() 
+    private void configurarTabla() 
     {
         List<Dupla<String, LinkedList<Integer>>> tiposYHabitaciones = gesAl.getTiposYHabitaciones();
         
+        // Encabezados tipos de habitacion
+        modeloTablaEstadoHabitaciones.addColumn("Fecha / Habitación");
         // Columnas "H(...)"
         idHabsTabla = new LinkedList<>();
-        modeloTabla.addColumn("Fecha");
         for (Dupla<String, LinkedList<Integer>> d : tiposYHabitaciones) // (Tristemente) deben colocarse las columnas por anticipado 
         {
             for (Integer habNro : d.segundo) 
             {
                 idHabsTabla.add(habNro);
-                modeloTabla.addColumn("H" + habNro);
+                modeloTablaEstadoHabitaciones.addColumn("H" + habNro);
             }
         }
         
-        // Encabezados tipos de habitacion
         TableColumnModel colMod = tablaEstadoHabitaciones.getColumnModel();
         GroupableTableHeader header = (GroupableTableHeader) tablaEstadoHabitaciones.getTableHeader();
+        ColumnGroup colGr;
         int j = 1;  
         for (Dupla<String, LinkedList<Integer>> d : tiposYHabitaciones)
         {
-            ColumnGroup colGr = new ColumnGroup(d.primero);
+            colGr = new ColumnGroup(d.primero);
             if (d.segundo.size() > 0)
             {
                 for (Integer habNro : d.segundo)
@@ -101,11 +129,27 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
             }
         }
         
-        // Centrar fechas
+        // Centrar fechas de las filas
         // https://stackoverflow.com/questions/7433602/how-to-center-in-jtable-cell-a-value
         DefaultTableCellRenderer rend = new DefaultTableCellRenderer();
         rend.setHorizontalAlignment(SwingConstants.CENTER);
         tablaEstadoHabitaciones.getColumnModel().getColumn(0).setCellRenderer(rend);
+        
+        // Pintar encabezado "Fechas / Habitaciones"
+        tablaEstadoHabitaciones.getColumnModel().getColumn(0).setHeaderRenderer(new FechaHabitacionesHeaderRenderer());
+        
+        // Ampliar tamanio "Fechas / Habitaciones"
+        tablaEstadoHabitaciones.getColumnModel().getColumn(0).setPreferredWidth(110);
+        
+        // Fijar fechas a la izquierda
+        tablaFechaYEstadoHabitaciones = new FixedColumnTable(1, scrollPaneEstadoHabitaciones);
+        tablaFechaYEstadoHabitaciones.getFixedTable().setCellSelectionEnabled(false); // Hacer a las fechas no seleccionables
+        tablaFechaYEstadoHabitaciones.getFixedTable().setRowHeight(25); // Misma altura de las filas de tablaEstadoHabitaciones       
+        tablaFechaYEstadoHabitaciones.getFixedTable().getTableHeader().setReorderingAllowed(false); // Evitar que la col. de las fechas pueda moverse con el mouse
+    
+        // Fijar tamanios columnas
+        tablaFechaYEstadoHabitaciones.getFixedTable().getTableHeader().setResizingAllowed(false);
+        tablaEstadoHabitaciones.getTableHeader().setResizingAllowed(false);
     }
     
     private Object[] getFila(Map<LocalDate, HashMap<Integer, TipoEstado>> estadosHabitaciones, LocalDate fecha)
@@ -113,7 +157,7 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
         Object[] fila = new Object[idHabsTabla.size() + 1];
         
         // https://www.baeldung.com/java-datetimeformatter
-        fila[0] = FORMATTER.format(fecha);
+        fila[0] = FORMATTER.format(fecha);   
         for (int j = 0; j < idHabsTabla.size(); j++)
             fila[j + 1] = this.getColorGrilla(estadosHabitaciones.get(fecha).get(idHabsTabla.get(j)));
         
@@ -123,22 +167,46 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
     private void completarTabla(LocalDate fechaIni, LocalDate fechaFin)
     {
         fechasTabla = new LinkedList<>();
+        fechasAIndFechasTabla = new HashMap<>();
         
+        // Completar con datos de la DB
         estadosHabitaciones = gesAl.getEstadosHabitaciones(fechaIni, fechaFin);
         int cantDias = (int) fechaIni.until(fechaFin, ChronoUnit.DAYS) + 1;
-            
-        modeloTabla.setRowCount(0); // Eliminar datos anteriores
+        modeloTablaEstadoHabitaciones.setRowCount(0); // Eliminar datos anteriores
         for (int i = 0; i < cantDias; i++)
         {
-            modeloTabla.addRow(this.getFila(estadosHabitaciones, fechaIni.plusDays(i)));
-            fechasTabla.add(fechaIni.plusDays(i));
+            modeloTablaEstadoHabitaciones.addRow(this.getFila(estadosHabitaciones, fechaIni.plusDays(i)));
+            
+            fechasTabla.add(fechaIni.plusDays(i));                  // ind   -> fecha  ; f
+            fechasAIndFechasTabla.put(fechaIni.plusDays(i), i);     // fecha -> ind    ; f^(-1)
         }
-        modeloTabla.fireTableDataChanged();
+        
+        // Completar con datos pasados por el panel Ocupar Habitacion
+        int iIni, iFin, i;
+        for (Tripleta<Integer, LocalDate, LocalDate> t : repintar)
+        {
+            iIni = fechasAIndFechasTabla.get(t.segundo);
+            iFin = fechasAIndFechasTabla.get(t.tercero);
+            for (i = iIni; i <= iFin; i++)
+            {
+                modeloTablaEstadoHabitaciones.setValueAt(
+                    paraReservar? TablaColoreada.COLOR_RESERVADA : TablaColoreada.COLOR_OCUPADA,
+                    i, 
+                    t.primero // i.e. j
+                );
+                
+                estadosHabitaciones.get(t.segundo.plusDays(i - iIni))
+                    .put(t.primero, paraReservar? TipoEstado.RESERVADA : TipoEstado.OCUPADA);
+            }
+        }
+        
+        // Actualizar tabla
+        modeloTablaEstadoHabitaciones.fireTableDataChanged();
     }
     
-    private int getColorGrilla(TipoEstado est)
+    private Color getColorGrilla(TipoEstado est)
     {
-        int res;
+        Color res;
         
         switch(est)
         {
@@ -176,12 +244,14 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
         filasSelec = this.arrToList(tablaEstadoHabitaciones.getSelectedRows()); 
         colsSelec = this.arrToList(tablaEstadoHabitaciones.getSelectedColumns());
         
+        // No necesario. FixedColumnTable elimina de la tabla original las cols. filas
+        /*
         // Salvar el problema de la fecha en la primera columna
         Integer colFechas = 0;
         colsSelec.remove(colFechas);
         for (j = 0; j < colsSelec.size(); j++) 
             colsSelec.set(j, colsSelec.get(j) - 1);
-       
+        */
         
         if (filasSelec.size() > 0 && colsSelec.size() > 0)
         {
@@ -275,7 +345,7 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
         System.out.println("Resultado: " + resultado);
     }
 
-    // ------------------------------------------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------------------------------------------------------------------------
     // Auxiliares:
     
     // No hay otra forma sencilla. Arrays.asList() no funciona bien.
@@ -288,7 +358,33 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
     }
 
     public List<Tripleta<Integer, LocalDate, LocalDate>> getResultado() { return resultado; }
+    
+    
+    /*
+        Clase auxiliar al encabezado "Fecha / Habitaciones". 
+        Idea recuperada de: https://www.codejava.net/java-se/swing/jtable-column-header-custom-renderer-examples
+        No funcionan bien:
+            tablaEstadoHabitaciones.getTableHeader().setBackground(new Color(187,187,187));     (pinta solo los otros encabezados)
+            tablaFechaYEstadoHabitaciones.getFixedTable().getTableHeader().setBackground(new Color(187,187,187));   (pinta solo el borde)
+    */
+    public class FechaHabitacionesHeaderRenderer extends JLabel implements TableCellRenderer 
+    {
+        public FechaHabitacionesHeaderRenderer() 
+        {
+            super();
+            this.setBackground(new Color(187,187,187)); // Gris "suave"
+        }
 
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) 
+        {
+            this.setText(value.toString());
+            this.setHorizontalAlignment(SwingConstants.CENTER);
+            this.setBorder(UIManager.getBorder("TableHeader.cellBorder"));
+            return this;
+        }
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -317,7 +413,7 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
         cuadDisponible = new javax.swing.JLabel();
         cuadFueraDeServicio = new javax.swing.JLabel();
         siguiente = new javax.swing.JButton();
-        panelDatosHabitaciones = new javax.swing.JScrollPane();
+        scrollPaneEstadoHabitaciones = new javax.swing.JScrollPane();
         tablaEstadoHabitaciones = new TablaColoreada()
         ;
 
@@ -407,22 +503,22 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
 
         lblReservada.setText("Reservada");
 
-        cuadOcupada.setBackground(new java.awt.Color(255, 0, 0));
+        cuadOcupada.setBackground(TablaColoreada.COLOR_OCUPADA);
         cuadOcupada.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         cuadOcupada.setForeground(new java.awt.Color(255, 0, 0));
         cuadOcupada.setText("■");
 
-        cuadReservada.setBackground(new java.awt.Color(255, 255, 0));
+        cuadReservada.setBackground(TablaColoreada.COLOR_RESERVADA);
         cuadReservada.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         cuadReservada.setForeground(new java.awt.Color(255, 255, 0));
         cuadReservada.setText("■");
 
-        cuadDisponible.setBackground(new java.awt.Color(99, 219, 24));
+        cuadDisponible.setBackground(TablaColoreada.COLOR_DISPONIBLE);
         cuadDisponible.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         cuadDisponible.setForeground(new java.awt.Color(99, 219, 24));
         cuadDisponible.setText("■");
 
-        cuadFueraDeServicio.setBackground(new java.awt.Color(0, 0, 255));
+        cuadFueraDeServicio.setBackground(TablaColoreada.COLOR_FUERA_DE_SERVICIO);
         cuadFueraDeServicio.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         cuadFueraDeServicio.setForeground(new java.awt.Color(0, 0, 255));
         cuadFueraDeServicio.setText("■");
@@ -434,22 +530,22 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
             }
         });
 
-        modeloTabla = new DefaultTableModel() { // https://stackoverflow.com/questions/1990817/how-to-make-a-jtable-non-editable
+        modeloTablaEstadoHabitaciones = new DefaultTableModel() { // https://stackoverflow.com/questions/1990817/how-to-make-a-jtable-non-editable
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
-        tablaEstadoHabitaciones.setModel(modeloTabla);
+        tablaEstadoHabitaciones.setModel(modeloTablaEstadoHabitaciones);
         tablaEstadoHabitaciones.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         tablaEstadoHabitaciones.setCellSelectionEnabled(true);
         tablaEstadoHabitaciones.setRowHeight(25);
         tablaEstadoHabitaciones.setSelectionBackground(new java.awt.Color(255, 255, 255));
         tablaEstadoHabitaciones.setSelectionForeground(new java.awt.Color(0, 0, 0));
-        tablaEstadoHabitaciones.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        tablaEstadoHabitaciones.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        tablaEstadoHabitaciones.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tablaEstadoHabitaciones.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         tablaEstadoHabitaciones.setShowGrid(true);
-        panelDatosHabitaciones.setViewportView(tablaEstadoHabitaciones);
+        scrollPaneEstadoHabitaciones.setViewportView(tablaEstadoHabitaciones);
         tablaEstadoHabitaciones.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -462,7 +558,7 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
                     .addComponent(jLabel1)
                     .addComponent(panelRangoFechas, javax.swing.GroupLayout.PREFERRED_SIZE, 1070, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
-                    .addComponent(panelDatosHabitaciones, javax.swing.GroupLayout.PREFERRED_SIZE, 1070, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(scrollPaneEstadoHabitaciones, javax.swing.GroupLayout.PREFERRED_SIZE, 1070, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(cuadOcupada)
                         .addGap(6, 6, 6)
@@ -495,31 +591,26 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addComponent(jLabel4)
                 .addGap(6, 6, 6)
-                .addComponent(panelDatosHabitaciones, javax.swing.GroupLayout.PREFERRED_SIZE, 568, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(scrollPaneEstadoHabitaciones, javax.swing.GroupLayout.PREFERRED_SIZE, 568, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(6, 6, 6)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(1, 1, 1)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cuadOcupada)
-                            .addComponent(lblOcupada)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(1, 1, 1)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lblReservada)
-                            .addComponent(cuadReservada)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(1, 1, 1)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cuadDisponible)
-                            .addComponent(lblDisponible)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(1, 1, 1)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cuadFueraDeServicio)
-                            .addComponent(lblFueraDeServicio)))
                     .addComponent(siguiente)
-                    .addComponent(cancelar)))
+                    .addComponent(cancelar)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(1, 1, 1)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(cuadOcupada)
+                                .addComponent(lblOcupada))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(lblReservada)
+                                .addComponent(cuadReservada))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(cuadDisponible)
+                                .addComponent(lblDisponible))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(cuadFueraDeServicio)
+                                .addComponent(lblFueraDeServicio))))))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -569,14 +660,14 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
             if (paraReservar)
                 JOptionPane.showMessageDialog(
                     null, 
-                    "Selección inválida. No se seleccionaron habitaciones o no todas ellas están disponibles para el rango de fechas escogido.", 
+                    "Selección inválida. No todas las habitaciones están disponibles para todo el rango de fechas escogido.", 
                     "Error", 
                     JOptionPane.ERROR_MESSAGE
                 );
             else // i.e. ocupar
                 JOptionPane.showMessageDialog(
                     null, 
-                    "Selección inválida. No se seleccionaron habitaciones o no todas ellas están disponibles o reservadas para el rango de fechas escogido.", 
+                    "Selección inválida. La habitación no está disponible o reservada para todo el rango de fechas escogido.", 
                     "Error", 
                     JOptionPane.ERROR_MESSAGE
                 );
@@ -592,7 +683,7 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
                     Object[] opciones = {"Ocupar igual", "Volver"};
                     int indOpcionElegida = JOptionPane.showOptionDialog(
                         null, 
-                        "Se engloban una o más reservas para las habitaciones y rango de fecha escogidos. ¿Desea ocupar igualmente?",
+                        "Se engloba una reserva para la habitación y rango de fecha escogidos. ¿Desea ocupar igualmente?",
                         "Cuidado",
                         JOptionPane.DEFAULT_OPTION,
                         JOptionPane.WARNING_MESSAGE,
@@ -649,10 +740,10 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
     private javax.swing.JLabel lblFueraDeServicio;
     private javax.swing.JLabel lblOcupada;
     private javax.swing.JLabel lblReservada;
-    private javax.swing.JScrollPane panelDatosHabitaciones;
     private javax.swing.JPanel panelRangoFechas;
+    private javax.swing.JScrollPane scrollPaneEstadoHabitaciones;
     private javax.swing.JButton siguiente;
     private javax.swing.JTable tablaEstadoHabitaciones;
-    private javax.swing.table.DefaultTableModel modeloTabla;
+    private javax.swing.table.DefaultTableModel modeloTablaEstadoHabitaciones;
     // End of variables declaration//GEN-END:variables
 }

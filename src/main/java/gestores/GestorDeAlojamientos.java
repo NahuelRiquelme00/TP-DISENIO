@@ -116,7 +116,7 @@ public class GestorDeAlojamientos
     }
     
     
-    public Map<LocalDate, HashMap<Integer, TipoEstado>>/*Object[][] llenarGrilla*/getEstadosHabitaciones(LocalDate fechaInicioGui, LocalDate fechaFinGui)
+    public Map<LocalDate, HashMap<Integer, TipoEstado>>getEstadosHabitaciones(LocalDate fechaInicioGui, LocalDate fechaFinGui)
     {
         // Recuperar habitaciones, estadias y periodos de reserva
         habitacionDAO = new HabitacionDAOImpl();
