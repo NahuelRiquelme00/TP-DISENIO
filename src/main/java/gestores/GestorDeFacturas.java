@@ -5,10 +5,24 @@
  */
 package gestores;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
 /**
  *
  * @author Nahuel Riquelme
  */
 public class GestorDeFacturas {
-    
+    private static GestorDeFacturas instance;
+        
+    public static GestorDeFacturas getInstance() {
+        if (instance == null) {
+            instance = new GestorDeFacturas();
+        }
+        return instance;
+    }
 }
+
+    
+

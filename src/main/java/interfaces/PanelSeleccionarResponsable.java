@@ -4,21 +4,82 @@
  */
 package interfaces;
 
+import dto.PersonaFisicaDTO;
+import entidades.Estadia;
+import gestores.GestorDeFacturas;
+import gestores.GestorDeAlojamientos;
+import entidades.Factura;
+import entidades.Habitacion;
+import gestores.GestorDePersonas;
+import java.time.LocalTime;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Fede
  */
 public class PanelSeleccionarResponsable extends javax.swing.JPanel {
     private final VentanaPrincipal frame;
+    private final GestorDeFacturas gestorFacturas = GestorDeFacturas.getInstance();
+    private final GestorDeAlojamientos gestorAlojamientos = GestorDeAlojamientos.getInstance();
+    private final GestorDePersonas gestorPersonas = GestorDePersonas.getInstance();
+    private List<PersonaFisicaDTO> pasajerosDTO;
+    private int row_selected;
+    private int tamPasajeros;
+    private boolean flagCarga;
+    DefaultTableModel dm;
+
+    Integer habitacion;
+    LocalTime hora;
+    
 
     /**
      * Creates new form PanelSeleccionarResponsable
      * @param frame
      */
+    
     public PanelSeleccionarResponsable(VentanaPrincipal frame) {
-        initComponents();
         this.frame = frame;
-
+        initComponents();
+        row_selected = -1;
+        flagCarga = false;
+        //dm = (DefaultTableModel) jTable1.getModel();
+    }
+    
+    private void popularTabla(){
+        tamPasajeros = pasajerosDTO.size();
+        PersonaFisicaDTO ocupante;
+        dm = (DefaultTableModel) jTable1.getModel();
+        
+        //for para mostrar los datos de cada ocupante
+        for(int j = 0; j<tamPasajeros; j++){
+            ocupante = pasajerosDTO.get(j);
+            String[] datosFila = {ocupante.getNombres(), ocupante.getApellido(), ocupante.getTipoDocumento(), ocupante.getNroDocumento().toString()};
+            dm.addRow(datosFila);
+        }
+    }
+    
+    private void limpiarTabla(){
+        tamPasajeros = pasajerosDTO.size();
+        
+        for(int j = tamPasajeros; j>0; j--){
+            dm.removeRow(j-1);
+        }
+    }
+        
+    
+    private void cargarDatosBusqueda(){
+        //pasajerosDTO = null;
+        habitacion = Integer.valueOf(jTextHabitacion.getText());
+        hora = LocalTime.parse(jTextHora.getText());
+        pasajerosDTO = gestorAlojamientos.buscarOcupantes(habitacion, hora);
+        flagCarga = true;
+    }
+    
+    private void datosIncorrectos(){
+        //habitacion que sea un numero y hora con el formato necesario
     }
 
     /**
@@ -36,8 +97,8 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
+        jTextHabitacion = new javax.swing.JTextField();
+        jTextHora = new javax.swing.JTextField();
         jButtonBuscar = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -60,13 +121,9 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        jLabel3.setText("Número de Habitación");
+        jLabel3.setText("Número de Habitación (*)");
 
-        jLabel4.setText("Hora de Salida");
-
-        jTextField1.setText("jTextField1");
-
-        jTextField2.setText("jTextField2");
+        jLabel4.setText("Hora de Salida (*)");
 
         jButtonBuscar.setText("Buscar");
         jButtonBuscar.addActionListener(new java.awt.event.ActionListener() {
@@ -84,12 +141,12 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel3)
-                        .addGap(18, 18, 18)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jTextHabitacion, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
                         .addComponent(jLabel4)
-                        .addGap(18, 18, 18)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jTextHora, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButtonBuscar)))
@@ -102,8 +159,8 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(jLabel4)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextHabitacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextHora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
                 .addComponent(jButtonBuscar)
                 .addContainerGap())
@@ -113,19 +170,20 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
                 "Nombre(s)", "Apellido(s)", "Tipo de Documento", "Número de Documento"
             }
         ));
         jTable1.setRowHeight(25);
+        jTable1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jTable1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTable1);
 
         jButtonSiguiente.setText("Siguiente");
@@ -205,17 +263,66 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
 
     private void jButtonBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarActionPerformed
         // TODO add your handling code here:
+        //datosIncorrectos();//Tambien hacerlo en el gestor. Si la habitacion no existe mostrar error
+        if(flagCarga)limpiarTabla();
+        
+        cargarDatosBusqueda();
+
+        /*if (pasajerosDTO.isEmpty()){
+            Object[] options = { "No", "Si"};
+            int opcion = JOptionPane.showOptionDialog(null, "¿Desea dar de alta un pasajero?", "Pasajero no encontrado",
+                         JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+            if(opcion == 1) {
+                System.out.println("Pasar a la interface alta de pasajero");
+                frame.cambiarPanel(VentanaPrincipal.PANE_DAR_ALTA_PASAJERO);
+            } else System.out.println("Seguir buscando");
+        }
+        */
+        
+        popularTabla();
     }//GEN-LAST:event_jButtonBuscarActionPerformed
 
     private void jButtonSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSiguienteActionPerformed
         // TODO add your handling code here:
-        frame.cambiarPanel(VentanaPrincipal.PANE_FACTURAR);
+        
+        if(row_selected==-1){
+            //Si no selecciono una persona se muestra error
+            Object opciones[] = {"Aceptar"};
+            JOptionPane.showOptionDialog(
+                null, 
+		"Seleccione un pasajero como responsable de pago.", 
+		"Error", 
+		JOptionPane.DEFAULT_OPTION, 
+		JOptionPane.INFORMATION_MESSAGE, 
+		null, 
+		opciones,
+		opciones[0]
+            );
+        }else{
+            //Si la persona es menor de edad se debe mostar error
+            //Si se selecciono una persona se pasa a la interfaz Facturar
+            //Pasarle la info del responsable a la interfaz
+            //Hacer el calculo de la estadía antes de la siguiente interfaz
+            gestorAlojamientos.calcularCostoEstadia(habitacion, hora);
+            
+            frame.cambiarPanel(VentanaPrincipal.PANE_FACTURAR);
+        }
+        
+        
     }//GEN-LAST:event_jButtonSiguienteActionPerformed
 
     private void jButtonCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelarActionPerformed
         // TODO add your handling code here:
         frame.cambiarPanel(VentanaPrincipal.PANE_MENU_PRINCIPAL);
     }//GEN-LAST:event_jButtonCancelarActionPerformed
+
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        // TODO add your handling code here:
+        //Guardo los datos de la fila seleccionada
+        row_selected = jTable1.getSelectedRow();
+        System.out.println("Fila seleccionada: " + row_selected);
+        //System.out.println("Pasajero ID: " + jTable1.get);
+    }//GEN-LAST:event_jTable1MouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -231,7 +338,9 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextHabitacion;
+    private javax.swing.JTextField jTextHora;
     // End of variables declaration//GEN-END:variables
+
+
 }

@@ -13,15 +13,18 @@ import daoImpl.EstadiaDAOImpl;
 import daoImpl.HabitacionDAOImpl;
 import daoImpl.PersonaDAOImpl;
 import dto.EstadiaDTO;
+import dto.PersonaFisicaDTO;
 import entidades.Estadia;
 import entidades.Habitacion;
 import entidades.PersonaFisica;
 import entidades.TipoEstado;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.joda.money.Money;
 
 /**
  *
@@ -29,12 +32,14 @@ import java.util.logging.Logger;
  */
 public class GestorDeAlojamientos {
     private static GestorDeAlojamientos instance;
+    private final GestorDePersonas gestorPersonas;
     private EstadiaDAO estadiaDAO;
     private HabitacionDAO habitacionDAO;
     private ReservaDAO reservaDAO;
     private PersonaDAO personaDAO;
     
     private GestorDeAlojamientos (){
+        this.gestorPersonas = GestorDePersonas.getInstance();
         try{
             Thread.sleep(1000);
         } catch (InterruptedException ex) {
@@ -106,4 +111,45 @@ public class GestorDeAlojamientos {
     public void deleteEstadia(){
         
     }
+
+    
+    public List<PersonaFisicaDTO> buscarOcupantes(Integer nroHabitacion, LocalTime horaSalida) {
+        habitacionDAO = new HabitacionDAOImpl();
+        Habitacion habitacion = habitacionDAO.findHabitacion(nroHabitacion);
+        
+        Estadia estadia;
+        estadia = habitacion.getEstadiaActual();
+        
+        List<PersonaFisica> pasajeros = new ArrayList<>();
+        pasajeros.add(estadia.getPasajeroResponsable());
+        pasajeros.addAll(estadia.getPasajeroAcompañante());//System.out.println(pasajeros);
+      
+        
+        habitacionDAO.close();
+        return gestorPersonas.convertirADTO(pasajeros);
+    }
+
+    public void calcularCostoEstadia(Integer nroHabitacion, LocalTime horaSalida) {
+        System.out.println("Calculando costo estadía");
+        habitacionDAO = new HabitacionDAOImpl();
+        Habitacion habitacion = habitacionDAO.findHabitacion(nroHabitacion);
+        habitacionDAO.close();
+        
+        Estadia estadia;
+        estadia = habitacion.getEstadiaActual();
+        double costoFinal = estadia.calcularCostoFinal(horaSalida);//Modificar al tipo de dato que haya quedado
+        
+        System.out.println("El costo final es: " + costoFinal);
+        /*
+        try {
+            estadiaDAO.updateEstadia(estadia);
+        } catch (Exception ex) {
+            Logger.getLogger(GestorDeAlojamientos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        */
+        
+    }
+    
+    
+    
 }

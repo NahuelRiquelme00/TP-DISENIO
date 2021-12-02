@@ -7,6 +7,7 @@ package entidades;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -37,7 +38,7 @@ public class Estadia implements Serializable {
     Double descuento;
 
     @Column(name="costo_final", columnDefinition="bytea")
-    Money costoFinal;
+    Double costoFinal;
 
     @OneToOne
     @JoinColumn(name="numero_factura", referencedColumnName="numero")
@@ -47,7 +48,7 @@ public class Estadia implements Serializable {
     @JoinColumn(name="id_persona_fisica", referencedColumnName="id_persona_fisica")
     PersonaFisica pasajeroResponsable;       
 
-    @ManyToMany(cascade=CascadeType.MERGE)
+    @ManyToMany(cascade=CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinTable(
         name="pasajero",
         joinColumns=@JoinColumn(name="id_estadia",referencedColumnName="id_estadia"),
@@ -102,11 +103,11 @@ public class Estadia implements Serializable {
         this.descuento = descuento;
     }
 
-    public Money getCostoFinal() {
+    public Double getCostoFinal() {
         return costoFinal;
     }
 
-    public void setCostoFinal(Money costoFinal) {
+    public void setCostoFinal(Double costoFinal) {
         this.costoFinal = costoFinal;
     }
 
@@ -220,5 +221,23 @@ public class Estadia implements Serializable {
     public String toString() {
         return "Estadia{" + "idEstadia=" + idEstadia + ", fechaInicio=" + fechaInicio + ", fechaFin=" + fechaFin + '}';
     }    
+
+    public double calcularCostoFinal(LocalTime horaSalida) {
+        double costoEstadia = 0, costoPorNoche;
+        Integer cantNoches;
+        //costoPorNoche = this.costoNoche;
+        costoPorNoche = 1500;
+        cantNoches = fechaFin.compareTo(fechaInicio);
+        
+        if(horaSalida.isAfter(LocalTime.of(9, 0)) &&  horaSalida.isBefore(LocalTime.of(11, 0))){
+            costoEstadia= costoPorNoche * cantNoches;
+        }else if(horaSalida.isAfter(LocalTime.of(11, 0))){
+            costoEstadia= costoPorNoche * cantNoches + 0.5* costoPorNoche;
+        }
+        System.out.println("El costo por noche es: " + costoPorNoche + "La cantidad de noches es: " + cantNoches);
+        
+        this.setCostoFinal(costoEstadia);
+        return costoEstadia;
+    }
     
 }

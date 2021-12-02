@@ -136,7 +136,7 @@ public class GestorDePersonas {
         personaDAO.close();
         return convertirADTO(listaPersonas);        
     }
-    
+            
     public List<PersonaFisicaDTO> convertirADTO(List<PersonaFisica> listaPersonas){
         List<PersonaFisicaDTO> pasajerosDTO = new ArrayList<>();
         listaPersonas.stream().map(p -> new PersonaFisicaDTO(p.getIdPersonaFisica(),p.getApellido(), p.getNombres(), p.getTipoDocumento().toString(), p.getNroDocumento())).forEachOrdered(dto -> {
