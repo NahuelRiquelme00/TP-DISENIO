@@ -35,7 +35,7 @@ import misc.Tripleta;
  */
 public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel 
 {
-    private VentanaPrincipal frame;
+    private final VentanaPrincipal frame;
     private boolean paraReservar; // Reservar: true; ocupar: false
     public static List<Tripleta<Integer, LocalDate, LocalDate>> reservasUOcupacionesAdicionales = new LinkedList<>(); // Mismo formato que "resultado"
     
@@ -355,7 +355,7 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel
     private void PasarAOcuparHabitacion(){
         EstadiaDTO estadiaActual = new EstadiaDTO();
         
-        estadiaActual.setIdEstadia(getResultado().get(0).primero);
+        estadiaActual.setIdHabitacion(getResultado().get(0).primero);
         estadiaActual.setFechaInicio(getResultado().get(0).segundo.toString());
         estadiaActual.setFechaFin(getResultado().get(0).tercero.toString());
         

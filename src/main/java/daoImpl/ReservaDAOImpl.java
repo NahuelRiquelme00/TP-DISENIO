@@ -22,7 +22,7 @@ public class ReservaDAOImpl implements ReservaDAO
     private EntityManagerFactory emf = null;
 
     public ReservaDAOImpl() {
-        this.emf = Persistence.createEntityManagerFactory("MiBaseDeDatos");//"MiBaseDeDatos");
+        this.emf = Persistence.createEntityManagerFactory("MiBaseDeDatos");
     }
 
     public EntityManager getEntityManager() {

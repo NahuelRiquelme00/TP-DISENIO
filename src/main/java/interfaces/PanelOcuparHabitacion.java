@@ -792,27 +792,26 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
         estadiaDTOactual.setIdsPasajeroAcompañante(idPasajerosAcompañantes);
         estadiasDTO.add(estadiaDTOactual);
         
-        //Se crean las estadias
-        gestorAlojamientos.OcuparHabitacion(estadiasDTO);
-        
-        //Termina el caso de uso
         try {
-            frame.cambiarPanel(VentanaPrincipal.PANE_MENU_PRINCIPAL);
+             //Se crean las estadias
+            gestorAlojamientos.OcuparHabitacion(estadiasDTO);
             Object opciones[] = {"Aceptar"};
             JOptionPane.showOptionDialog(
-                null, 
-		"Las estadias fueron creadas correctamente", 
-		"Ocupacion existosa", 
-		JOptionPane.DEFAULT_OPTION, 
-		JOptionPane.INFORMATION_MESSAGE, 
-		null, 
-		opciones,
-		opciones[0]
+            null, 
+            "Las estadias fueron creadas correctamente", 
+            "Ocupacion existosa", 
+            JOptionPane.DEFAULT_OPTION, 
+            JOptionPane.INFORMATION_MESSAGE, 
+            null, 
+            opciones,
+            opciones[0]
             );
         } catch (Exception e) {
             e.printStackTrace();
         }
-       
+        
+        //Termina el caso de uso
+        frame.cambiarPanel(VentanaPrincipal.PANE_MENU_PRINCIPAL);       
         //Limpias la lista de estadias por crear 
         limpiarEstadias();
         interfaces.mostrarEstadoHabitacion.PanelMostrarEstadoHabitacion.limpiarHabitaciones();

@@ -118,8 +118,8 @@ public class GestorDeAlojamientos {
     public void OcuparHabitacion(List<EstadiaDTO> estadiasDTO) {
     
         try {
-             estadiasDTO.forEach(estadiaDTO -> {createEstadia(estadiaDTO);});
-             System.out.println("Ocupacion existosa");
+            estadiasDTO.forEach(estadiaDTO -> {createEstadia(estadiaDTO);});
+            System.out.println("Ocupacion existosa");
         } catch (Exception e) {
             System.out.println("Ocupacion fallida");
             e.printStackTrace();
