@@ -14,10 +14,13 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import entidades.Factura;
 import entidades.Habitacion;
+import java.time.LocalDate;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
 
 /**
  *
@@ -234,18 +237,35 @@ public class EstadiaDAOImpl implements EstadiaDAO {
         }
     }
 
-//    public void persist1(Object object) {
-//        EntityManager em = emf.createEntityManager();
-//        em.getTransaction().begin();
-//        try {
-//            em.persist(object);
-//            em.getTransaction().commit();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            em.getTransaction().rollback();
-//        } finally {
-//            em.close();
-//        }
-//    }
+    @Override
+    public List<Estadia> getEstadiasEntreFechas(LocalDate fechaInicioGui, LocalDate fechaFinGui) {
+        EntityManager em = getEntityManager();
+        
+        try 
+        {
+            // https://www.baeldung.com/hibernate-criteria-queries
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery cq = cb.createQuery();
+            Root<Estadia> r = cq.from(Estadia.class);
+            
+            
+            // https://stackoverflow.com/questions/9449003/compare-date-entities-in-jpa-criteria-api
+            Predicate[] conds = new Predicate[3];
+            conds[0] = cb.between(r.<LocalDate>get("fechaInicio"), fechaInicioGui, fechaFinGui);
+            conds[1] = cb.between(r.<LocalDate>get("fechaFin"), fechaInicioGui, fechaFinGui);
+            conds[2] = cb.and(
+                cb.lessThan(r.<LocalDate>get("fechaInicio"), fechaInicioGui),
+                cb.greaterThan(r.<LocalDate>get("fechaFin"), fechaFinGui)
+            );
+
+            cq.select(r).where(cb.or(conds));
+            Query q = em.createQuery(cq);
+            
+            return q.getResultList();
+        }
+        finally {
+            em.close();
+        }      
+    }
     
 }

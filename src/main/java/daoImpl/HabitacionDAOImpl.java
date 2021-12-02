@@ -16,9 +16,11 @@ import entidades.Habitacion;
 import java.util.ArrayList;
 import java.util.List;
 import entidades.PeriodoReserva;
+import entidades.TipoHabitacion;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.criteria.CriteriaBuilder;
 
 /**
  *
@@ -197,7 +199,7 @@ public class HabitacionDAOImpl implements HabitacionDAO {
     }
 
     @Override
-    public List<Habitacion> findHabitacionEntities() {
+    public List<Habitacion> getAllHabitaciones() {
         return findHabitacionEntities(true, -1, -1);
     }
 
@@ -248,5 +250,22 @@ public class HabitacionDAOImpl implements HabitacionDAO {
     public void close() {
         emf.close();
     }
+
+    @Override
+    public List<TipoHabitacion> getAllTiposHabitacion() {
+        EntityManager em = getEntityManager();        
+        try 
+        {
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery cq = cb.createQuery();
+            Root<TipoHabitacion> r = cq.from(TipoHabitacion.class);
+            cq.select(r);
+            Query q = em.createQuery(cq);
+            
+            return q.getResultList();
+        }
+        finally {
+            em.close();
+        }     }
     
 }
