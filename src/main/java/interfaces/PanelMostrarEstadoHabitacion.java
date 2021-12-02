@@ -311,7 +311,7 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
     private void jButtonSiguiente1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSiguiente1ActionPerformed
         EstadiaDTO estadiaActual = new EstadiaDTO();
         estadiaActual.setFechaInicio(LocalDate.now().toString());
-        estadiaActual.setFechaFin(LocalDate.of(2021, 11, 30).toString());
+        estadiaActual.setFechaFin(LocalDate.of(2021, 12, 15).toString());
         estadiaActual.setIdHabitacion(1);
         frame.setContentPane(new PanelOcuparHabitacion(frame,estadiaActual));
         frame.setTitle("Ocupar habitacion");
@@ -324,7 +324,7 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel {
     private void jButtonSiguiente2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSiguiente2ActionPerformed
         EstadiaDTO estadiaActual = new EstadiaDTO();
         estadiaActual.setFechaInicio(LocalDate.now().toString());
-        estadiaActual.setFechaFin(LocalDate.of(2021, 11, 30).toString());
+        estadiaActual.setFechaFin(LocalDate.of(2021, 12, 15).toString());
         estadiaActual.setIdHabitacion(2);
         frame.setContentPane(new PanelOcuparHabitacion(frame,estadiaActual));
         frame.setTitle("Ocupar habitacion");
