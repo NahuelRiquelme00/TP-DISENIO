@@ -5,10 +5,14 @@
  */
 package dao;
 
+import entidades.PeriodoReserva;
+import java.time.LocalDate;
+import java.util.List;
+
 /**
  *
  * @author Nahuel Riquelme
  */
-public class ReservaDAO {
-    
+public interface ReservaDAO {
+    public List<PeriodoReserva> getPeriodosReservaEntreFechas(LocalDate fechaInicioGui, LocalDate fechaFinGui);
 }

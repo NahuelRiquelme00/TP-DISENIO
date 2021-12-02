@@ -172,3 +172,8 @@ DROP TABLE periodo_reserva, asociada_a, efectivo, estadia, factura, habitacion, 
 		   persona_juridica, plaza, reserva, servicio_facturado, servicio_prestado, tarjeta_credito,
 		   tarjeta_debito, tipo_habitacion, usuario, cheque, banco, cheque;
 */
+
+INSERT INTO habitacion VALUES
+(DEFAULT,'DISPONIBLE',1,'INDIVIDUAL ESTANDAR'),
+(DEFAULT,'DISPONIBLE',2,'INDIVIDUAL ESTANDAR'),
+(DEFAULT,'DISPONIBLE',3,'INDIVIDUAL ESTANDAR');

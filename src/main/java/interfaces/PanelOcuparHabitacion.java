@@ -520,11 +520,12 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButtonCancelar, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGap(16, 16, 16))))))
+                        .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(16, 16, 16))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButtonCancelar)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -543,7 +544,7 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(11, 11, 11)
                 .addComponent(jButtonCancelar)
                 .addContainerGap())
         );
@@ -814,6 +815,7 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
        
         //Limpias la lista de estadias por crear 
         limpiarEstadias();
+        interfaces.mostrarEstadoHabitacion.PanelMostrarEstadoHabitacion.limpiarHabitaciones();
     }//GEN-LAST:event_jButtonSalirActionPerformed
 
     private void jButtonCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelarActionPerformed
@@ -826,6 +828,7 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
             frame.cambiarPanel(VentanaPrincipal.PANE_MENU_PRINCIPAL);
             //Se limpia la lista de estadias por crear 
             limpiarEstadias();
+            interfaces.mostrarEstadoHabitacion.PanelMostrarEstadoHabitacion.limpiarHabitaciones();
         } else System.out.println("Seguir con la ocupación");
     }//GEN-LAST:event_jButtonCancelarActionPerformed
 
