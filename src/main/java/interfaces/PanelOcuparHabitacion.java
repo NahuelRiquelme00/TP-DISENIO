@@ -815,6 +815,7 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
        
         //Limpias la lista de estadias por crear 
         limpiarEstadias();
+        interfaces.mostrarEstadoHabitacion.PanelMostrarEstadoHabitacion.limpiarHabitaciones();
     }//GEN-LAST:event_jButtonSalirActionPerformed
 
     private void jButtonCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelarActionPerformed
@@ -827,6 +828,7 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
             frame.cambiarPanel(VentanaPrincipal.PANE_MENU_PRINCIPAL);
             //Se limpia la lista de estadias por crear 
             limpiarEstadias();
+            interfaces.mostrarEstadoHabitacion.PanelMostrarEstadoHabitacion.limpiarHabitaciones();
         } else System.out.println("Seguir con la ocupación");
     }//GEN-LAST:event_jButtonCancelarActionPerformed
 
