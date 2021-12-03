@@ -5,7 +5,9 @@
  */
 package dao;
 
+import daoImpl.exceptions.NonexistentEntityException;
 import entidades.PeriodoReserva;
+import entidades.Reserva;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -15,4 +17,18 @@ import java.util.List;
  */
 public interface ReservaDAO {
     public List<PeriodoReserva> getPeriodosReservaEntreFechas(LocalDate fechaInicioGui, LocalDate fechaFinGui);
+    
+    public void create(Reserva reserva);
+    
+    public void update(Reserva reserva) throws NonexistentEntityException, Exception;
+    
+    public void delete(Integer id) throws NonexistentEntityException;
+    
+    public List<Reserva> findReservaEntities();
+    
+    public Reserva findReserva(Integer id);  
+    
+    public int getReservaCount();
+
+    public void close();
 }

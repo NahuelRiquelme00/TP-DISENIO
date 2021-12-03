@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.*;
-//import org.javamoney.moneta.Money;
 import org.joda.money.Money;
 
 @Entity

@@ -44,7 +44,10 @@ CREATE TABLE factura(
 
 CREATE TABLE tipo_habitacion(
 	nombre varchar(30) PRIMARY KEY, 
+	--precio_actual dinero
 	precio_actual bytea
+	--precio_actual_divisa VARCHAR(255),
+	--precio_actual_monto NUMERIC
 );
 
 CREATE TABLE habitacion(
@@ -74,6 +77,8 @@ CREATE TABLE estadia(
 	id_estadia serial PRIMARY KEY,
 	fecha_inicio date,
 	fecha_fin date,
+	--costo_noche_divisa VARCHAR(255),
+	--costo_noche_monto NUMERIC,
 	costo bytea,
 	descuento double precision,
 	costo_final bytea,
@@ -174,6 +179,62 @@ DROP TABLE periodo_reserva, asociada_a, efectivo, estadia, factura, habitacion, 
 */
 
 INSERT INTO habitacion VALUES
-(DEFAULT,'DISPONIBLE',1,'INDIVIDUAL ESTANDAR'),
-(DEFAULT,'DISPONIBLE',2,'INDIVIDUAL ESTANDAR'),
-(DEFAULT,'DISPONIBLE',3,'INDIVIDUAL ESTANDAR');
+(DEFAULT,'DISPONIBLE',1,'INDIVIDUAL ESTÁNDAR'),
+(DEFAULT,'DISPONIBLE',1,'INDIVIDUAL ESTÁNDAR'),
+(DEFAULT,'DISPONIBLE',2,'DOBLE SUPERIOR');
+
+INSERT INTO tipo_habitacion VALUES
+('INDIVIDUAL ESTANDAR', null),
+('DOBLE SUPERIOR', null);
+
+UPDATE estadia SET costo_noche_divisa = 'ARS' WHERE id_estadia = 1;
+
+UPDATE estadia SET costo_noche_monto = 4200 WHERE id_estadia = 1;
+
+INSERT INTO habitacion VALUES
+(DEFAULT,'DISPONIBLE',2,'SUITE DOUBLE'),
+(DEFAULT,'DISPONIBLE',2,'DOUBLE SUPERIOR');
+
+DELETE FROM tipo_habitacion WHERE nombre = 'SUITE DOBLE';
+
+DELETE FROM habitacion WHERE numero = 10;
+
+UPDATE tipo_habitacion SET precio_actual_divisa = 'USD' WHERE nombre = 'INDIVIDUAL ESTANDAR';
+
+ALTER TABLE tipo_habitacion ALTER COLUMN precio_actual TYPE dinero;
+
+CREATE TYPE dinero AS (MY_CURRENCY VARCHAR(255), MY_AMOUNT NUMERIC);
+
+--Otros datos a cargar
+INSERT INTO tipo_habitacion VALUES
+('INDIVIDUAL ESTÁNDAR',null),
+('DOBLE ESTÁNDAR',null),
+('DOBLE SUPERIOR',null),
+('SUPERIOR FAMILY PLAN',null),
+('SUITE DOBLE',null);
+
+INSERT INTO habitacion VALUES 
+(4,'DISPONIBLE',1,'INDIVIDUAL ESTÁNDAR'),
+(5,'RESERVADA',2,'DOBLE ESTÁNDAR'),
+(6,'OCUPADA',2,'DOBLE SUPERIOR'),
+(7,'FUERA_DE_SERVICIO',5,'SUPERIOR FAMILY PLAN');
+
+INSERT INTO estadia VALUES 
+(1,'2021-12-15','2021-12-20',null,null,null,4,3,null),
+(2,'2021-12-15','2021-12-20',null,null,null,5,3,null),
+(3,'2021-12-15','2021-12-20',null,null,null,6,3,null),
+(4,'2021-12-15','2021-12-20',null,null,null,7,3,null);
+
+INSERT INTO reserva VALUES 
+(1,'NAHUEL','RIQUELME',456),
+(2,'ALEJANDRO','GOMEZ',123),
+(3,'RODRIGO','DE PAUL',487),
+(4,'MARIANO','MORENO',897);
+
+INSERT INTO periodo_reserva VALUES 
+(1,'2021-12-21','2021-12-25',4,1),
+(2,'2021-12-21','2021-12-25',5,2),
+(3,'2021-12-21','2021-12-25',6,3),
+(4,'2021-12-21','2021-12-25',7,4);
+
+

@@ -73,7 +73,7 @@ public class GestorDeAlojamientos {
         Habitacion habitacion = habitacionDAO.findHabitacion(e.getIdHabitacion());
         
         estadia.setCostoNoche(habitacion.getTipoHabitacion().getPrecioActual());
-        
+           
         //Le cambio el estado a la habitacion
         habitacion.setEstado(TipoEstado.OCUPADA);
         try {
@@ -116,7 +116,6 @@ public class GestorDeAlojamientos {
     }
 
     public void OcuparHabitacion(List<EstadiaDTO> estadiasDTO) {
-    
         try {
             estadiasDTO.forEach(estadiaDTO -> {createEstadia(estadiaDTO);});
             System.out.println("Ocupacion existosa");
@@ -165,6 +164,10 @@ public class GestorDeAlojamientos {
             }
         }
         
+        habitacionDAO.close();
+        estadiaDAO.close();
+        reservaDAO.close();
+        
         return /*grilla*/estadosHabitaciones;
     }
     
@@ -184,9 +187,10 @@ public class GestorDeAlojamientos {
     }
     
     public List<Dupla<String, LinkedList<Integer>>> getTiposYHabitaciones() {
-        HabitacionDAO habDAO = new HabitacionDAOImpl();
-        List<Habitacion> habs = habDAO.getAllHabitaciones();
-        List<TipoHabitacion> tiposHab = habDAO.getAllTiposHabitacion();
+        habitacionDAO = new HabitacionDAOImpl();
+        
+        List<Habitacion> habs = habitacionDAO.getAllHabitaciones();
+        List<TipoHabitacion> tiposHab = habitacionDAO.getAllTiposHabitacion();
         
         List<Dupla<String, LinkedList<Integer>>> tiposYHabitaciones = new LinkedList<>();
         
@@ -201,6 +205,9 @@ public class GestorDeAlojamientos {
             tiposYHabitaciones.add(d);
         }
         
+        habitacionDAO.close();
+        
         return tiposYHabitaciones;
     }
+    
 }
