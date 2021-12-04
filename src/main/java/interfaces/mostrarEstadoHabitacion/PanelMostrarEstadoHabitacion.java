@@ -1,5 +1,7 @@
 package interfaces.mostrarEstadoHabitacion;
 
+import dao.ReservaDAO;
+import daoImpl.ReservaDAOImpl;
 import dto.EstadiaDTO;
 import entidades.TipoEstado;
 import gestores.GestorDeAlojamientos;
@@ -37,7 +39,7 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel
 {
     private final VentanaPrincipal frame;
     private boolean paraReservar; // Reservar: true; ocupar: false
-    public static List<Tripleta<Integer, LocalDate, LocalDate>> reservasUOcupacionesAdicionales = new LinkedList<>(); // Mismo formato que "resultado"
+    private static List<Tripleta<Integer, LocalDate, LocalDate>> reservasUOcupacionesAdicionales = new LinkedList<>(); // Mismo formato que "resultado"
     
     private GestorDeAlojamientos gesAl;
     private Map<LocalDate, HashMap<Integer, TipoEstado>> estadosHabitaciones;
@@ -47,7 +49,6 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel
     private List<Integer> colsSelec;
     private List<Integer> idHabsTabla;
     private List<LocalDate> fechasTabla;
-    private Map<LocalDate, Integer> fechasAIndFechasTabla; 
     
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static final int ADELANTO_DIAS = 7; // i.e. cuantos dias extras se suman a fecha desde para obtener fecha hasta 
@@ -59,8 +60,7 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel
             segundo: fecha desde
             tercero: fecha hasta
     */
-    private List<Tripleta<Integer, LocalDate, LocalDate>> resultado = null;
-    
+    private List<Tripleta<Integer, LocalDate, LocalDate>> resultado;
     
     
     public PanelMostrarEstadoHabitacion(VentanaPrincipal frame, boolean paraReservar) 
@@ -92,13 +92,13 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel
 
     private void configurarTabla() 
     {
-        List<Dupla<String, LinkedList<Integer>>> tiposYHabitaciones = gesAl.getTiposYHabitaciones();
+        List<Dupla<String, ArrayList<Integer>>> tiposYHabitaciones = gesAl.getTiposYHabitaciones();
         
         // Encabezados tipos de habitacion
         modeloTablaEstadoHabitaciones.addColumn("Fecha / Habitación");
         // Columnas "H(...)"
         idHabsTabla = new LinkedList<>();
-        for (Dupla<String, LinkedList<Integer>> d : tiposYHabitaciones) // (Tristemente) deben colocarse las columnas por anticipado 
+        for (Dupla<String, ArrayList<Integer>> d : tiposYHabitaciones) // (Tristemente) deben colocarse las columnas por anticipado 
         {
             for (Integer habNro : d.segundo) 
             {
@@ -111,7 +111,7 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel
         GroupableTableHeader header = (GroupableTableHeader) tablaEstadoHabitaciones.getTableHeader();
         ColumnGroup colGr;
         int j = 1;  
-        for (Dupla<String, LinkedList<Integer>> d : tiposYHabitaciones)
+        for (Dupla<String, ArrayList<Integer>> d : tiposYHabitaciones)
         {
             colGr = new ColumnGroup(d.primero);
             if (d.segundo.size() > 0)
@@ -163,7 +163,6 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel
     private void pintarTabla(LocalDate fechaIni, LocalDate fechaFin)
     {
         fechasTabla = new LinkedList<>();
-        fechasAIndFechasTabla = new HashMap<>();
         
         // Completar con datos de la DB
         estadosHabitaciones = gesAl.getEstadosHabitaciones(fechaIni, fechaFin);
@@ -172,9 +171,7 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel
         for (int i = 0; i < cantDias; i++)
         {
             modeloTablaEstadoHabitaciones.addRow(this.getFila(estadosHabitaciones, fechaIni.plusDays(i)));
-            
-            fechasTabla.add(fechaIni.plusDays(i));                  // ind   -> fecha  ; f
-            fechasAIndFechasTabla.put(fechaIni.plusDays(i), i);     // fecha -> ind    ; f^(-1)
+            fechasTabla.add(fechaIni.plusDays(i));                      
         }
         
         modeloTablaEstadoHabitaciones.fireTableDataChanged();
@@ -188,14 +185,14 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel
         int iIni, iFin, i;
         for (Tripleta<Integer, LocalDate, LocalDate> t : l)
         {
-            iIni = fechasAIndFechasTabla.get(t.segundo);
-            iFin = fechasAIndFechasTabla.get(t.tercero);
+            iIni = fechasTabla.indexOf(t.segundo);
+            iFin = fechasTabla.indexOf(t.tercero);
             for (i = iIni; i <= iFin; i++)
             {
                 modeloTablaEstadoHabitaciones.setValueAt(
                     paraReservar? TablaColoreada.COLOR_RESERVADA : TablaColoreada.COLOR_OCUPADA,
-                    i, 
-                    t.primero // i.e. j
+                    i,                                                                                      
+                    idHabsTabla.indexOf(t.primero) + 1               
                 );
                 
                 estadosHabitaciones.get(t.segundo.plusDays(i - iIni))
@@ -257,6 +254,7 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel
     }
 
     // Llamar previamente a verificarDisponibilidad()
+    // Metodo general para discontinuidad en fechas y multiples habitaciones
     private void calcularResultado()
     {
         resultado = new LinkedList<>();
@@ -323,9 +321,32 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel
             newArr.add(arr[i]);
         return newArr;
     }
-
-    public List<Tripleta<Integer, LocalDate, LocalDate>> getResultado() { return resultado; }
     
+    private LocalDate dateToLocalDate(Date d) {
+        return d.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    }
+    
+    private void pasarAOcuparHabitacion()
+    {
+        EstadiaDTO estadiaActualDTO = new EstadiaDTO();
+        Tripleta<Integer, LocalDate, LocalDate> estadiaActualTrip = resultado.get(0);
+        
+        estadiaActualDTO.setIdHabitacion(estadiaActualTrip.primero);
+        estadiaActualDTO.setFechaInicio(estadiaActualTrip.segundo.toString());
+        estadiaActualDTO.setFechaFin(estadiaActualTrip.tercero.toString());
+        reservasUOcupacionesAdicionales.add(estadiaActualTrip);
+        
+        frame.setContentPane(new PanelOcuparHabitacion(frame, estadiaActualDTO));
+        frame.setTitle("Ocupar habitacion");
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.getContentPane().setVisible(false);
+        frame.getContentPane().setVisible(true);
+    }
+    
+    public static void limpiarHabitaciones(){
+        reservasUOcupacionesAdicionales.clear();
+    }
     
     /*
         Clase auxiliar al encabezado "Fecha / Habitaciones". 
@@ -350,27 +371,6 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel
             this.setBorder(UIManager.getBorder("TableHeader.cellBorder"));
             return this;
         }
-    }
-    
-    private void PasarAOcuparHabitacion(){
-        EstadiaDTO estadiaActual = new EstadiaDTO();
-        
-        estadiaActual.setIdHabitacion(getResultado().get(0).primero);
-        estadiaActual.setFechaInicio(getResultado().get(0).segundo.toString());
-        estadiaActual.setFechaFin(getResultado().get(0).tercero.toString());
-        
-        frame.setContentPane(new PanelOcuparHabitacion(frame,estadiaActual));
-        frame.setTitle("Ocupar habitacion");
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.getContentPane().setVisible(false);
-        frame.getContentPane().setVisible(true);
-        
-        reservasUOcupacionesAdicionales.add(getResultado().get(0));
-    }
-    
-    public static void limpiarHabitaciones(){
-        reservasUOcupacionesAdicionales.clear();
     }
     
     // ---------------------------------------------------------------------------------------------------------------------------------------------
@@ -614,9 +614,9 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel
         LocalDate ldFechaDesde = null, ldFechaHasta = null;
         
         if (dcFechaDesde.getDate() != null)
-            ldFechaDesde = dcFechaDesde.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            ldFechaDesde = this.dateToLocalDate(dcFechaDesde.getDate());
         if (dcFechaHasta.getDate() != null)
-            ldFechaHasta = dcFechaHasta.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            ldFechaHasta = this.dateToLocalDate(dcFechaHasta.getDate());
         
         if (ldFechaDesde == null || ldFechaHasta == null)
         {
@@ -676,7 +676,7 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel
             // https://stackoverflow.com/questions/19870467/how-do-i-get-press-any-key-to-continue-to-work-in-my-java-code/25095049
             JOptionPane.showInternalMessageDialog(
                 null, 
-                "Habitación reservada exitosamente.",
+                "Habitación seleccionada exitosamente.",
                 "",
                 JOptionPane.INFORMATION_MESSAGE
             );       
@@ -698,24 +698,73 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel
         }
         else
         {
-            if (disponibilidad.segundo) // i.e. se tapa una reserva
+            this.calcularResultado();
+            
+            if (!resultado.get(0).segundo.equals(LocalDate.now()))  // i.e. la estadia no empieza en el dia de hoy
             {
-                //Se debe mostrar quien hizo la reserva y que dias
-                Object[] opciones = {"Ocupar igual", "Volver"};
-                int indOpcionElegida = JOptionPane.showOptionDialog(
+                JOptionPane.showMessageDialog(
                     null, 
-                    "Se engloba una reserva para la habitación y rango de fecha escogidos. ¿Desea ocupar igualmente?",
-                    "Cuidado",
-                    JOptionPane.DEFAULT_OPTION,
-                    JOptionPane.WARNING_MESSAGE,
-                    null,
-                    opciones,
-                    opciones[1]
+                    "La ocupación de la habitación no comienza el día de hoy.", 
+                    "Error", 
+                    JOptionPane.ERROR_MESSAGE
                 );
-
-                if (indOpcionElegida == 0) // i.e. "Ocupar igual"; cerrar el panel actual, volver
+                resultado = null;
+            }
+            else
+            {
+                if (disponibilidad.segundo) // i.e. se tapa una reserva
                 {
-                    this.calcularResultado();
+                    // Obtener las reservas que entran en conflicto con la ocupacion
+                    ReservaDAO reservaDAO = new ReservaDAOImpl();
+                    List<Tripleta<String, LocalDate, LocalDate>> resHab = 
+                        reservaDAO.getReservasHabitacion(
+                            resultado.get(0).primero, 
+                            LocalDate.now(), 
+                            this.dateToLocalDate(dcFechaHasta.getDate())
+                        );
+                    reservaDAO.close();
+                    
+                    // Armar str de reservas para el cartel
+                    String resHabStr = "";
+                    for (Tripleta<String, LocalDate, LocalDate> r : resHab)
+                    {
+                        resHabStr += 
+                            r.primero + 
+                            "; del " + FORMATTER.format(r.segundo).toString() + 
+                            " al "   + FORMATTER.format(r.tercero).toString() + "\n";
+                    }
+                    
+                    
+                    Object[] opciones = {"Ocupar igual", "Volver"};
+                    int indOpcionElegida = JOptionPane.showOptionDialog(
+                        null, 
+                        "Se engloban una o más reservas para la habitación y rango de fecha escogidos:\n" + 
+                        resHabStr + 
+                        "¿Desea ocupar igualmente?",
+                        "Cuidado",
+                        JOptionPane.DEFAULT_OPTION,
+                        JOptionPane.WARNING_MESSAGE,
+                        null,
+                        opciones,
+                        opciones[1]
+                    );
+
+                    if (indOpcionElegida == 0) // i.e. "Ocupar igual"; cerrar el panel actual, volver
+                    {
+                        this.repintarTabla(resultado);
+
+                        JOptionPane.showInternalMessageDialog(
+                            null, 
+                            "Habitación seleccionada exitosamente.", 
+                            "", 
+                            JOptionPane.INFORMATION_MESSAGE
+                        );
+
+                        this.pasarAOcuparHabitacion();
+                    }
+                }
+                else  // i.e. cerrar el panel actual, volver
+                {    
                     this.repintarTabla(resultado);
 
                     JOptionPane.showInternalMessageDialog(
@@ -724,24 +773,9 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel
                         "", 
                         JOptionPane.INFORMATION_MESSAGE
                     );
-                    
-                    // TODO pendiente ver como conectar
-                    PasarAOcuparHabitacion();
-                }
-            }
-            else  // i.e. cerrar el panel actual, volver
-            {    
-                this.calcularResultado();
-                this.repintarTabla(resultado);
 
-                JOptionPane.showInternalMessageDialog(
-                    null, 
-                    "Habitación seleccionada exitosamente.", 
-                    "", 
-                    JOptionPane.INFORMATION_MESSAGE
-                );
-                // TODO pendiente ver como conectar
-                PasarAOcuparHabitacion();
+                    this.pasarAOcuparHabitacion();
+                }
             }
         }
     }
@@ -750,7 +784,7 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel
         //Al cancelar se debe volver al menu principal
         frame.cambiarPanel(VentanaPrincipal.PANE_MENU_PRINCIPAL);
         //Se limpian las habitaciones con estados pre cargados
-        limpiarHabitaciones();
+        PanelMostrarEstadoHabitacion.limpiarHabitaciones();
         PanelOcuparHabitacion.limpiarEstadias();       
     }//GEN-LAST:event_cancelarActionPerformed
 
@@ -766,7 +800,6 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel
                 dcFechaHasta.setDate(new Date(dcFechaDesde.getDate().getTime() + ADELANTO_DIAS * 24 * 60 * 60 * 1000));
         */
     }//GEN-LAST:event_dcFechaHastaPropertyChange
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton buscar;

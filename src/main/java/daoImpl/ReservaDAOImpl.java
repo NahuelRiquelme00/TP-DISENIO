@@ -6,6 +6,7 @@ import entidades.PeriodoReserva;
 import entidades.Reserva;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -16,6 +17,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import misc.Tripleta;
 
 /**
  *
@@ -25,17 +27,15 @@ public class ReservaDAOImpl implements ReservaDAO {
     private EntityManagerFactory emf = null;
 
     public ReservaDAOImpl() {
-        this.emf = Persistence.createEntityManagerFactory("MiBaseDeDatos");
+        this.emf = Persistence.createEntityManagerFactory("postgres");//"MiBaseDeDatos");
     }
 
     public EntityManager getEntityManager() {
         return emf.createEntityManager();
     }
 
-    // Pendiente implementar el resto de operaciones. No se como hacerlo. - Fede P.
-    
     @Override
-    public List<PeriodoReserva> getPeriodosReservaEntreFechas(LocalDate fechaInicioGui, LocalDate fechaFinGui) 
+    public List<PeriodoReserva> getPeriodosReservaEntreFechas(LocalDate cotaInf, LocalDate cotaSup) 
     {
         EntityManager em = getEntityManager();
         
@@ -48,11 +48,11 @@ public class ReservaDAOImpl implements ReservaDAO {
             
             // https://stackoverflow.com/questions/9449003/compare-date-entities-in-jpa-criteria-api
             Predicate[] conds = new Predicate[3];
-            conds[0] = cb.between(r.<LocalDate>get("fechaInicio"), fechaInicioGui, fechaFinGui);
-            conds[1] = cb.between(r.<LocalDate>get("fechaFin"), fechaInicioGui, fechaFinGui);
+            conds[0] = cb.between(r.<LocalDate>get("fechaInicio"), cotaInf, cotaSup);
+            conds[1] = cb.between(r.<LocalDate>get("fechaFin"), cotaInf, cotaSup);
             conds[2] = cb.and(
-                cb.lessThan(r.<LocalDate>get("fechaInicio"), fechaInicioGui),
-                cb.greaterThan(r.<LocalDate>get("fechaFin"), fechaFinGui)
+                cb.lessThan(r.<LocalDate>get("fechaInicio"), cotaInf),
+                cb.greaterThan(r.<LocalDate>get("fechaFin"), cotaSup)
             );
 
             cq.select(r).where(cb.or(conds));
@@ -64,7 +64,35 @@ public class ReservaDAOImpl implements ReservaDAO {
             em.close();
         }        
     }
-
+    
+    /*
+        En una tripleta dada:
+            primero: nombre y apellido del que realizo la reserva
+            segundo: fecha inicio
+            tercero: fecha fin
+    */
+    public List<Tripleta<String, LocalDate, LocalDate>> getReservasHabitacion(Integer idHab, LocalDate cotaInf, LocalDate cotaSup)
+    {
+        // Fede P.: No tengo en claro como se hacen joints con Criteria, si es que se puede. Por eso el siguiente codigo
+        
+        List<Tripleta<String, LocalDate, LocalDate>> res = new LinkedList<>();
+        for (PeriodoReserva p : this.getPeriodosReservaEntreFechas(cotaInf, cotaSup))
+        {
+            if (p.getHabitacion().getNumero().equals(idHab))
+            {
+                res.add(
+                    new Tripleta<String, LocalDate, LocalDate>(
+                        p.getReserva().getApellido() + ", " + p.getReserva().getNombre(),
+                        p.getFechaInicio(),
+                        p.getFechaFin()
+                    )
+                );
+            }
+        }
+        
+        return res;
+    }
+    
     @Override
     public void close() {
         emf.close();

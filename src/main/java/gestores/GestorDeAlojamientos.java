@@ -22,6 +22,7 @@ import entidades.TipoEstado;
 import entidades.TipoHabitacion;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -136,6 +137,10 @@ public class GestorDeAlojamientos {
         List<Estadia> estadias = estadiaDAO.getEstadiasEntreFechas(fechaInicioGui, fechaFinGui);
         List<PeriodoReserva> periodosReserva = reservaDAO.getPeriodosReservaEntreFechas(fechaInicioGui, fechaFinGui);
        
+        habitacionDAO.close();
+        estadiaDAO.close();
+        reservaDAO.close();
+        
         // Inicializar mapa de mapas con fechas colocadas
         int cantDias = (int) fechaInicioGui.until(fechaFinGui, ChronoUnit.DAYS) + 1;
         Map<LocalDate, HashMap<Integer, TipoEstado>> estadosHabitaciones = new HashMap<>(); 
@@ -164,11 +169,7 @@ public class GestorDeAlojamientos {
             }
         }
         
-        habitacionDAO.close();
-        estadiaDAO.close();
-        reservaDAO.close();
-        
-        return /*grilla*/estadosHabitaciones;
+        return estadosHabitaciones;
     }
     
     private void completarEstadoEntre(Map<LocalDate, HashMap<Integer, TipoEstado>> estadosHabitaciones, Habitacion hab, LocalDate cotaInf, LocalDate cotaSup, LocalDate fechaDesde, LocalDate fechaHasta, TipoEstado estado) {
@@ -186,26 +187,28 @@ public class GestorDeAlojamientos {
             estadosHabitaciones.get(cotaInf.plusDays(i)).put(hab.getNumero(), estado);
     }
     
-    public List<Dupla<String, LinkedList<Integer>>> getTiposYHabitaciones() {
+    public List<Dupla<String, ArrayList<Integer>>> getTiposYHabitaciones() {
         habitacionDAO = new HabitacionDAOImpl();
         
         List<Habitacion> habs = habitacionDAO.getAllHabitaciones();
         List<TipoHabitacion> tiposHab = habitacionDAO.getAllTiposHabitacion();
         
-        List<Dupla<String, LinkedList<Integer>>> tiposYHabitaciones = new LinkedList<>();
+        habitacionDAO.close();
+        
+        List<Dupla<String, ArrayList<Integer>>> tiposYHabitaciones = new LinkedList<>();
         
         for (TipoHabitacion t : tiposHab)
         {
-            Dupla<String, LinkedList<Integer>> d = new Dupla<>(t.getNombre(), new LinkedList<>());
+            Dupla<String, ArrayList<Integer>> d = new Dupla<>(t.getNombre(), new ArrayList<>());
         
             for (Habitacion hab : habs)
                 if (hab.getTipoHabitacion().equals(t)) 
                     d.segundo.add(hab.getNumero());
             
+            d.segundo.sort((Integer idH1, Integer idH2) -> idH1.compareTo(idH2));
+            
             tiposYHabitaciones.add(d);
         }
-        
-        habitacionDAO.close();
         
         return tiposYHabitaciones;
     }
