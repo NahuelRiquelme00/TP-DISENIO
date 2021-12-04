@@ -6,6 +6,7 @@
 package entidades;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -13,8 +14,6 @@ import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.*;
-//import org.javamoney.moneta.Money;
-import org.joda.money.Money;
 
 @Entity
 @Table(name="estadia")
@@ -31,14 +30,14 @@ public class Estadia implements Serializable {
     @Column(name="fecha_fin")
     LocalDate fechaFin;
 
-    @Column(name="costo", columnDefinition="bytea")
-    Money costoNoche;
+    @Column(name="costo", columnDefinition="numeric")
+    BigDecimal costoNoche;
 
     @Column(name="descuento")
     Double descuento;
 
-    @Column(name="costo_final", columnDefinition="bytea")
-    Double costoFinal;
+    @Column(name="costo_final", columnDefinition="numeric")
+    BigDecimal costoFinal;
 
     @OneToOne
     @JoinColumn(name="numero_factura", referencedColumnName="numero")
@@ -55,13 +54,18 @@ public class Estadia implements Serializable {
         inverseJoinColumns=@JoinColumn(name="id_persona_fisica",referencedColumnName="id_persona_fisica"))
     List<PersonaFisica> pasajeroAcompañante = new ArrayList<>();      
 
-    @OneToMany
+    @OneToMany//(fetch = FetchType.EAGER)
     @JoinColumn(name="id_estadia", referencedColumnName="id_estadia")
     List<ServicioPrestado> serviciosPrestados;
 
     @ManyToOne
     @JoinColumn(name="numero_habitacion", referencedColumnName="numero")
     Habitacion habitacion;
+    
+    public Integer getCantidadNoches(){
+        Integer cantNoches = fechaFin.compareTo(fechaInicio);
+        return cantNoches;
+    }
 
     public Integer getIdEstadia() {
         return idEstadia;
@@ -87,11 +91,11 @@ public class Estadia implements Serializable {
         this.fechaFin = fechaFin;
     }
 
-    public Money getCostoNoche() {
+    public BigDecimal getCostoNoche() {
         return costoNoche;
     }
 
-    public void setCostoNoche(Money costoNoche) {
+    public void setCostoNoche(BigDecimal costoNoche) {
         this.costoNoche = costoNoche;
     }
 
@@ -103,11 +107,11 @@ public class Estadia implements Serializable {
         this.descuento = descuento;
     }
 
-    public Double getCostoFinal() {
+    public BigDecimal getCostoFinal() {
         return costoFinal;
     }
 
-    public void setCostoFinal(Double costoFinal) {
+    public void setCostoFinal(BigDecimal costoFinal) {
         this.costoFinal = costoFinal;
     }
 
@@ -222,21 +226,33 @@ public class Estadia implements Serializable {
         return "Estadia{" + "idEstadia=" + idEstadia + ", fechaInicio=" + fechaInicio + ", fechaFin=" + fechaFin + '}';
     }    
 
-    public double calcularCostoFinal(LocalTime horaSalida) {
-        double costoEstadia = 0, costoPorNoche;
+    public BigDecimal calcularCostoFinal(LocalTime horaSalida) {
+        BigDecimal costoEstadia = null, costoPorNoche, cantidadNoches, factor;
         Integer cantNoches;
-        //costoPorNoche = this.costoNoche;
-        costoPorNoche = 1500;
+        costoPorNoche = this.costoNoche;
+        
         cantNoches = fechaFin.compareTo(fechaInicio);
+        cantidadNoches = new BigDecimal(cantNoches);
+        factor = new BigDecimal(0.5);
         
         if(horaSalida.isAfter(LocalTime.of(9, 0)) &&  horaSalida.isBefore(LocalTime.of(11, 0))){
-            costoEstadia= costoPorNoche * cantNoches;
-        }else if(horaSalida.isAfter(LocalTime.of(11, 0))){
-            costoEstadia= costoPorNoche * cantNoches + 0.5* costoPorNoche;
+            //costoEstadia= costoPorNoche * cantNoches; ParaDouble
+            costoEstadia = costoPorNoche.multiply(cantidadNoches);
+            
+        }else if(horaSalida.isAfter(LocalTime.of(11, 0)) && horaSalida.isBefore(LocalTime.of(18, 0))){
+            //costoEstadia= costoPorNoche * cantNoches + 0.5* costoPorNoche; Para Double
+            costoEstadia = (costoPorNoche.multiply(cantidadNoches)).add(costoPorNoche.multiply(factor));
+            
+        }else if(horaSalida.isBefore(LocalTime.of(9, 0)) || horaSalida.isAfter(LocalTime.of(18, 0))){
+            //costoEstadia= costoPorNoche * cantNoches + 0.5* costoPorNoche;Para Double
+            costoEstadia = (costoPorNoche.multiply(cantidadNoches)).add(costoPorNoche.multiply(factor));
+            //Tirar excepcion para mensaje?
+            System.out.println("Se debe re ocupar la habitación");
         }
-        System.out.println("El costo por noche es: " + costoPorNoche + "La cantidad de noches es: " + cantNoches);
+        //System.out.println("El costo por noche es: " + costoPorNoche + " La cantidad de noches es: " + cantNoches);
         
         this.setCostoFinal(costoEstadia);
+        
         return costoEstadia;
     }
     

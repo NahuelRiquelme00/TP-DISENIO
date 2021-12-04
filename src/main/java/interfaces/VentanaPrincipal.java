@@ -52,7 +52,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 this.setContentPane(new PanelSeleccionarResponsable(this));
                 this.setTitle("Seleccionar Responsable");
                 break;
-            case PANE_FACTURAR:
+            case PANE_FACTURAR://Eliminable
                 this.setContentPane(new PanelFacturar(this));
                 this.setTitle("Facturar");
                 break;

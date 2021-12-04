@@ -156,17 +156,12 @@
         <Component class="javax.swing.JTextField" name="jTextField1">
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
-            <Property name="text" type="java.lang.String" value="jTextField1"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="jTextField2">
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
-            <Property name="text" type="java.lang.String" value="jTextField2"/>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextField2ActionPerformed"/>
-          </Events>
         </Component>
       </SubComponents>
     </Container>
@@ -266,7 +261,6 @@
         <Component class="javax.swing.JTextField" name="jTextField3">
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
-            <Property name="text" type="java.lang.String" value="jTextField3"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JCheckBox" name="jCheckBox1">
@@ -336,13 +330,11 @@
             <Component class="javax.swing.JTextField" name="jTextField4">
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
-                <Property name="text" type="java.lang.String" value="jTextField4"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="jTextField5">
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
-                <Property name="text" type="java.lang.String" value="jTextField5"/>
               </Properties>
             </Component>
           </SubComponents>
@@ -360,7 +352,7 @@
                   <Table columnCount="6" rowCount="4">
                     <Column editable="false" title="Consumo" type="java.lang.Object"/>
                     <Column editable="false" title="Precio Unitario" type="java.lang.Object"/>
-                    <Column editable="false" title="Unidades" type="java.lang.Object"/>
+                    <Column editable="true" title="Unidades" type="java.lang.Object"/>
                     <Column editable="false" title="U. Totales" type="java.lang.Object"/>
                     <Column editable="false" title="Costo Total" type="java.lang.Object"/>
                     <Column editable="false" title="Descripci&#xf3;n" type="java.lang.Object"/>

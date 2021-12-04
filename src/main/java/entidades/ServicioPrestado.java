@@ -26,8 +26,8 @@ public class ServicioPrestado implements Serializable {
     @Column(name="nombre")
     String nombre;
 
-    @Column(name="precio", columnDefinition="bytea")
-    Money precio;
+    @Column(name="precio", columnDefinition="numeric")
+    Double precio;
 
     @Column(name="cantidad")
     Integer cantidad;
@@ -58,11 +58,11 @@ public class ServicioPrestado implements Serializable {
         this.nombre = nombre;
     }
 
-    public Money getPrecio() {
+    public Double getPrecio() {
         return precio;
     }
 
-    public void setPrecio(Money precio) {
+    public void setPrecio(Double precio) {
         this.precio = precio;
     }
 

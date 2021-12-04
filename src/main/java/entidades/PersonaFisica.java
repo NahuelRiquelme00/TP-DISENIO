@@ -243,4 +243,6 @@ public class PersonaFisica extends Persona implements Serializable {
         return "PersonaFisica{" + "apellido=" + apellido + ", nombres=" + nombres + ", direccion=" + direccion + ", tipoPosicionFrenteIVA=" + tipoPosicionFrenteIVA + '}';
     }
 
+   
+
 }

@@ -18,6 +18,7 @@ import entidades.Estadia;
 import entidades.Habitacion;
 import entidades.PersonaFisica;
 import entidades.TipoEstado;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -113,7 +114,7 @@ public class GestorDeAlojamientos {
     }
 
     
-    public List<PersonaFisicaDTO> buscarOcupantes(Integer nroHabitacion, LocalTime horaSalida) {
+    public List<PersonaFisica> buscarOcupantes(Integer nroHabitacion, LocalTime horaSalida) {
         habitacionDAO = new HabitacionDAOImpl();
         Habitacion habitacion = habitacionDAO.findHabitacion(nroHabitacion);
         
@@ -122,33 +123,58 @@ public class GestorDeAlojamientos {
         
         List<PersonaFisica> pasajeros = new ArrayList<>();
         pasajeros.add(estadia.getPasajeroResponsable());
-        pasajeros.addAll(estadia.getPasajeroAcompañante());//System.out.println(pasajeros);
+        pasajeros.addAll(estadia.getPasajeroAcompañante());
       
         
         habitacionDAO.close();
-        return gestorPersonas.convertirADTO(pasajeros);
+        return pasajeros;
     }
 
     public void calcularCostoEstadia(Integer nroHabitacion, LocalTime horaSalida) {
-        System.out.println("Calculando costo estadía");
-        habitacionDAO = new HabitacionDAOImpl();
-        Habitacion habitacion = habitacionDAO.findHabitacion(nroHabitacion);
-        habitacionDAO.close();
+        estadiaDAO = new EstadiaDAOImpl();
         
-        Estadia estadia;
-        estadia = habitacion.getEstadiaActual();
-        double costoFinal = estadia.calcularCostoFinal(horaSalida);//Modificar al tipo de dato que haya quedado
+        Estadia estadia = this.buscarEstadia(nroHabitacion);
+        BigDecimal costoFinal = estadia.calcularCostoFinal(horaSalida);//Modificar al tipo de dato que haya quedado
         
         System.out.println("El costo final es: " + costoFinal);
-        /*
+        
+        
         try {
             estadiaDAO.updateEstadia(estadia);
         } catch (Exception ex) {
-            Logger.getLogger(GestorDeAlojamientos.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Error al crear persona");
         }
-        */
         
+        estadiaDAO.close();
     }
+
+    public Estadia buscarEstadia(Integer nroHabitacion) {
+        habitacionDAO = new HabitacionDAOImpl();
+        Habitacion habitacion = habitacionDAO.findHabitacion(nroHabitacion);
+        habitacionDAO.close();
+        Estadia estadia = habitacion.getEstadiaActual();
+        
+        return estadia;
+    }
+
+    public Integer getCantidadNoches(Estadia estadia) {
+        Integer cantNoches = estadia.getCantidadNoches();
+        return cantNoches;
+    }
+
+    public BigDecimal getCostoFinal(Estadia estadia) {
+        estadiaDAO = new EstadiaDAOImpl();
+        
+        return estadia.getCostoFinal();
+    }
+
+    public BigDecimal getCostoNoche(Estadia estadia) {
+        estadiaDAO = new EstadiaDAOImpl();
+        
+        return estadia.getCostoNoche();
+    }
+
+
     
     
     

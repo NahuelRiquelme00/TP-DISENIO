@@ -23,15 +23,15 @@ public class Factura implements Serializable {
     @Column(name="numero")
     Integer numero;
 
-    @Column(name="importe_neto", columnDefinition="bytea")
-    Money importeNeto;
+    @Column(name="importe_neto", columnDefinition="numeric")
+    Double importeNeto;
 
     @Column(name="tipo")
     @Enumerated(EnumType.STRING)
     TipoFactura tipo;
 
-    @Column(name="importe_total", columnDefinition="bytea")
-    Money importeTotal;
+    @Column(name="importe_total", columnDefinition="numeric")
+    Double importeTotal;
 
     @Column(name="fecha_emision")
     LocalDate fechaEmision;
@@ -66,11 +66,11 @@ public class Factura implements Serializable {
         this.numero = numero;
     }
 
-    public Money getImporteNeto() {
+    public Double getImporteNeto() {
         return importeNeto;
     }
 
-    public void setImporteNeto(Money importeNeto) {
+    public void setImporteNeto(Double importeNeto) {
         this.importeNeto = importeNeto;
     }
 
@@ -82,11 +82,11 @@ public class Factura implements Serializable {
         this.tipo = tipo;
     }
 
-    public Money getImporteTotal() {
+    public Double getImporteTotal() {
         return importeTotal;
     }
 
-    public void setImporteTotal(Money importeTotal) {
+    public void setImporteTotal(Double importeTotal) {
         this.importeTotal = importeTotal;
     }
 

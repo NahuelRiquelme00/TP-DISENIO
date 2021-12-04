@@ -6,6 +6,7 @@
 package entidades;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.*;
 import org.joda.money.Money;
@@ -18,8 +19,8 @@ public class TipoHabitacion implements Serializable {
     @Column(name="nombre")
     String nombre;
 
-    @Column(name="precio_actual", columnDefinition="bytea")
-    Money precioActual;
+    @Column(name="precio_actual", columnDefinition="numeric")
+    BigDecimal precioActual;
 
     public String getNombre() {
         return nombre;
@@ -29,11 +30,11 @@ public class TipoHabitacion implements Serializable {
         this.nombre = nombre;
     }
 
-    public Money getPrecioActual() {
+    public BigDecimal getPrecioActual() {
         return precioActual;
     }
 
-    public void setPrecioActual(Money precioActual) {
+    public void setPrecioActual(BigDecimal precioActual) {
         this.precioActual = precioActual;
     }
 

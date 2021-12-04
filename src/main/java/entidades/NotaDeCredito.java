@@ -22,14 +22,14 @@ public class NotaDeCredito implements Serializable {
     @Column(name="numero_nota")
     Integer numeroNota;
 
-    @Column(name="importe_neto", columnDefinition="bytea")
-    Money importeNeto;
+    @Column(name="importe_neto", columnDefinition="numeric")
+    Double importeNeto;
 
     @Column(name="iva")
     Double IVA;
 
-    @Column(name="importe_total", columnDefinition="bytea")
-    Money importeTotal;
+    @Column(name="importe_total", columnDefinition="numeric")
+    Double importeTotal;
 
     @ManyToOne
     @JoinColumn(name="cuit", referencedColumnName="cuit")
@@ -46,11 +46,11 @@ public class NotaDeCredito implements Serializable {
         this.numeroNota = numeroNota;
     }
 
-    public Money getImporteNeto() {
+    public Double getImporteNeto() {
         return importeNeto;
     }
 
-    public void setImporteNeto(Money importeNeto) {
+    public void setImporteNeto(Double importeNeto) {
         this.importeNeto = importeNeto;
     }
 
@@ -62,11 +62,11 @@ public class NotaDeCredito implements Serializable {
         this.IVA = IVA;
     }
 
-    public Money getImporteTotal() {
+    public Double getImporteTotal() {
         return importeTotal;
     }
 
-    public void setImporteTotal(Money importeTotal) {
+    public void setImporteTotal(Double importeTotal) {
         this.importeTotal = importeTotal;
     }
 

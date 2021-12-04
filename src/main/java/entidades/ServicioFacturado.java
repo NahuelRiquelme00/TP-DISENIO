@@ -19,14 +19,14 @@ public class ServicioFacturado implements Serializable {
     @Column(name="nombre")
     String nombre;
 
-    @Column(name="precio_unitario", columnDefinition="bytea")
-    Money precioUnitario;
+    @Column(name="precio_unitario", columnDefinition="numeric")
+    Double precioUnitario;
 
     @Column(name="cantidad")
     Integer cantidad;
 
-    @Column(name="precio_total", columnDefinition="bytea")
-    Money precioTotal;
+    @Column(name="precio_total", columnDefinition="numeric")
+    Double precioTotal;
 
     @ManyToOne
     @JoinColumn(name="id_servicio", referencedColumnName="id_servicio")
@@ -44,11 +44,11 @@ public class ServicioFacturado implements Serializable {
         this.nombre = nombre;
     }
 
-    public Money getPrecioUnitario() {
+    public Double getPrecioUnitario() {
         return precioUnitario;
     }
 
-    public void setPrecioUnitario(Money precioUnitario) {
+    public void setPrecioUnitario(Double precioUnitario) {
         this.precioUnitario = precioUnitario;
     }
 
@@ -60,11 +60,11 @@ public class ServicioFacturado implements Serializable {
         this.cantidad = cantidad;
     }
 
-    public Money getPrecioTotal() {
+    public Double getPrecioTotal() {
         return precioTotal;
     }
 
-    public void setPrecioTotal(Money precioTotal) {
+    public void setPrecioTotal(Double precioTotal) {
         this.precioTotal = precioTotal;
     }
 

@@ -6,7 +6,9 @@
 package gestores;
 
 import dao.PersonaDAO;
+import dao.TipoPosicionFrenteIVADAO;
 import daoImpl.PersonaDAOImpl;
+import daoImpl.TipoPosicionFrenteIVADAOImpl;
 import dto.PersonaFisicaDTO;
 import entidades.Direccion;
 import entidades.Localidad;
@@ -29,6 +31,7 @@ import java.util.logging.Logger;
 public class GestorDePersonas {
     private static GestorDePersonas instance;
     private PersonaDAO personaDAO;
+    private TipoPosicionFrenteIVADAO posicionIVADAO;
     
     private GestorDePersonas (){
         try{
@@ -256,5 +259,15 @@ public class GestorDePersonas {
             
 	}
         return hayCamposIncompletos;
+    }
+
+   
+    public void getTipoFactura(Integer idPosicionIVA) {
+        posicionIVADAO = new TipoPosicionFrenteIVADAOImpl();
+        
+        TipoPosicionFrenteIVA posicionIVA = posicionIVADAO.findTipoPosicionFrenteIVA(idPosicionIVA);
+        posicionIVADAO.close();
+        
+        System.out.println(posicionIVA);
     }
 }

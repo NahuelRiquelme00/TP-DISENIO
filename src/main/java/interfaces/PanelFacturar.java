@@ -4,12 +4,34 @@
  */
 package interfaces;
 
+import daoImpl.EstadiaDAOImpl;
+import entidades.Estadia;
+import entidades.PersonaFisica;
+import entidades.ServicioPrestado;
+import gestores.GestorDeAlojamientos;
+import gestores.GestorDePersonas;
+import java.math.BigDecimal;
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Fede
  */
 public class PanelFacturar extends javax.swing.JPanel {
     private final VentanaPrincipal frame;
+    private final GestorDeAlojamientos gestorAlojamientos = GestorDeAlojamientos.getInstance();
+    private final GestorDePersonas gestorPersonas = GestorDePersonas.getInstance();
+    
+    
+    private List<ServicioPrestado> servPrestados;
+    private int tamServicios;
+    private BigDecimal costoFinal;
+    private BigDecimal costoFactura;
+    private Integer contChBox;
+    
+    DefaultTableModel dm;
+
     
     /**
      * Creates new form PanelFacturar
@@ -18,6 +40,54 @@ public class PanelFacturar extends javax.swing.JPanel {
     public PanelFacturar(VentanaPrincipal frame) {
         initComponents();
         this.frame = frame;
+    }
+
+    public PanelFacturar(VentanaPrincipal frame, PersonaFisica responsable, Estadia estadia) {
+        initComponents();
+        this.frame = frame;
+        costoFactura = new BigDecimal(0);
+        contChBox = 0;
+        cargarDatos(responsable, estadia);
+        
+    }
+    
+    
+    private void cargarDatos(PersonaFisica responsable, Estadia estadia) {
+        String apyNombre = responsable.getApellido() + " " + responsable.getNombres();
+        
+        jTextField1.setText(apyNombre);
+        jTextField2.setText(responsable.getTipoPosicionFrenteIVA().getTipoFactura().name());
+        
+        Integer cantNoches = gestorAlojamientos.getCantidadNoches(estadia);
+        costoFinal = gestorAlojamientos.getCostoFinal(estadia);
+        BigDecimal costoNoche = gestorAlojamientos.getCostoNoche(estadia);
+        
+        jTextField4.setText(costoFinal.toString());
+        jTextField5.setText(cantNoches.toString() + " Noches x " + costoNoche.toString() + " ARS");
+        
+        //cargarConsumos(estadia);
+    }
+    
+    private void cargarConsumos(Estadia estadia) {
+        //gestorAlojamientos.getServiciosPrestados(estadia);
+        servPrestados = estadia.getServiciosPrestados();
+        
+        System.out.println(estadia.getServiciosPrestados());
+        
+        
+        dm = (DefaultTableModel) jTable1.getModel();
+        tamServicios = servPrestados.size();
+        ServicioPrestado servicioP;
+        
+        //for para mostrar los datos de cada servicio
+        for(int j = 0; j<tamServicios; j++){
+            servicioP = servPrestados.get(j);
+            String[] datosFila = {servicioP.getTipo().name(), servicioP.getPrecio().toString(), "", servicioP.getCantidad().toString(), "", servicioP.getNombre()};
+            dm.addRow(datosFila);
+        }
+        
+        
+        
     }
 
     /**
@@ -80,15 +150,8 @@ public class PanelFacturar extends javax.swing.JPanel {
         jLabel4.setText("Tipo de Factura");
 
         jTextField1.setEditable(false);
-        jTextField1.setText("jTextField1");
 
         jTextField2.setEditable(false);
-        jTextField2.setText("jTextField2");
-        jTextField2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField2ActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -131,7 +194,6 @@ public class PanelFacturar extends javax.swing.JPanel {
         jLabel7.setText("MONTO TOTAL");
 
         jTextField3.setEditable(false);
-        jTextField3.setText("jTextField3");
 
         jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -146,10 +208,8 @@ public class PanelFacturar extends javax.swing.JPanel {
         jLabel9.setText("Descripción");
 
         jTextField4.setEditable(false);
-        jTextField4.setText("jTextField4");
 
         jTextField5.setEditable(false);
-        jTextField5.setText("jTextField5");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -194,7 +254,7 @@ public class PanelFacturar extends javax.swing.JPanel {
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+                false, false, true, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -304,21 +364,30 @@ public class PanelFacturar extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2ActionPerformed
-
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
         // TODO add your handling code here:
+        contChBox++;
+        if(contChBox == 0 || contChBox%2 == 0){
+            costoFactura = costoFactura.subtract(costoFinal);//Si lo vuelvo a presionar se le resta el valor de la estadia
+        }else {
+            costoFactura = costoFactura.add(costoFinal);
+        }
+        
+        System.out.println(costoFactura + " " + costoFinal);
+        jTextField3.setText(costoFactura.toString());
     }//GEN-LAST:event_jCheckBox1ActionPerformed
 
     private void jButtonAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAceptarActionPerformed
         // TODO add your handling code here:
+        
+        
+        
     }//GEN-LAST:event_jButtonAceptarActionPerformed
 
     private void jButtonCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelarActionPerformed
         // TODO add your handling code here:
         frame.cambiarPanel(VentanaPrincipal.PANE_MENU_PRINCIPAL);
+        //Mostrar Mensaje-> deseas salir?
     }//GEN-LAST:event_jButtonCancelarActionPerformed
 
     

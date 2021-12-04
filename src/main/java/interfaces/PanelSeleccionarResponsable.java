@@ -4,12 +4,10 @@
  */
 package interfaces;
 
-import dto.PersonaFisicaDTO;
 import entidades.Estadia;
 import gestores.GestorDeFacturas;
 import gestores.GestorDeAlojamientos;
-import entidades.Factura;
-import entidades.Habitacion;
+import entidades.PersonaFisica;
 import gestores.GestorDePersonas;
 import java.time.LocalTime;
 import java.util.List;
@@ -25,12 +23,14 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
     private final GestorDeFacturas gestorFacturas = GestorDeFacturas.getInstance();
     private final GestorDeAlojamientos gestorAlojamientos = GestorDeAlojamientos.getInstance();
     private final GestorDePersonas gestorPersonas = GestorDePersonas.getInstance();
-    private List<PersonaFisicaDTO> pasajerosDTO;
+    private List<PersonaFisica> pasajeros;
     private int row_selected;
     private int tamPasajeros;
     private boolean flagCarga;
-    DefaultTableModel dm;
+    private PersonaFisica responsable;
+    private Estadia estadia;
 
+    DefaultTableModel dm;
     Integer habitacion;
     LocalTime hora;
     
@@ -49,20 +49,20 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
     }
     
     private void popularTabla(){
-        tamPasajeros = pasajerosDTO.size();
-        PersonaFisicaDTO ocupante;
+        tamPasajeros = pasajeros.size();
+        PersonaFisica ocupante;
         dm = (DefaultTableModel) jTable1.getModel();
         
         //for para mostrar los datos de cada ocupante
         for(int j = 0; j<tamPasajeros; j++){
-            ocupante = pasajerosDTO.get(j);
-            String[] datosFila = {ocupante.getNombres(), ocupante.getApellido(), ocupante.getTipoDocumento(), ocupante.getNroDocumento().toString()};
+            ocupante = pasajeros.get(j);
+            String[] datosFila = {ocupante.getNombres(), ocupante.getApellido(), ocupante.getTipoDocumento().name(), ocupante.getNroDocumento().toString()};
             dm.addRow(datosFila);
         }
     }
     
     private void limpiarTabla(){
-        tamPasajeros = pasajerosDTO.size();
+        tamPasajeros = pasajeros.size();
         
         for(int j = tamPasajeros; j>0; j--){
             dm.removeRow(j-1);
@@ -71,10 +71,11 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
         
     
     private void cargarDatosBusqueda(){
-        //pasajerosDTO = null;
+        
         habitacion = Integer.valueOf(jTextHabitacion.getText());
         hora = LocalTime.parse(jTextHora.getText());
-        pasajerosDTO = gestorAlojamientos.buscarOcupantes(habitacion, hora);
+        estadia = gestorAlojamientos.buscarEstadia(habitacion);
+        pasajeros = gestorAlojamientos.buscarOcupantes(habitacion, hora);
         flagCarga = true;
     }
     
@@ -299,13 +300,20 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
 		opciones[0]
             );
         }else{
-            //Si la persona es menor de edad se debe mostar error
             //Si se selecciono una persona se pasa a la interfaz Facturar
-            //Pasarle la info del responsable a la interfaz
+            //Si la persona es menor de edad se debe mostar error
+            
+            
             //Hacer el calculo de la estadía antes de la siguiente interfaz
             gestorAlojamientos.calcularCostoEstadia(habitacion, hora);
             
-            frame.cambiarPanel(VentanaPrincipal.PANE_FACTURAR);
+            //Pasarle la info del responsable a la interfaz
+            frame.setContentPane(new PanelFacturar(frame,responsable, estadia));
+            frame.setTitle("Facturar");
+            frame.pack();
+            frame.setLocationRelativeTo(null);
+            frame.getContentPane().setVisible(false);
+            frame.getContentPane().setVisible(true);
         }
         
         
@@ -321,7 +329,8 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
         //Guardo los datos de la fila seleccionada
         row_selected = jTable1.getSelectedRow();
         System.out.println("Fila seleccionada: " + row_selected);
-        //System.out.println("Pasajero ID: " + jTable1.get);
+        
+        responsable = pasajeros.get(row_selected);
     }//GEN-LAST:event_jTable1MouseClicked
 
 
