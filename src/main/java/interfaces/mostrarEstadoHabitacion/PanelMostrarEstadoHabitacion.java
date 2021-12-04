@@ -730,8 +730,8 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel
                     {
                         resHabStr += 
                             r.primero + 
-                            "; del " + FORMATTER.format(r.segundo).toString() + 
-                            " al "   + FORMATTER.format(r.tercero).toString() + "\n";
+                            "; del " + FORMATTER.format(r.segundo) + 
+                            " al "   + FORMATTER.format(r.tercero) + "\n";
                     }
                     
                     

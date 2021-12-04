@@ -156,7 +156,6 @@ public class GestorDeAlojamientos {
                 this.completarEstadoEntre(estadosHabitaciones, hab, fechaInicioGui, fechaFinGui, LocalDate.now(), fechaFinGui, TipoEstado.FUERA_DE_SERVICIO);
             else
             {
-                // Cambiar "Contiene" del SD
                 for (PeriodoReserva perRes : periodosReserva)
                     //if (perRes.getHabitacion().equals(hab))
                     if (perRes.getHabitacion().getNumero().equals(hab.getNumero()))
@@ -172,7 +171,8 @@ public class GestorDeAlojamientos {
         return estadosHabitaciones;
     }
     
-    private void completarEstadoEntre(Map<LocalDate, HashMap<Integer, TipoEstado>> estadosHabitaciones, Habitacion hab, LocalDate cotaInf, LocalDate cotaSup, LocalDate fechaDesde, LocalDate fechaHasta, TipoEstado estado) {
+    private void completarEstadoEntre(Map<LocalDate, HashMap<Integer, TipoEstado>> estadosHabitaciones, Habitacion hab, LocalDate cotaInf, LocalDate cotaSup, LocalDate fechaDesde, LocalDate fechaHasta, TipoEstado estado) 
+    {
         int indIni = Math.max(
             (int) cotaInf.until(fechaDesde, ChronoUnit.DAYS),   // Si fechaDesde < cotaInf, el resultado es (-)
             0
@@ -181,8 +181,7 @@ public class GestorDeAlojamientos {
             (int) cotaInf.until(fechaHasta, ChronoUnit.DAYS) + 1,
             (int) cotaInf.until(cotaSup, ChronoUnit.DAYS) + 1
         );
-        int indHab = hab.getNumero();
-
+        
         for (int i = indIni; i < indFin; i++)
             estadosHabitaciones.get(cotaInf.plusDays(i)).put(hab.getNumero(), estado);
     }
@@ -212,5 +211,4 @@ public class GestorDeAlojamientos {
         
         return tiposYHabitaciones;
     }
-    
 }

@@ -71,6 +71,7 @@ public class ReservaDAOImpl implements ReservaDAO {
             segundo: fecha inicio
             tercero: fecha fin
     */
+    @Override
     public List<Tripleta<String, LocalDate, LocalDate>> getReservasHabitacion(Integer idHab, LocalDate cotaInf, LocalDate cotaSup)
     {
         // Fede P.: No tengo en claro como se hacen joints con Criteria, si es que se puede. Por eso el siguiente codigo
@@ -81,7 +82,7 @@ public class ReservaDAOImpl implements ReservaDAO {
             if (p.getHabitacion().getNumero().equals(idHab))
             {
                 res.add(
-                    new Tripleta<String, LocalDate, LocalDate>(
+                    new Tripleta<>(
                         p.getReserva().getApellido() + ", " + p.getReserva().getNombre(),
                         p.getFechaInicio(),
                         p.getFechaFin()
