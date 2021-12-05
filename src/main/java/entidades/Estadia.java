@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.*;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 @Entity
 @Table(name="estadia")
@@ -47,14 +49,16 @@ public class Estadia implements Serializable {
     @JoinColumn(name="id_persona_fisica", referencedColumnName="id_persona_fisica")
     PersonaFisica pasajeroResponsable;       
 
-    @ManyToMany(cascade=CascadeType.MERGE, fetch = FetchType.EAGER)
+    @ManyToMany(cascade=CascadeType.MERGE)
+    @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(
         name="pasajero",
         joinColumns=@JoinColumn(name="id_estadia",referencedColumnName="id_estadia"),
         inverseJoinColumns=@JoinColumn(name="id_persona_fisica",referencedColumnName="id_persona_fisica"))
     List<PersonaFisica> pasajeroAcompañante = new ArrayList<>();      
 
-    @OneToMany//(fetch = FetchType.EAGER)
+    @OneToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name="id_estadia", referencedColumnName="id_estadia")
     List<ServicioPrestado> serviciosPrestados;
 

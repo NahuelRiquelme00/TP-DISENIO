@@ -70,6 +70,7 @@ public class GestorDeAlojamientos {
         estadia.setFechaFin(LocalDate.parse(e.getFechaFin()));
         
         Habitacion habitacion = habitacionDAO.findHabitacion(e.getIdHabitacion());
+        
         //Le cambio el estado a la habitacion
         habitacion.setEstado(TipoEstado.OCUPADA);
         try {

@@ -6,6 +6,7 @@
 package entidades;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public class ServicioPrestado implements Serializable {
     String nombre;
 
     @Column(name="precio", columnDefinition="numeric")
-    Double precio;
+    BigDecimal precio;
 
     @Column(name="cantidad")
     Integer cantidad;
@@ -58,11 +59,11 @@ public class ServicioPrestado implements Serializable {
         this.nombre = nombre;
     }
 
-    public Double getPrecio() {
+    public BigDecimal getPrecio() {
         return precio;
     }
 
-    public void setPrecio(Double precio) {
+    public void setPrecio(BigDecimal precio) {
         this.precio = precio;
     }
 

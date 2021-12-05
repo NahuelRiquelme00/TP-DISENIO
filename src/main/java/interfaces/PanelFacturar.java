@@ -5,12 +5,16 @@
 package interfaces;
 
 import daoImpl.EstadiaDAOImpl;
+import dto.FacturaDTO;
+import dto.ServicioAFacturar;
 import entidades.Estadia;
 import entidades.PersonaFisica;
 import entidades.ServicioPrestado;
+import entidades.TipoFactura;
 import gestores.GestorDeAlojamientos;
 import gestores.GestorDePersonas;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 
@@ -26,11 +30,14 @@ public class PanelFacturar extends javax.swing.JPanel {
     
     private List<ServicioPrestado> servPrestados;
     private int tamServicios;
-    private BigDecimal costoFinal;
+    private BigDecimal costoFEstadia;
     private BigDecimal costoFactura;
     private Integer contChBox;
-    
+    private List<ServicioAFacturar> listaServiciosAFacturar;
+    private Estadia estadia;
+    private PersonaFisica responsable;
     DefaultTableModel dm;
+    
 
     
     /**
@@ -42,51 +49,51 @@ public class PanelFacturar extends javax.swing.JPanel {
         this.frame = frame;
     }
 
-    public PanelFacturar(VentanaPrincipal frame, PersonaFisica responsable, Estadia estadia) {
+    public PanelFacturar(VentanaPrincipal frame, PersonaFisica r, Estadia e) {
         initComponents();
+        estadia = e;
+        responsable = r;
         this.frame = frame;
         costoFactura = new BigDecimal(0);
         contChBox = 0;
-        cargarDatos(responsable, estadia);
+        cargarDatos();
         
     }
     
     
-    private void cargarDatos(PersonaFisica responsable, Estadia estadia) {
+    private void cargarDatos() {
         String apyNombre = responsable.getApellido() + " " + responsable.getNombres();
         
         jTextField1.setText(apyNombre);
         jTextField2.setText(responsable.getTipoPosicionFrenteIVA().getTipoFactura().name());
         
         Integer cantNoches = gestorAlojamientos.getCantidadNoches(estadia);
-        costoFinal = gestorAlojamientos.getCostoFinal(estadia);
+        costoFEstadia = gestorAlojamientos.getCostoFinal(estadia);
         BigDecimal costoNoche = gestorAlojamientos.getCostoNoche(estadia);
         
-        jTextField4.setText(costoFinal.toString());
+        jTextField4.setText(costoFEstadia.toString());
         jTextField5.setText(cantNoches.toString() + " Noches x " + costoNoche.toString() + " ARS");
         
-        //cargarConsumos(estadia);
+        cargarConsumos();
     }
     
-    private void cargarConsumos(Estadia estadia) {
-        //gestorAlojamientos.getServiciosPrestados(estadia);
+    private void cargarConsumos() {
+        //gestorAlojamientos.getServiciosPrestados(estadiaG);
         servPrestados = estadia.getServiciosPrestados();
         
-        System.out.println(estadia.getServiciosPrestados());
+        System.out.println(servPrestados);
+        dm = (DefaultTableModel) jTabla.getModel();
         
-        
-        dm = (DefaultTableModel) jTable1.getModel();
         tamServicios = servPrestados.size();
         ServicioPrestado servicioP;
         
         //for para mostrar los datos de cada servicio
         for(int j = 0; j<tamServicios; j++){
             servicioP = servPrestados.get(j);
-            String[] datosFila = {servicioP.getTipo().name(), servicioP.getPrecio().toString(), "", servicioP.getCantidad().toString(), "", servicioP.getNombre()};
+            String[] datosFila = {"", servicioP.getPrecio().toString(), "", servicioP.getCantidad().toString(), "", servicioP.getNombre()};
+            //String[] datosFila = {servicioP.getTipo().name(), servicioP.getPrecio().toString(), "", servicioP.getCantidad().toString(), "", servicioP.getNombre()};
             dm.addRow(datosFila);
         }
-        
-        
         
     }
 
@@ -101,6 +108,7 @@ public class PanelFacturar extends javax.swing.JPanel {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jLayeredPane1 = new javax.swing.JLayeredPane();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
@@ -119,9 +127,9 @@ public class PanelFacturar extends javax.swing.JPanel {
         jLabel9 = new javax.swing.JLabel();
         jTextField4 = new javax.swing.JTextField();
         jTextField5 = new javax.swing.JTextField();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
         jButtonAceptar = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTabla = new javax.swing.JTable();
         jButtonCancelar = new javax.swing.JButton();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
@@ -136,6 +144,17 @@ public class PanelFacturar extends javax.swing.JPanel {
             }
         ));
         jScrollPane1.setViewportView(jTable1);
+
+        javax.swing.GroupLayout jLayeredPane1Layout = new javax.swing.GroupLayout(jLayeredPane1);
+        jLayeredPane1.setLayout(jLayeredPane1Layout);
+        jLayeredPane1Layout.setHorizontalGroup(
+            jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        jLayeredPane1Layout.setVerticalGroup(
+            jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel1.setText("Datos");
@@ -164,9 +183,9 @@ public class PanelFacturar extends javax.swing.JPanel {
                     .addComponent(jLabel4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(25, 25, 25))
+                    .addComponent(jTextField2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -242,29 +261,6 @@ public class PanelFacturar extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
-            },
-            new String [] {
-                "Consumo", "Precio Unitario", "Unidades", "U. Totales", "Costo Total", "Descripción"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, true, false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jTable2.setRowHeight(25);
-        jTable2.setShowGrid(true);
-        jScrollPane2.setViewportView(jTable2);
-
         jButtonAceptar.setText("Aceptar");
         jButtonAceptar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -272,30 +268,39 @@ public class PanelFacturar extends javax.swing.JPanel {
             }
         });
 
+        jTabla.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Consumo", "Precio Unitario", "Unidades", "U. Totales", "Costo Total", "Descripcion"
+            }
+        ));
+        jScrollPane3.setViewportView(jTabla);
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextField3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButtonAceptar, javax.swing.GroupLayout.Alignment.TRAILING)))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 589, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel5)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jCheckBox1))
-                            .addComponent(jLabel6)
-                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButtonAceptar)))
+                            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -310,8 +315,8 @@ public class PanelFacturar extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(40, 40, 40)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
                     .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -333,18 +338,13 @@ public class PanelFacturar extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButtonCancelar))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jButtonCancelar)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jLabel1)
+                        .addComponent(jLabel2)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -364,31 +364,50 @@ public class PanelFacturar extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
-        // TODO add your handling code here:
-        contChBox++;
-        if(contChBox == 0 || contChBox%2 == 0){
-            costoFactura = costoFactura.subtract(costoFinal);//Si lo vuelvo a presionar se le resta el valor de la estadia
-        }else {
-            costoFactura = costoFactura.add(costoFinal);
-        }
-        
-        System.out.println(costoFactura + " " + costoFinal);
-        jTextField3.setText(costoFactura.toString());
-    }//GEN-LAST:event_jCheckBox1ActionPerformed
-
-    private void jButtonAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAceptarActionPerformed
-        // TODO add your handling code here:
-        
-        
-        
-    }//GEN-LAST:event_jButtonAceptarActionPerformed
-
     private void jButtonCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelarActionPerformed
         // TODO add your handling code here:
         frame.cambiarPanel(VentanaPrincipal.PANE_MENU_PRINCIPAL);
         //Mostrar Mensaje-> deseas salir?
     }//GEN-LAST:event_jButtonCancelarActionPerformed
+
+    private void jButtonAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAceptarActionPerformed
+        // TODO add your handling code here:
+        BigDecimal factorIVA = new BigDecimal(0.21);
+        Integer idEstadia = null;
+        String fechaEmision = LocalDate.now().toString();
+        Integer idResponsable = responsable.getIdPersonaFisica();
+        TipoFactura tipoF = responsable.getTipoPosicionFrenteIVA().getTipoFactura();
+        BigDecimal importeTotal = costoFactura.multiply(factorIVA);
+        
+        //Crear la facturaDTO
+        FacturaDTO f= new FacturaDTO(fechaEmision, costoFactura, importeTotal, idResponsable, tipoF);
+        
+        //Asignar idEstadia si corresponde
+        if(!(contChBox == 0 || contChBox%2 == 0)){
+            idEstadia = estadia.getIdEstadia();
+            f.setIdEstadia(idEstadia);
+        }
+        
+        //Asignar lista de Consumos/Servicios
+        f.setServiciosAFacturar(listaServiciosAFacturar);
+        
+        
+        
+    }//GEN-LAST:event_jButtonAceptarActionPerformed
+
+    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
+        // TODO add your handling code here:
+        contChBox++;
+        if(contChBox == 0 || contChBox%2 == 0){
+            costoFactura = costoFactura.subtract(costoFEstadia);//Si lo vuelvo a presionar se le resta el valor de la estadia
+            
+        }else {
+            costoFactura = costoFactura.add(costoFEstadia);
+        }
+
+        //System.out.println(costoFactura + " " + costoFinal);
+        jTextField3.setText(costoFactura.toString());
+    }//GEN-LAST:event_jCheckBox1ActionPerformed
 
     
 
@@ -405,13 +424,14 @@ public class PanelFacturar extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JLayeredPane jLayeredPane1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTable jTabla;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
