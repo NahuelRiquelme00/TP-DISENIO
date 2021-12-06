@@ -70,18 +70,12 @@ public class GestorDeAlojamientos {
         
         estadia.setFechaFin(LocalDate.parse(e.getFechaFin()));
         
-        Habitacion habitacion = habitacionDAO.findHabitacion(e.getIdHabitacion());
+        Habitacion habitacion = habitacionDAO.getById(e.getIdHabitacion());
+        
+        //Money precioActual = habitacion.getTipoHabitacion().getPrecioActual();       
         
         estadia.setCostoNoche(habitacion.getTipoHabitacion().getPrecioActual());
            
-        //Le cambio el estado a la habitacion
-        habitacion.setEstado(TipoEstado.OCUPADA);
-        try {
-            habitacionDAO.updateHabitacion(habitacion);
-        } catch (Exception ex) {
-            System.out.println("Error al actualizar el estado de la habitacion");
-            Logger.getLogger(GestorDeAlojamientos.class.getName()).log(Level.SEVERE, null, ex);
-        }
         //Cargo la habitacion
         estadia.setHabitacion(habitacion);         
         
@@ -93,6 +87,15 @@ public class GestorDeAlojamientos {
         e.getIdsPasajeroAcompañante().forEach(id -> {
               estadia.addPasajeroAcompañante(personaDAO.findPersonaFisica(id));
         });
+        
+        //Le cambio el estado a la habitacion
+        habitacion.setEstado(TipoEstado.OCUPADA);
+        try {
+            habitacionDAO.updateHabitacion(habitacion);
+        } catch (Exception ex) {
+            System.out.println("Error al actualizar el estado de la habitacion");
+            Logger.getLogger(GestorDeAlojamientos.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
         //Crear estadia        
         try {
@@ -210,4 +213,19 @@ public class GestorDeAlojamientos {
         return tiposYHabitaciones;
     }
     
+    public Habitacion getById(Integer id){
+        habitacionDAO = new HabitacionDAOImpl();
+        Habitacion habitacion = null;
+        try {
+            habitacion = habitacionDAO.getById(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        habitacionDAO.close();
+        return habitacion;
+    }
+    
+    public Integer getCapacidadHabitacion(Integer id){
+        return getById(id).getCapacidad();
+    }
 }

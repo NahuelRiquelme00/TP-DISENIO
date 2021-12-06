@@ -154,7 +154,7 @@ public class HabitacionDAOImpl implements HabitacionDAO {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
                 Integer id = habitacion.getNumero();
-                if (findHabitacion(id) == null) {
+                if (getById(id) == null) {
                     throw new NonexistentEntityException("The habitacion with id " + id + " no longer exists.");
                 }
             }
@@ -224,7 +224,7 @@ public class HabitacionDAOImpl implements HabitacionDAO {
     }
 
     @Override
-    public Habitacion findHabitacion(Integer id) {
+    public Habitacion getById(Integer id) {
         EntityManager em = getEntityManager();
         try {
             return em.find(Habitacion.class, id);

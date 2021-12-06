@@ -39,6 +39,9 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
     private boolean pasajeroCargado;
     private PersonaFisicaDTO personaSeleccionada1;
     private PersonaFisicaDTO personaSeleccionada2;
+    //Manejo de la capacidad de cada habitacion
+    private Integer capacidadHabitacion;
+    private Integer acompañantesCargados;
     //Para cargar en la lista de estadiasDTO
     public EstadiaDTO estadiaDTOactual; //Se guarda fechaInicio, fechaFin, habitacion
     public static List<EstadiaDTO> estadiasDTO = new ArrayList<>(); //Se van guardando las estadias a crear
@@ -104,12 +107,23 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
     }
     
     private void actualizarTabla1(){
+        //Si la persona ya esta cargada como acompañante, no la muestro en los resultados
+        pasajerosDTO.removeIf(p -> model2.getDatos().contains(p));
         model1.setDatos(pasajerosDTO);
         model1.fireTableDataChanged();
     }
    
     public static void limpiarEstadias(){
         estadiasDTO.clear();
+    }
+    
+    private void cargarCapacidadHabitacion(){
+        capacidadHabitacion = gestorAlojamientos.getCapacidadHabitacion(estadiaDTOactual.getIdHabitacion());
+    }
+    
+    private void calcularAcompañantesCargados(){
+        Long aux = model2.getDatos().stream().filter(p -> p.getCategoria().equals("Acompañante")).count();
+        acompañantesCargados = aux.intValue();        
     }
     
     /**
@@ -441,7 +455,7 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
         jButtonSalir.setNextFocusableComponent(jButtonCancelar);
         jButtonSalir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonSalirActionPerformed(evt);
+                jButtonSalirOcuparHabitacionActionPerformed(evt);
             }
         });
 
@@ -564,20 +578,23 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
     private void jButtonBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarActionPerformed
         // TODO add your handling code here:
         //Carga los datos en la tabla
-        cargarDatosBusqueda();        
+        cargarDatosBusqueda();
+        cargarCapacidadHabitacion();
+        System.out.println("La capacidad de la habitaciones es de " + capacidadHabitacion + " persona/s");
     }//GEN-LAST:event_jButtonBuscarActionPerformed
 
     private void jButtonCargarPasajeroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCargarPasajeroActionPerformed
         //La persona seleccionada se marca como pasajero
-        personaSeleccionada1.setCategoria("Pasajero");
+        //personaSeleccionada1.setCategoria("Pasajero");
         //Agrego la persona a la tabla2 de personas cargadas
-        model2.agregarPersona(model1.personaSelecionada(row_selected1));
+        PersonaFisicaDTO aux = new PersonaFisicaDTO(model1.personaSelecionada(row_selected1),"Pasajero");
+        //model2.agregarPersona(model1.personaSelecionada(row_selected1));
+        model2.agregarPersona(aux);
         model2.fireTableDataChanged();
         pasajeroCargado = true;
-        //Elimino la persona de la tabla1 resultados de busqueda
-        pasajerosDTO.remove(personaSeleccionada1);
-        //cargarPagina()
-        model1.fireTableDataChanged();
+        //NO Elimino la persona de la tabla1 resultados de busqueda
+        //pasajerosDTO.remove(personaSeleccionada1);
+        //model1.fireTableDataChanged();
         
         //Limpio la seleccion y desactivo botones
         jTable1.clearSelection();
@@ -596,11 +613,27 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
             //Si hay alguien seleccionado y todavia no hay pasajero, se activa el boton
             if(!pasajeroCargado)jButtonCargarPasajero.setEnabled(true);
             //Si hay alguien seleccionado se activa el boton
-            jButtonCargarAcompañante.setEnabled(true);
+            //Siempre y cuando no se haya alcanzado la capacidad
+            //Integer personasCargadas = model2.getDatos().size();
+            calcularAcompañantesCargados();
+            if(acompañantesCargados < capacidadHabitacion)jButtonCargarAcompañante.setEnabled(true);     
+        }
+        if(evt.getClickCount()==2){
+            System.out.println("Se ha hecho un doble click");
+            if(pasajeroCargado){
+                //System.out.println("Se cargo acompañante");
+                jButtonCargarAcompañante.doClick();
+            }else{
+                System.out.println("Se cargo responsable");
+                jButtonCargarPasajero.doClick();
+            }
         }
     }//GEN-LAST:event_jTable1MouseClicked
 
     private void jButtonCargarAcompañanteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCargarAcompañanteActionPerformed
+        //Primero debo seleccionar al responsable de la habitacion antes de seleccionar los acompañantes
+        if(pasajeroCargado){       
+        
         //Ver si la persona ya figura como acompañante en alguna estadia en proceso
         Boolean condicion = true;
         for(EstadiaDTO e : estadiasDTO){
@@ -641,7 +674,7 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
             Object opciones[] = {"Aceptar"};
             JOptionPane.showOptionDialog(
                 null, 
-		"La persona seleccionada ya figura como acompañante en otra habitacion", 
+		"La persona seleccionada ya figura como acompañante en otra habitación", 
 		"Persona invalida", 
 		JOptionPane.DEFAULT_OPTION, 
 		JOptionPane.INFORMATION_MESSAGE, 
@@ -649,6 +682,39 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
 		opciones,
 		opciones[0]
             );
+        }
+        
+        //Si se alcanza la maxima capacidad
+        //Integer personasCargadas = model2.getDatos().size();
+        calcularAcompañantesCargados();
+        System.out.println("Capacidad = " + capacidadHabitacion);
+        System.out.println("Cargados = " + acompañantesCargados);
+            if(acompañantesCargados == capacidadHabitacion){
+                Object opciones[] = {"Aceptar"};
+                JOptionPane.showOptionDialog(
+                    null, 
+                    "La habitacion ya alcanzo su capacidad maxima de personas", 
+                    "Capacidad alcanzada", 
+                    JOptionPane.DEFAULT_OPTION, 
+                    JOptionPane.INFORMATION_MESSAGE, 
+                    null, 
+                    opciones,
+                    opciones[0]
+                );
+            }
+            
+        }else{
+            Object opciones[] = {"Aceptar"};
+                JOptionPane.showOptionDialog(
+                    null, 
+                    "Primero seleccione al responsable de la habitación", 
+                    "Responsable no seleccionado", 
+                    JOptionPane.DEFAULT_OPTION, 
+                    JOptionPane.INFORMATION_MESSAGE, 
+                    null, 
+                    opciones,
+                    opciones[0]
+                );
         }
     }//GEN-LAST:event_jButtonCargarAcompañanteActionPerformed
 
@@ -663,33 +729,66 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
         }
         if(evt.getClickCount()==2){
             System.out.println("Se ha hecho un doble click");
+            //System.out.println("Se ha quitado una persona");
             jButtonQuitar.doClick();
         }
     }//GEN-LAST:event_jTable2MouseClicked
 
     private void jButtonQuitarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonQuitarActionPerformed
-        //Si elimino el pasajero, habilito para que se cargue otro
-        if(personaSeleccionada2.getCategoria().equals("Pasajero"))pasajeroCargado=false;
-        //Agrego la persona a la tabla1 de resultados de busqueda y ordeno los datos
-        pasajerosDTO.add(personaSeleccionada2);
-        pasajerosDTO.sort((p1,p2) -> p1.compareTo(p2));
-        //Recargo la tabla1 para agregar a al persona seleccionada
-        model1.fireTableDataChanged();
-        //Elimino la persona de la tabla2 de personas cargadas
-        model2.quitarPersona(row_selected2);
-        //Recargo la tabla 2 para quitar la persona seleccionada
-        model2.fireTableDataChanged();
-        //Limpio la seleccion y desactivo el boton
-        jTable2.clearSelection();
-        jButtonQuitar.setEnabled(false);
+        //Primero se deben quitar los acompañantes antes de eliminar al pasajero
+        
+        //Si el tamaño es mayor a 1, hay acompañantes cargados
+        if(model2.getDatos().size() > 1 ){
+            
+            //Si la persona seleccionada es acompañante
+            if(personaSeleccionada2.getCategoria().equals("Acompañante")){
+                //Agrego la persona a la tabla1 de resultados de busqueda y ordeno los datos
+                pasajerosDTO.add(personaSeleccionada2);
+                pasajerosDTO.sort((p1,p2) -> p1.compareTo(p2));
+                //Recargo la tabla1 para agregar a la persona seleccionada
+                model1.fireTableDataChanged();
+                
+                //Elimino la persona de la tabla2 de personas cargadas
+                model2.quitarPersona(row_selected2);
+                //Recargo la tabla 2 para quitar la persona seleccionada
+                model2.fireTableDataChanged();
+                //Limpio la seleccion y desactivo el boton
+                jTable2.clearSelection();
+                jButtonQuitar.setEnabled(false);
+            }else{
+                //Si se selecciona un pasajero muestro el mensaje
+                Object opciones[] = {"Aceptar"};
+                JOptionPane.showOptionDialog(
+                null, 
+                "Primero debe quitar los acompañantes", 
+                "Persona inválida", 
+                JOptionPane.DEFAULT_OPTION, 
+                JOptionPane.INFORMATION_MESSAGE, 
+                null, 
+                opciones,
+                opciones[0]
+                );
+            }   
+            
+        }else{
+            //Se supone que solo deberia quedar el pasajero
+            pasajeroCargado=false;
+            //Elimino la persona de la tabla2 de personas cargadas
+            model2.quitarPersona(row_selected2);
+            //Recargo la tabla 2 para quitar la persona seleccionada
+            model2.fireTableDataChanged();
+            //Limpio la seleccion y desactivo el boton
+            jTable2.clearSelection();
+            jButtonQuitar.setEnabled(false);
+        }
     }//GEN-LAST:event_jButtonQuitarActionPerformed
 
     private void jButtonAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAceptarActionPerformed
-        // TODO add your handling code here:
-        
         //Si no se selecciono un pasajero se muestra el mensaje correspondiente y se pone el foco en resultados de busqueda
-        Boolean condicion = model2.getDatos().stream().filter(p -> p.getCategoria().equals("Pasajero")).collect(Collectors.toList()).isEmpty();
-        if(condicion){
+        Boolean condicion1 = model2.getDatos().stream().filter(p -> p.getCategoria().equals("Pasajero")).collect(Collectors.toList()).isEmpty();
+        Boolean condicion2 = model2.getDatos().stream().filter(p -> p.getCategoria().equals("Acompañante")).collect(Collectors.toList()).isEmpty();
+
+        if(condicion1){
             Object opciones[] = {"Aceptar"};
             JOptionPane.showOptionDialog(
                 null, 
@@ -701,6 +800,18 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
 		opciones,
 		opciones[0]
             );
+        }else if(condicion2){
+            Object opciones[] = {"Aceptar"};
+            JOptionPane.showOptionDialog(
+                null, 
+		"Por favor, seleccione algún acompañante para continuar", 
+		"Acompañantes no seleccionados", 
+		JOptionPane.DEFAULT_OPTION, 
+		JOptionPane.INFORMATION_MESSAGE, 
+		null, 
+		opciones,
+		opciones[0]
+            );            
         }else{
         //Si se selecciono un pasajero se actualiza la informacion
         //Y se activan los demas botones        
@@ -727,7 +838,6 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
     }//GEN-LAST:event_jButtonAceptarActionPerformed
 
     private void jButtonSeguirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSeguirActionPerformed
-        // TODO add your handling code here:
         //Se vuelve el enfoque a la pestaña de criterios de busqueda y se limpian los textbox
         jButtonSeguir.setEnabled(false);
         jButtonCargarOtra.setEnabled(false);
@@ -749,20 +859,23 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
     }//GEN-LAST:event_jButtonSeguirActionPerformed
 
     private void jButtonCargarOtraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCargarOtraActionPerformed
-        // TODO add your handling code here:
-        
         //Se capturan los datos de la interfaz actual
+        
+        //Se captura el id del responsable
         Integer idPasajeroResponsable = null;     
         for (PersonaFisicaDTO p : model2.getDatos()) {
             if(p.getCategoria().equals("Pasajero")){
                 idPasajeroResponsable = p.getId();
             }            
         }
+        
+        //Se capturan los ids de los acompañantes
         List<Integer> idPasajerosAcompañantes = new ArrayList<>();  
         model2.getDatos().stream().filter(p -> (p.getCategoria().equals("Acompañante"))).forEachOrdered(p -> {
             idPasajerosAcompañantes.add(p.getId());
         });
         
+        //Se cargan en el DTO
         estadiaDTOactual.setIdPasajeroResponsable(idPasajeroResponsable);
         estadiaDTOactual.setIdsPasajeroAcompañante(idPasajerosAcompañantes);
         estadiasDTO.add(estadiaDTOactual);
@@ -772,8 +885,7 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
         
     }//GEN-LAST:event_jButtonCargarOtraActionPerformed
 
-    private void jButtonSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSalirActionPerformed
-        // TODO add your handling code here:
+    private void jButtonSalirOcuparHabitacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSalirOcuparHabitacionActionPerformed
         //Se actualiza la informacion y el estado de las habitaciones seleccionadas
         
         //Se capturan los datos de la interfaz actual
@@ -793,13 +905,13 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
         estadiasDTO.add(estadiaDTOactual);
         
         try {
-             //Se crean las estadias
+            //Se crean las estadias
             gestorAlojamientos.OcuparHabitacion(estadiasDTO);
             Object opciones[] = {"Aceptar"};
             JOptionPane.showOptionDialog(
             null, 
-            "Las estadias fueron creadas correctamente", 
-            "Ocupacion existosa", 
+            "Las estadías fueron creadas correctamente", 
+            "Ocupación existosa", 
             JOptionPane.DEFAULT_OPTION, 
             JOptionPane.INFORMATION_MESSAGE, 
             null, 
@@ -815,7 +927,7 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
         //Limpias la lista de estadias por crear 
         limpiarEstadias();
         interfaces.mostrarEstadoHabitacion.PanelMostrarEstadoHabitacion.limpiarHabitaciones();
-    }//GEN-LAST:event_jButtonSalirActionPerformed
+    }//GEN-LAST:event_jButtonSalirOcuparHabitacionActionPerformed
 
     private void jButtonCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelarActionPerformed
         Object[] options = { "No", "Si"};
@@ -823,7 +935,7 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
                      JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
         if(opcion == 1) {
             //Se retorna a la interfaz anterior
-            System.out.println("Volver al menu principal");
+            System.out.println("Volver al menú principal");
             frame.cambiarPanel(VentanaPrincipal.PANE_MENU_PRINCIPAL);
             //Se limpia la lista de estadias por crear 
             limpiarEstadias();

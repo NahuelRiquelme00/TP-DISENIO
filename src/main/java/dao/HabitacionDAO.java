@@ -22,7 +22,7 @@ public interface HabitacionDAO {
     
     public void deleteHabitacion(Integer id) throws NonexistentEntityException;
     
-    public Habitacion findHabitacion(Integer id);
+    public Habitacion getById(Integer id);
     
     public List<Habitacion> getAllHabitaciones();
     

@@ -44,10 +44,7 @@ CREATE TABLE factura(
 
 CREATE TABLE tipo_habitacion(
 	nombre varchar(30) PRIMARY KEY, 
-	--precio_actual dinero
 	precio_actual bytea
-	--precio_actual_divisa VARCHAR(255),
-	--precio_actual_monto NUMERIC
 );
 
 CREATE TABLE habitacion(
@@ -77,8 +74,6 @@ CREATE TABLE estadia(
 	id_estadia serial PRIMARY KEY,
 	fecha_inicio date,
 	fecha_fin date,
-	--costo_noche_divisa VARCHAR(255),
-	--costo_noche_monto NUMERIC,
 	costo bytea,
 	descuento double precision,
 	costo_final bytea,
@@ -203,7 +198,7 @@ UPDATE tipo_habitacion SET precio_actual_divisa = 'USD' WHERE nombre = 'INDIVIDU
 
 ALTER TABLE tipo_habitacion ALTER COLUMN precio_actual TYPE dinero;
 
-CREATE TYPE dinero AS (MY_CURRENCY VARCHAR(255), MY_AMOUNT NUMERIC);
+CREATE TYPE dinero AS (MY_CURRENCY VARCHAR(255), MY_AMOUNT bytea);
 
 --Otros datos a cargar
 INSERT INTO tipo_habitacion VALUES

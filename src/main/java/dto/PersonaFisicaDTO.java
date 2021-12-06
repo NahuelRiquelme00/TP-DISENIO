@@ -5,8 +5,6 @@
  */
 package dto;
 
-import entidades.TipoDocumento;
-import java.time.LocalDate;
 import java.util.Objects;
 
 /**
@@ -68,6 +66,15 @@ public class PersonaFisicaDTO implements Comparable<PersonaFisicaDTO>{
         this.nombres = nombres;
         this.tipoDocumento = tipoDocumento;
         this.nroDocumento = nroDocumento;
+    }
+    //Para la interface ocuparHabitacion
+    public PersonaFisicaDTO(PersonaFisicaDTO p, String categoria) {
+        this.id = p.getId();
+        this.apellido = p.getApellido();
+        this.nombres = p.getNombres();
+        this.tipoDocumento = p.getTipoDocumento();
+        this.nroDocumento = p.getNroDocumento();
+        this.categoria = categoria;
     }
 
     public Integer getId() {
