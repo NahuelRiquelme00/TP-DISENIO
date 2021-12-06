@@ -10,6 +10,7 @@ import entidades.PeriodoReserva;
 import entidades.Reserva;
 import java.time.LocalDate;
 import java.util.List;
+import misc.Tripleta;
 
 /**
  *
@@ -17,6 +18,8 @@ import java.util.List;
  */
 public interface ReservaDAO {
     public List<PeriodoReserva> getPeriodosReservaEntreFechas(LocalDate fechaInicioGui, LocalDate fechaFinGui);
+    
+    public List<Tripleta<String, LocalDate, LocalDate>> getReservasHabitacion(Integer idHab, LocalDate cotaInf, LocalDate cotaSup);
     
     public void create(Reserva reserva);
     

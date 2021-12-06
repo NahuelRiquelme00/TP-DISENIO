@@ -31,7 +31,7 @@ public class EstadiaDAOImpl implements EstadiaDAO {
     private EntityManagerFactory emf = null;
 
     public EstadiaDAOImpl() {
-        this.emf = Persistence.createEntityManagerFactory("MiBaseDeDatos");
+        this.emf = Persistence.createEntityManagerFactory("postgres");//"MiBaseDeDatos");
     }
 
     public EntityManager getEntityManager() {
@@ -238,7 +238,8 @@ public class EstadiaDAOImpl implements EstadiaDAO {
     }
 
     @Override
-    public List<Estadia> getEstadiasEntreFechas(LocalDate fechaInicioGui, LocalDate fechaFinGui) {
+    public List<Estadia> getEstadiasEntreFechas(LocalDate cotaInf, LocalDate cotasup) 
+    {
         EntityManager em = getEntityManager();
         
         try 
@@ -251,11 +252,11 @@ public class EstadiaDAOImpl implements EstadiaDAO {
             
             // https://stackoverflow.com/questions/9449003/compare-date-entities-in-jpa-criteria-api
             Predicate[] conds = new Predicate[3];
-            conds[0] = cb.between(r.<LocalDate>get("fechaInicio"), fechaInicioGui, fechaFinGui);
-            conds[1] = cb.between(r.<LocalDate>get("fechaFin"), fechaInicioGui, fechaFinGui);
+            conds[0] = cb.between(r.<LocalDate>get("fechaInicio"), cotaInf, cotasup);
+            conds[1] = cb.between(r.<LocalDate>get("fechaFin"), cotaInf, cotasup);
             conds[2] = cb.and(
-                cb.lessThan(r.<LocalDate>get("fechaInicio"), fechaInicioGui),
-                cb.greaterThan(r.<LocalDate>get("fechaFin"), fechaFinGui)
+                cb.lessThan(r.<LocalDate>get("fechaInicio"), cotaInf),
+                cb.greaterThan(r.<LocalDate>get("fechaFin"), cotasup)
             );
 
             cq.select(r).where(cb.or(conds));
