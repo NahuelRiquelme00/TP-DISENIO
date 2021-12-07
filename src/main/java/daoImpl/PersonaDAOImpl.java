@@ -11,6 +11,7 @@ import daoImpl.exceptions.PreexistingEntityException;
 import entidades.Localidad;
 import entidades.Pais;
 import entidades.PersonaFisica;
+import entidades.PersonaJuridica;
 import entidades.Provincia;
 import entidades.TipoDocumento;
 import entidades.TipoPosicionFrenteIVA;
@@ -355,6 +356,16 @@ public class PersonaDAOImpl implements PersonaDAO {
         } finally {
             em.close();
         }  
+    }
+    
+    @Override
+    public PersonaJuridica findPersonaJuridica(Integer id){
+       EntityManager em = getEntityManager();
+        try {
+            return em.find(PersonaJuridica.class, id);
+        } finally {
+            em.close();
+        } 
     }
     
 }

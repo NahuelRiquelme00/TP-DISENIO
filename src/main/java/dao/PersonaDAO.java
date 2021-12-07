@@ -10,6 +10,7 @@ import daoImpl.exceptions.PreexistingEntityException;
 import entidades.Localidad;
 import entidades.Pais;
 import entidades.PersonaFisica;
+import entidades.PersonaJuridica;
 import entidades.Provincia;
 import entidades.TipoPosicionFrenteIVA;
 import java.util.List;
@@ -49,5 +50,7 @@ public interface PersonaDAO {
     public List<Localidad> getLocalidadesWith(Integer idProvincia);
 
     public List<TipoPosicionFrenteIVA> getAllPosicionesIVA();
+
+    public PersonaJuridica findPersonaJuridica(Integer id);
     
 }

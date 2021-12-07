@@ -195,6 +195,11 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
         });
 
         jButtonFacturarTercero.setText("Facturar a Tercero");
+        jButtonFacturarTercero.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonFacturarTerceroActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -332,6 +337,16 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
         
         responsable = pasajeros.get(row_selected);
     }//GEN-LAST:event_jTable1MouseClicked
+
+    private void jButtonFacturarTerceroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFacturarTerceroActionPerformed
+        // TODO add your handling code here:
+        frame.setContentPane(new PanelFacturarTercero(frame, estadia));
+            frame.setTitle("Facturar");
+            frame.pack();
+            frame.setLocationRelativeTo(null);
+            frame.getContentPane().setVisible(false);
+            frame.getContentPane().setVisible(true);
+    }//GEN-LAST:event_jButtonFacturarTerceroActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -14,6 +14,7 @@ import entidades.Direccion;
 import entidades.Localidad;
 import entidades.Pais;
 import entidades.PersonaFisica;
+import entidades.PersonaJuridica;
 import entidades.Provincia;
 import entidades.TipoDocumento;
 import entidades.TipoPosicionFrenteIVA;
@@ -270,4 +271,12 @@ public class GestorDePersonas {
         
         System.out.println(posicionIVA);
     }
+    
+    public PersonaJuridica findPersonaJuridica (Integer id){
+        personaDAO = new PersonaDAOImpl();
+        PersonaJuridica persona = personaDAO.findPersonaJuridica(id);
+        personaDAO.close();
+        return persona;
+    }
+    
 }
