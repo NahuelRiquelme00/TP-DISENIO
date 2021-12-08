@@ -13,10 +13,24 @@ import entidades.ServicioPrestado;
 import entidades.TipoFactura;
 import gestores.GestorDeAlojamientos;
 import gestores.GestorDePersonas;
-import java.math.BigDecimal;
 import java.time.LocalDate;
+
+import dto.ServicioPrestadoDTO;
+import java.awt.Component;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JSpinner;
+import javax.swing.JSpinner.DefaultEditor;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.SpinnerModel;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+
 
 /**
  *
@@ -28,6 +42,8 @@ public class PanelFacturar extends javax.swing.JPanel {
     private final GestorDePersonas gestorPersonas = GestorDePersonas.getInstance();
     
     
+    
+    
     private List<ServicioPrestado> servPrestados;
     private int tamServicios;
     private BigDecimal costoFEstadia;
@@ -36,7 +52,10 @@ public class PanelFacturar extends javax.swing.JPanel {
     private List<ServicioAFacturar> listaServiciosAFacturar;
     private Estadia estadia;
     private PersonaFisica responsable;
-    DefaultTableModel dm;
+    
+    JSpinner sp;
+    DefaultTableModel dtm;
+    //DefaultTableModel dm;
     
 
     
@@ -56,8 +75,87 @@ public class PanelFacturar extends javax.swing.JPanel {
         this.frame = frame;
         costoFactura = new BigDecimal(0);
         contChBox = 0;
-        cargarDatos();
+        agregarSpinnerYcargarModelo();
+        actualizarTabla();
+        //cargarDatos();
         
+    }
+    
+        private void agregarSpinnerYcargarModelo(){
+        //Creo el modelo de la tabla
+        dtm = (DefaultTableModel) jTableConsumos.getModel();
+        
+        //Definicion de myspinner
+        class MySpinnerEditor extends DefaultCellEditor{
+            //JSpinner sp;
+            DefaultEditor defaultEditor;
+            JTextField text;
+            // Initialize the spinner
+            public MySpinnerEditor() {
+                super(new JTextField());
+                sp = new JSpinner();
+                defaultEditor = ((DefaultEditor)sp.getEditor());
+                text = defaultEditor.getTextField();
+            }
+            
+            // Prepare the spinner component and return it
+            @Override
+            public Component getTableCellEditorComponent(JTable table, Object 
+            value, boolean isSelected, int row, int column) 
+            {
+                sp.setValue(value);
+                return sp;
+            }
+            
+            // Returns the current value of the spinners
+            @Override
+            public Object getCellEditorValue() {
+                return sp.getValue();
+            }
+        }
+        //get the column model from JTable
+        TableColumnModel model = jTableConsumos.getColumnModel();
+        //get the 2nd column
+        TableColumn col = model.getColumn(3);
+        //set the editor
+        col.setCellEditor(new MySpinnerEditor());  
+    }
+    
+    private void actualizarTabla(){
+        //Cargo los servicios relacionados con la estadia desde la base de datos
+        ServicioPrestadoDTO servicio = new ServicioPrestadoDTO();
+        servicio.setNombreConsumo("MINIBAR");
+        servicio.setPrecioUnitario(BigDecimal.valueOf(100.00));
+        servicio.setUnidadesAPagar(0);
+        servicio.setUnidadesTotales(4);
+        servicio.setCostoTotal(BigDecimal.valueOf(0));
+        servicio.setDescripcion("CERVEZA MILLER");
+        ServicioPrestadoDTO servicio2 = new ServicioPrestadoDTO();
+        servicio2.setNombreConsumo("MINIBAR");
+        servicio2.setPrecioUnitario(BigDecimal.valueOf(100.00));
+        servicio2.setUnidadesAPagar(0);
+        servicio2.setUnidadesTotales(6);
+        servicio2.setCostoTotal(BigDecimal.valueOf(0));
+        servicio2.setDescripcion("CERVEZA MILLER");
+        List<ServicioPrestadoDTO> servicios = new ArrayList<>();
+        servicios.add(servicio);
+        servicios.add(servicio2);
+        servicios.add(servicio);
+        servicios.add(servicio);
+        //Agrego los datos al arreglo
+        Object[] o = new Object[7];
+        for(ServicioPrestadoDTO s : servicios){ 
+            o[0] = false;
+            o[1] = s.getNombreConsumo();
+            o[2] = s.getPrecioUnitario();            
+            o[3] = s.getUnidadesAPagar();            
+            o[4] = s.getUnidadesTotales();
+            o[5] = s.getCostoTotal();
+            o[6] = s.getDescripcion();    
+            dtm.addRow(o);
+        }
+        //Actualizo la tabla
+        dtm.fireTableDataChanged();
     }
     
     
@@ -82,7 +180,7 @@ public class PanelFacturar extends javax.swing.JPanel {
         servPrestados = estadia.getServiciosPrestados();
         
         System.out.println(servPrestados);
-        dm = (DefaultTableModel) jTabla.getModel();
+        dtm = (DefaultTableModel) jTableConsumos.getModel();
         
         tamServicios = servPrestados.size();
         ServicioPrestado servicioP;
@@ -92,7 +190,7 @@ public class PanelFacturar extends javax.swing.JPanel {
             servicioP = servPrestados.get(j);
             String[] datosFila = {"", servicioP.getPrecio().toString(), "", servicioP.getCantidad().toString(), "", servicioP.getNombre()};
             //String[] datosFila = {servicioP.getTipo().name(), servicioP.getPrecio().toString(), "", servicioP.getCantidad().toString(), "", servicioP.getNombre()};
-            dm.addRow(datosFila);
+            dtm.addRow(datosFila);
         }
         
     }
@@ -128,8 +226,8 @@ public class PanelFacturar extends javax.swing.JPanel {
         jTextField4 = new javax.swing.JTextField();
         jTextField5 = new javax.swing.JTextField();
         jButtonAceptar = new javax.swing.JButton();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jTabla = new javax.swing.JTable();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTableConsumos = new javax.swing.JTable();
         jButtonCancelar = new javax.swing.JButton();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
@@ -268,100 +366,123 @@ public class PanelFacturar extends javax.swing.JPanel {
             }
         });
 
-        jTabla.setModel(new javax.swing.table.DefaultTableModel(
+        jTableConsumos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Consumo", "Precio Unitario", "Unidades", "U. Totales", "Costo Total", "Descripcion"
+                "", "Consumos", "Precio unitario", "Unidades a pagar", "Unidades totales", "Costo total", "Descripción"
             }
-        ));
-        jScrollPane3.setViewportView(jTabla);
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Boolean.class, java.lang.String.class, java.lang.Object.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Object.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                true, false, false, true, false, false, false
+            };
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButtonAceptar, javax.swing.GroupLayout.Alignment.TRAILING)))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 589, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jCheckBox1))
-                            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jCheckBox1)
-                    .addComponent(jLabel5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(25, 25, 25)
-                .addComponent(jButtonAceptar)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
 
-        jButtonCancelar.setText("Cancelar");
-        jButtonCancelar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonCancelarActionPerformed(evt);
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
             }
         });
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButtonCancelar)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jLabel1)
-                        .addComponent(jLabel2)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+        jTableConsumos.setRowHeight(30);
+        jTableConsumos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTableConsumosMouseClicked(evt);
+            }
+        }
+    );
+    jScrollPane2.setViewportView(jTableConsumos);
+
+    javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+    jPanel2.setLayout(jPanel2Layout);
+    jPanel2Layout.setHorizontalGroup(
+        jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(jPanel2Layout.createSequentialGroup()
+            .addContainerGap()
+            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel2Layout.createSequentialGroup()
+                    .addComponent(jLabel7)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 284, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jTextField3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jButtonAceptar, javax.swing.GroupLayout.Alignment.TRAILING)))
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createSequentialGroup()
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addComponent(jLabel5)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(jCheckBox1))
+                        .addComponent(jLabel6))
+                    .addGap(0, 0, Short.MAX_VALUE))
+                .addComponent(jScrollPane2))
+            .addContainerGap())
+    );
+    jPanel2Layout.setVerticalGroup(
+        jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(jPanel2Layout.createSequentialGroup()
+            .addContainerGap()
+            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                .addComponent(jCheckBox1)
+                .addComponent(jLabel5))
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGap(18, 18, 18)
+            .addComponent(jLabel6)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(jLabel7)
+                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGap(25, 25, 25)
+            .addComponent(jButtonAceptar)
+            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+    );
+
+    jButtonCancelar.setText("Cancelar");
+    jButtonCancelar.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            jButtonCancelarActionPerformed(evt);
+        }
+    });
+
+    javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+    this.setLayout(layout);
+    layout.setHorizontalGroup(
+        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(layout.createSequentialGroup()
+            .addContainerGap()
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                 .addComponent(jButtonCancelar)
-                .addContainerGap())
-        );
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+            .addContainerGap())
+    );
+    layout.setVerticalGroup(
+        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(layout.createSequentialGroup()
+            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jLabel1)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGap(18, 18, 18)
+            .addComponent(jLabel2)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGap(18, 18, 18)
+            .addComponent(jButtonCancelar)
+            .addContainerGap())
+    );
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelarActionPerformed
@@ -409,6 +530,22 @@ public class PanelFacturar extends javax.swing.JPanel {
         jTextField3.setText(costoFactura.toString());
     }//GEN-LAST:event_jCheckBox1ActionPerformed
 
+    private void jTableConsumosMouseClicked(java.awt.event.MouseEvent evt) {                                            
+        //Lo uso para limitar los valore del spinner
+        int filasSeleccionadas = jTableConsumos.getSelectedRowCount();
+        if(filasSeleccionadas == 1){
+            int row_selected = jTableConsumos.getSelectedRow();
+            int limite = (int) dtm.getValueAt(row_selected,4);
+            SpinnerModel model = new SpinnerNumberModel(
+                0,  //initial value
+                0,  //minimum value
+                limite, //maximum value
+                1   //step
+            ); 
+            sp.setModel(model);
+            System.out.println("El limite es:" + limite);
+        }
+    }    
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -429,9 +566,9 @@ public class PanelFacturar extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTable jTabla;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTableConsumos;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;

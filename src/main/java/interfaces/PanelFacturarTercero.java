@@ -158,7 +158,8 @@ public class PanelFacturarTercero extends javax.swing.JPanel {
 
     private void jButtonCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelarActionPerformed
         // TODO add your handling code here:
-        
+        //Mensaje Desea Cerrar???
+        frame.cambiarPanel(VentanaPrincipal.PANE_MENU_PRINCIPAL);
     }//GEN-LAST:event_jButtonCancelarActionPerformed
 
 
