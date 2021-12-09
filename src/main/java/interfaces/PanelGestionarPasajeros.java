@@ -74,8 +74,9 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
         cm.addColumn(new TableColumn(0, 10, new MyTableCellRenderer(), null));
         cm.moveColumn(cm.getColumnCount() - 1, 0);
         // Instanciamos el TableRowSorter y lo añadimos al JTable para ordernar por columna
-        TableRowSorter<TableModel> ordenarTabla = new TableRowSorter<>(model);
-        jTable1.setRowSorter(ordenarTabla);
+//        TableRowSorter<TableModel> ordenarTabla = new TableRowSorter<>(model);
+//        jTable1.setRowSorter(ordenarTabla);
+        jTable1.setAutoCreateRowSorter(true);
         row_selected = -1;
     }
 
@@ -93,17 +94,33 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
     
     private void paginarDatos(){
         //Modifico el jLabel con la cantidad de paginas
-        pagActual = pisoInclusivo / MAX_FILAS + 1;
-        pagsTotales = pasajerosDTO.size() / MAX_FILAS + ((pasajerosDTO.size() % MAX_FILAS == 0)? 0 : 1);
-        lPag.setText("Página "+pagActual+"/"+pagsTotales);
+        if(!pasajerosDTO.isEmpty()){
+            
+            pagActual = pisoInclusivo / MAX_FILAS + 1;
+
+            pagsTotales = pasajerosDTO.size() / MAX_FILAS + ((pasajerosDTO.size() % MAX_FILAS == 0)? 0 : 1);
+            lPag.setText("Página "+pagActual+"/"+pagsTotales);
+
+            //Carga la pagina actual
+            cargarPagina();
         
-        //Carga la pagina actual
-        cargarPagina();
-        
-        if (pasajerosDTO.size() / MAX_FILAS > 0)
-            bAdelante.setEnabled(true);
-        else
-            bAdelante.setEnabled(false);
+            if (pasajerosDTO.size() / MAX_FILAS > 0)
+                bAdelante.setEnabled(true);
+            else
+                bAdelante.setEnabled(false);
+            
+        }else{
+            //Pagina 0/0
+            pagActual = 0;
+            pagsTotales = 0;
+            lPag.setText("Página "+pagActual+"/"+pagsTotales);
+            //Limpio la tabla si no hay resultados
+            pasajerosDTO.clear();            
+            model.setDatos(pasajerosDTO);
+            model.fireTableDataChanged();
+        }
+            
+
     }
     
     private void cargarPagina(){

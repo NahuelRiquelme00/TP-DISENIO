@@ -59,13 +59,14 @@ public class PersonaFisicaDTO implements Comparable<PersonaFisicaDTO>{
         this.idPais = idPais;
     }
 
-    //Para la interface
-    public PersonaFisicaDTO(Integer id, String apellido, String nombres, String tipoDocumento, Integer nroDocumento) {
+    //Para la interface ocupar habitacion
+    public PersonaFisicaDTO(Integer id, String apellido, String nombres, String tipoDocumento, Integer nroDocumento, String fechaNacimiento) {
         this.id = id;
         this.apellido = apellido;
         this.nombres = nombres;
         this.tipoDocumento = tipoDocumento;
         this.nroDocumento = nroDocumento;
+        this.fechaNacimiento = fechaNacimiento;
     }
     //Para la interface ocuparHabitacion
     public PersonaFisicaDTO(PersonaFisicaDTO p, String categoria) {

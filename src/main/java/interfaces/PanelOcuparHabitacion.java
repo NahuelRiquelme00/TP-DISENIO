@@ -5,6 +5,7 @@
  */
 package interfaces;
 
+import daoImpl.exceptions.OcuparHabitacionException;
 import dto.EstadiaDTO;
 import dto.PersonaFisicaDTO;
 import entidades.TipoDocumento;
@@ -12,8 +13,12 @@ import gestores.GestorDeAlojamientos;
 import gestores.GestorDePersonas;
 import java.awt.Color;
 import java.awt.Component;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
@@ -124,6 +129,15 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
     private void calcularAcompañantesCargados(){
         Long aux = model2.getDatos().stream().filter(p -> p.getCategoria().equals("Acompañante")).count();
         acompañantesCargados = aux.intValue();        
+    }
+    
+    private int calcularEdadPasajero(){
+        LocalDate nacimiento = LocalDate.parse(model1.personaSelecionada(row_selected1).getFechaNacimiento());
+        LocalDate hoy = LocalDate.now();
+        
+        Period periodo = Period.between(nacimiento, hoy);
+
+        return periodo.getYears();
     }
     
     /**
@@ -580,12 +594,15 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
         //Carga los datos en la tabla
         cargarDatosBusqueda();
         cargarCapacidadHabitacion();
-        System.out.println("La capacidad de la habitaciones es de " + capacidadHabitacion + " persona/s");
+        System.out.println("La capacidad de la habitación es de " + capacidadHabitacion + " persona/s");
     }//GEN-LAST:event_jButtonBuscarActionPerformed
 
     private void jButtonCargarPasajeroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCargarPasajeroActionPerformed
         //La persona seleccionada se marca como pasajero
         //personaSeleccionada1.setCategoria("Pasajero");
+        
+        //Si la persona es mayor de edad sigo con la carga 
+        if(calcularEdadPasajero() >= 18 ){
         //Agrego la persona a la tabla2 de personas cargadas
         PersonaFisicaDTO aux = new PersonaFisicaDTO(model1.personaSelecionada(row_selected1),"Pasajero");
         //model2.agregarPersona(model1.personaSelecionada(row_selected1));
@@ -600,6 +617,21 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
         jTable1.clearSelection();
         jButtonCargarAcompañante.setEnabled(false);
         jButtonCargarPasajero.setEnabled(false);
+        }else{ //Si la persona es menor de edad muestro un mensaje
+            Object opciones[] = {"Aceptar"};
+                JOptionPane.showOptionDialog(
+                null, 
+                "La persona responsable de la habitación debe ser mayor de edad", 
+                "Responsable invalido", 
+                JOptionPane.DEFAULT_OPTION, 
+                JOptionPane.INFORMATION_MESSAGE, 
+                null, 
+                opciones,
+                opciones[0]
+                );
+        }
+                
+
     }//GEN-LAST:event_jButtonCargarPasajeroActionPerformed
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
@@ -610,6 +642,7 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
             //Mostrar apellido y id del pasajero clikeado
             personaSeleccionada1 = model1.personaSelecionada(row_selected1);
             System.out.println(personaSeleccionada1.getApellido() + " " + personaSeleccionada1.getId());
+            //System.out.println("Edad: " + calcularEdadPasajero());
             //Si hay alguien seleccionado y todavia no hay pasajero, se activa el boton
             if(!pasajeroCargado)jButtonCargarPasajero.setEnabled(true);
             //Si hay alguien seleccionado se activa el boton
@@ -624,7 +657,7 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
                 //System.out.println("Se cargo acompañante");
                 jButtonCargarAcompañante.doClick();
             }else{
-                System.out.println("Se cargo responsable");
+                //System.out.println("Se cargo responsable");
                 jButtonCargarPasajero.doClick();
             }
         }
@@ -800,20 +833,23 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
 		opciones,
 		opciones[0]
             );
-        }else if(condicion2){
+            
+        }
+        else if(condicion2){
             Object opciones[] = {"Aceptar"};
             JOptionPane.showOptionDialog(
                 null, 
 		"Por favor, seleccione algún acompañante para continuar", 
-		"Acompañantes no seleccionados", 
+		"Acompañante/s no seleccionado/s", 
 		JOptionPane.DEFAULT_OPTION, 
 		JOptionPane.INFORMATION_MESSAGE, 
 		null, 
 		opciones,
 		opciones[0]
-            );            
+            );  
+            
         }else{
-        //Si se selecciono un pasajero se actualiza la informacion
+        //Si se selecciono un pasajero y algún acompañante, se actualiza la información
         //Y se activan los demas botones        
         jButtonSeguir.setEnabled(true);
         jButtonCargarOtra.setEnabled(true);
@@ -904,8 +940,8 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
         estadiaDTOactual.setIdsPasajeroAcompañante(idPasajerosAcompañantes);
         estadiasDTO.add(estadiaDTOactual);
         
+        //Se mandan a crear las estadias
         try {
-            //Se crean las estadias
             gestorAlojamientos.OcuparHabitacion(estadiasDTO);
             Object opciones[] = {"Aceptar"};
             JOptionPane.showOptionDialog(
@@ -918,8 +954,11 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
             opciones,
             opciones[0]
             );
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (OcuparHabitacionException e) { //Si falla se captura la excepcion y se muestra un mensaje
+            JOptionPane.showMessageDialog(null,e.getMessage(),"Ocupación fallida",JOptionPane.ERROR_MESSAGE);
+            //Logger.getLogger(PanelOcuparHabitacion.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception ex) {
+            Logger.getLogger(PanelOcuparHabitacion.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         //Termina el caso de uso

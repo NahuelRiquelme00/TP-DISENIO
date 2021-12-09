@@ -139,9 +139,12 @@ public class GestorDePersonas {
    
     public List<PersonaFisicaDTO> convertirADTO(List<PersonaFisica> listaPersonas){
         List<PersonaFisicaDTO> pasajerosDTO = new ArrayList<>();
-        listaPersonas.stream().map(p -> new PersonaFisicaDTO(p.getIdPersonaFisica(),p.getApellido(), p.getNombres(), p.getTipoDocumento().toString(), p.getNroDocumento())).forEachOrdered(dto -> {
-            pasajerosDTO.add(dto);
-        });
+        //Le agrego la fecha de nacimiento para saber la edad
+        listaPersonas.stream().map(p -> new PersonaFisicaDTO(p.getIdPersonaFisica(),p.getApellido(), 
+                                                             p.getNombres(), p.getTipoDocumento().toString(), 
+                                                             p.getNroDocumento(),p.getFechaNacimiento().toString())
+        ).forEachOrdered(dto -> { pasajerosDTO.add(dto); });
+        
         return pasajerosDTO;
     }
     
