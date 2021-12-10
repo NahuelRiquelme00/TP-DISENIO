@@ -41,7 +41,7 @@ public class Direccion implements Serializable {
     private String piso;
     
     @Column(name="codigo_postal")
-    private Integer codigoPostal;
+    private String codigoPostal;
     
     @ManyToOne 
     @JoinColumn(name = "id_localidad", referencedColumnName = "id_localidad")
@@ -50,7 +50,7 @@ public class Direccion implements Serializable {
     public Direccion() {
     }
 
-    public Direccion(String calle, Integer numero, String departamento, String piso, Integer codigoPostal) {
+    public Direccion(String calle, Integer numero, String departamento, String piso, String codigoPostal) {
         this.calle = calle;
         this.numero = numero;
         this.departamento = departamento;
@@ -98,11 +98,11 @@ public class Direccion implements Serializable {
         this.piso = piso;
     }
 
-    public Integer getCodigoPostal() {
+    public String getCodigoPostal() {
         return codigoPostal;
     }
 
-    public void setCodigoPostal(Integer codigoPostal) {
+    public void setCodigoPostal(String codigoPostal) {
         this.codigoPostal = codigoPostal;
     }
 
