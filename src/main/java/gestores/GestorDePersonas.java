@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.validator.routines.EmailValidator;
 
 /**
  *
@@ -139,7 +140,7 @@ public class GestorDePersonas {
    
     public List<PersonaFisicaDTO> convertirADTO(List<PersonaFisica> listaPersonas){
         List<PersonaFisicaDTO> pasajerosDTO = new ArrayList<>();
-        listaPersonas.stream().map(p -> new PersonaFisicaDTO(p.getIdPersonaFisica(),p.getApellido(), p.getNombres(), p.getTipoDocumento().toString(), p.getNroDocumento())).forEachOrdered(dto -> {
+        listaPersonas.stream().map(p -> new PersonaFisicaDTO(p.getIdPersonaFisica(),p.getApellido(), p.getNombres(), p.getTipoDocumento().toString(), p.getNumeroDocumento())).forEachOrdered(dto -> {
             pasajerosDTO.add(dto);
         });
         return pasajerosDTO;
@@ -255,7 +256,62 @@ public class GestorDePersonas {
             hayCamposIncompletos.add("pais");
             
 	}
+        
         return hayCamposIncompletos;
+    }
+    
+    // true: valido
+    public Boolean validarEmail(String email)
+    {
+        // https://stackoverflow.com/a/26687649
+        Boolean allowLocal = false;
+        return EmailValidator.getInstance(allowLocal).isValid(email);
+    }
+    
+    
+    private static final String[] reemplazos    = {"á", "é", "í", "ó", "ú", "Á", "É", "Í", "Ó", "Ú"};
+    private static final String[] reemplazarPor = {"a", "e", "i", "o", "u", "A", "E", "I", "O", "U"};
+    // true: valido
+    public Boolean validarCalle(String calleOr)
+    {
+        String calle = calleOr;
+        for (int i = 0; i < reemplazos.length; i++)
+            calle = calle.replaceAll(reemplazos[i], reemplazarPor[i]);
+        
+        // 0 o mas numeros, con ° o no, seguidos de 0 o 1 espacios y al menos 2 letras mayusculas o minusculas, con punto o no
+        // Ejemplos: 1° de Mayo, Bv. Galvez
+        return calle.matches("[0-9]{0,}(°){0,1}(( ){0,1}([a-z]|[A-Z]){2,}(.){0,1}){1,}");
+    }
+    
+    
+    private static final int[] MULTS_CUIT = {5, 4, 3, 2, 7, 6, 5, 4, 3, 2};
+    private static final String REGEX_CUIT = "(20|23|27|30)-[0-9]{8}-[0-9]";
+    // true: valido
+    public Boolean validarCUIT(String cuitStrOr, String dniStr)
+    {
+        // http://www0.unsl.edu.ar/~jolguin/cuit.php
+        // http://separatasonline.blogspot.com/2011/11/formula-para-calcular-el-n-de-cuit-cuil.html
+        
+        String cuitStr;
+        int suma, i, digVerifOr;
+        boolean res;
+       
+        if (!cuitStrOr.matches(REGEX_CUIT)) // i.e. no coincide el formato
+            res = false;    
+        else if (!cuitStrOr.substring(3, 11).equals(dniStr)) // i.e. no incluye al dni pasado como parametro
+            res = false;
+        else // i.e. verificar
+        {
+            cuitStr = cuitStrOr.replaceAll("-", "");
+            digVerifOr = Integer.parseInt(cuitStr.substring(10, 11));
+            
+            for (suma = i = 0; i < 10; i++)
+                suma += Integer.parseInt(cuitStr.substring(i, i + 1)) * MULTS_CUIT[i];
+                    
+            res = ((11 - (suma % 11)) == digVerifOr);
+        }
+        
+        return res;
     }
 
     public Boolean NoExisteAcompañante(Integer id){

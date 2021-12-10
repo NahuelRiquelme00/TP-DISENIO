@@ -44,7 +44,7 @@ public class PersonaFisica extends Persona implements Serializable {
     private TipoDocumento tipoDocumento;
     
     @Column(name="numero_documento")
-    private Integer nroDocumento;
+    private Integer numeroDocumento;
     
     @Column(name="fecha_nacimiento")
     private LocalDate fechaNacimiento;
@@ -73,11 +73,11 @@ public class PersonaFisica extends Persona implements Serializable {
     public PersonaFisica() {
     }
 
-    public PersonaFisica(String apellido, String nombres, TipoDocumento tipoDocumento, Integer nroDocumento, LocalDate fechaNacimiento, String email, String ocupacion, String nacionalidad, String telefono) {
+    public PersonaFisica(String apellido, String nombres, TipoDocumento tipoDocumento, Integer numeroDocumento, LocalDate fechaNacimiento, String email, String ocupacion, String nacionalidad, String telefono) {
         this.apellido = apellido;
         this.nombres = nombres;
         this.tipoDocumento = tipoDocumento;
-        this.nroDocumento = nroDocumento;
+        this.numeroDocumento = numeroDocumento;
         this.fechaNacimiento = fechaNacimiento;
         this.email = email;
         this.ocupacion = ocupacion;
@@ -117,12 +117,12 @@ public class PersonaFisica extends Persona implements Serializable {
         this.tipoDocumento = tipoDocumento;
     }
 
-    public Integer getNroDocumento() {
-        return nroDocumento;
+    public Integer getNumeroDocumento() {
+        return numeroDocumento;
     }
 
-    public void setNroDocumento(Integer nroDocumento) {
-        this.nroDocumento = nroDocumento;
+    public void setNumeroDocumento(Integer numeroDocumento) {
+        this.numeroDocumento = numeroDocumento;
     }
 
     public LocalDate getFechaNacimiento() {
@@ -172,7 +172,7 @@ public class PersonaFisica extends Persona implements Serializable {
         hash = 67 * hash + Objects.hashCode(this.apellido);
         hash = 67 * hash + Objects.hashCode(this.nombres);
         hash = 67 * hash + Objects.hashCode(this.tipoDocumento);
-        hash = 67 * hash + Objects.hashCode(this.nroDocumento);
+        hash = 67 * hash + Objects.hashCode(this.numeroDocumento);
         hash = 67 * hash + Objects.hashCode(this.fechaNacimiento);
         hash = 67 * hash + Objects.hashCode(this.email);
         hash = 67 * hash + Objects.hashCode(this.ocupacion);
@@ -220,7 +220,7 @@ public class PersonaFisica extends Persona implements Serializable {
         if (this.tipoDocumento != other.tipoDocumento) {
             return false;
         }
-        if (!Objects.equals(this.nroDocumento, other.nroDocumento)) {
+        if (!Objects.equals(this.numeroDocumento, other.numeroDocumento)) {
             return false;
         }
         if (!Objects.equals(this.fechaNacimiento, other.fechaNacimiento)) {
