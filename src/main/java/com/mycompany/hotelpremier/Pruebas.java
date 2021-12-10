@@ -59,13 +59,13 @@ public class Pruebas {
 //        e.setIdsPasajeroAcompañante(idsPasajeroAcompañante);
 //        gestorAlojamientos.createEstadia(e);
 
-         TipoHabitacion t = new TipoHabitacion();
-         t.setNombre("Personalizada");
-         t.setPrecioActual(Money.parse("ARS 400.50"));
-         
-         System.out.println(t);
-         
-         System.out.println(t.getPrecioActual().getAmount());
+//         TipoHabitacion t = new TipoHabitacion();
+//         t.setNombre("Personalizada");
+//         t.setPrecioActual(Money.parse("ARS 400.50"));
+//         
+//         System.out.println(t);
+//         
+//         System.out.println(t.getPrecioActual().getAmount());
          
 //
 //           if(gestorPersonas.NoExisteAcompañante(7)){
