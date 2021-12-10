@@ -7,6 +7,7 @@ package daoImpl;
 
 import dao.EstadiaDAO;
 import daoImpl.exceptions.NonexistentEntityException;
+import daoImpl.exceptions.OcuparHabitacionException;
 import entidades.Estadia;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
@@ -21,6 +22,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
+import org.hibernate.HibernateException;
 
 /**
  *
@@ -39,7 +41,7 @@ public class EstadiaDAOImpl implements EstadiaDAO {
     }
 
     @Override
-    public void createEstadia(Estadia estadia) {
+    public void createEstadia(Estadia estadia) throws OcuparHabitacionException{
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -55,6 +57,11 @@ public class EstadiaDAOImpl implements EstadiaDAO {
                 estadia.setHabitacion(habitacion);
             }
             em.persist(estadia);
+            
+//            if(em!=null){
+//                throw new HibernateException("Prueba");
+//            }
+            
             if (factura != null) {
                 Estadia oldEstadiaOfFactura = factura.getEstadia();
                 if (oldEstadiaOfFactura != null) {
@@ -69,10 +76,10 @@ public class EstadiaDAOImpl implements EstadiaDAO {
                 habitacion = em.merge(habitacion);
             }
             em.getTransaction().commit();
-        }catch (Exception e) {
-            System.out.println("Error al crear la estadia, en el dao");
+        }catch (HibernateException ex) {
             em.getTransaction().rollback();
-            e.printStackTrace();
+            //ex.printStackTrace();
+            throw new OcuparHabitacionException("Error al registrar la ocupación");
         } finally {
             if (em != null) {
                 em.close();

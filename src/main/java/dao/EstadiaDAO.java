@@ -6,6 +6,7 @@
 package dao;
 
 import daoImpl.exceptions.NonexistentEntityException;
+import daoImpl.exceptions.OcuparHabitacionException;
 import entidades.Estadia;
 import java.time.LocalDate;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
  */
 public interface EstadiaDAO {
     
-    public void createEstadia(Estadia estadia);
+    public void createEstadia(Estadia estadia) throws OcuparHabitacionException;
     
     public void updateEstadia(Estadia estadia) throws NonexistentEntityException, Exception;
     

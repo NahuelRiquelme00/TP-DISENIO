@@ -11,7 +11,6 @@ import gestores.GestorDePersonas;
 import java.awt.Color;
 import java.awt.Component;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
@@ -19,8 +18,6 @@ import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -32,12 +29,6 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
     private PasajerosTableModel model;
     private int row_selected;
     private List<PersonaFisicaDTO> pasajerosDTO;
-    private List<PersonaFisicaDTO> paginado;
-    public static int MAX_FILAS = 10;
-    private int techoExclusivo =  MAX_FILAS;
-    private int pisoInclusivo = 0;
-    private int pagActual;
-    private int pagsTotales;
 
     /**
      * Creates new form PanelGestionarPasajeros
@@ -66,16 +57,17 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                this.setSelected(isSelected);
-                setBackground(Color.WHITE);
+               setBackground(Color.WHITE);
                return this;
             }
         }
         TableColumnModel cm = jTable1.getColumnModel();
         cm.addColumn(new TableColumn(0, 10, new MyTableCellRenderer(), null));
         cm.moveColumn(cm.getColumnCount() - 1, 0);
-        // Instanciamos el TableRowSorter y lo añadimos al JTable para ordernar por columna
-        TableRowSorter<TableModel> ordenarTabla = new TableRowSorter<>(model);
-        jTable1.setRowSorter(ordenarTabla);
+        
+        //Ordena la tabla
+        jTable1.setAutoCreateRowSorter(true);
+        
         row_selected = -1;
     }
 
@@ -88,29 +80,10 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
         }else tipoDocumento = jComboBoxTipoDoc.getSelectedItem().toString();
         String nroDocumento = JTextDocumento.getText();
         pasajerosDTO = gestorPersonas.buscarPasajero(nombre,apellido,tipoDocumento,nroDocumento);
-        paginarDatos();
-    }
-    
-    private void paginarDatos(){
-        //Modifico el jLabel con la cantidad de paginas
-        pagActual = pisoInclusivo / MAX_FILAS + 1;
-        pagsTotales = pasajerosDTO.size() / MAX_FILAS + ((pasajerosDTO.size() % MAX_FILAS == 0)? 0 : 1);
-        lPag.setText("Página "+pagActual+"/"+pagsTotales);
-        
-        //Carga la pagina actual
-        cargarPagina();
-        
-        if (pasajerosDTO.size() / MAX_FILAS > 0)
-            bAdelante.setEnabled(true);
-        else
-            bAdelante.setEnabled(false);
-    }
-    
-    private void cargarPagina(){
-        paginado = pasajerosDTO.stream().skip((pagActual-1)*MAX_FILAS).limit(MAX_FILAS).collect(Collectors.toList());
-        model.setDatos(paginado);
+        model.setDatos(pasajerosDTO);
         model.fireTableDataChanged();
     }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -144,11 +117,6 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jButtonSiguiente = new javax.swing.JButton();
-        bAdelante = new javax.swing.JButton();
-        lPag = new javax.swing.JLabel();
-        bAtras = new javax.swing.JButton();
-        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
-        filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
         jLabel6 = new javax.swing.JLabel();
 
         jTextField2.setText("jTextField2");
@@ -254,6 +222,7 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
 
             }
         ));
+        jTable1.setRowHeight(30);
         jTable1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -270,26 +239,6 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
             }
         });
 
-        bAdelante.setText(">");
-        bAdelante.setEnabled(false);
-        bAdelante.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bAdelanteActionPerformed(evt);
-            }
-        });
-
-        lPag.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        lPag.setText("Página 0/0");
-
-        bAtras.setText("<");
-        bAtras.setDoubleBuffered(true);
-        bAtras.setEnabled(false);
-        bAtras.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bAtrasActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -297,17 +246,7 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(284, 284, 284)
-                        .addComponent(filler2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(bAtras)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lPag)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(bAdelante)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(filler1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(246, 246, 246)
+                        .addGap(447, 693, Short.MAX_VALUE)
                         .addComponent(jButtonSiguiente))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(10, 10, 10)
@@ -318,23 +257,10 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(lPag)
-                                .addComponent(bAdelante)
-                                .addComponent(bAtras)
-                                .addComponent(jButtonSiguiente))
-                            .addContainerGap())
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                            .addComponent(filler1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(21, 21, 21)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(filler2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(20, 20, 20))))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonSiguiente)
+                .addContainerGap())
         );
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -370,7 +296,7 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButtonCancelar)
                 .addContainerGap())
         );
@@ -393,21 +319,18 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
     }//GEN-LAST:event_jButtonBuscarActionPerformed
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
-        // TODO add your handling code here:
         //Guardo los datos de la fila seleccionada
         int filasSeleccionadas = jTable1.getSelectedRowCount();
             if(filasSeleccionadas == 1){
                 row_selected = jTable1.getSelectedRow();
                 System.out.println("Fila seleccionada: " + row_selected);
-                System.out.println("Pasajero ID: " + paginado.get(row_selected).getId());
+                //System.out.println("Pasajero ID: " + model.getDatos().get(row_selected).getId());               
             }
     }//GEN-LAST:event_jTable1MouseClicked
 
     private void jButtonSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSiguienteActionPerformed
-        // TODO add your handling code here:
-        
-        if(row_selected==-1){
-            //Si no selecciono una persona se pasa a la interfaz dar alta pasajero
+       //Si no selecciono una persona se pasa a la interfaz dar alta pasajero
+        if(row_selected==-1){    
             Object[] options = { "No", "Si"};
             int opcion = JOptionPane.showOptionDialog(null, "¿Desea dar de alta un pasajero?", "Dar de Alta Pasajero",
                          JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
@@ -418,12 +341,9 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
         }else{
             //Si se selecciono una persona se pasa a la interfaz modificar usuario
         }
-
-
     }//GEN-LAST:event_jButtonSiguienteActionPerformed
 
     private void jComboBoxTipoDocItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBoxTipoDocItemStateChanged
-        // TODO add your handling code here:
         //Sino se selecciona tipo de documento no se puede poner numero
         if(jComboBoxTipoDoc.getSelectedItem()!=null){
             JTextDocumento.setEnabled(true);
@@ -435,47 +355,10 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
     }//GEN-LAST:event_jComboBoxTipoDocItemStateChanged
 
     private void jButtonCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelarActionPerformed
-        // TODO add your handling code here:
-        frame.cambiarPanel(VentanaPrincipal.PANE_MENU_PRINCIPAL);
+         frame.cambiarPanel(VentanaPrincipal.PANE_MENU_PRINCIPAL);
     }//GEN-LAST:event_jButtonCancelarActionPerformed
 
-    private void bAtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAtrasActionPerformed
-        // TODO add your handling code here:
-        pagActual--;
-        lPag.setText("Página "+pagActual+"/"+pagsTotales);
-
-        if (pisoInclusivo + MAX_FILAS >= pasajerosDTO.size())
-                techoExclusivo -= pasajerosDTO.size() - pisoInclusivo;
-        else
-                techoExclusivo -= MAX_FILAS;
-        pisoInclusivo -= MAX_FILAS;
-
-        bAdelante.setEnabled(true);
-        if (pisoInclusivo == 0) bAtras.setEnabled(false);
-        
-        cargarPagina();
-    }//GEN-LAST:event_bAtrasActionPerformed
-
-    private void bAdelanteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAdelanteActionPerformed
-        // TODO add your handling code here:
-        pagActual++;
-        lPag.setText("Página "+pagActual+"/"+pagsTotales);
-
-        pisoInclusivo += MAX_FILAS;
-        bAtras.setEnabled(true);
-        if (pisoInclusivo + MAX_FILAS >= pasajerosDTO.size())
-        {
-                techoExclusivo += pasajerosDTO.size() - pisoInclusivo;
-                bAdelante.setEnabled(false);
-        }
-        else
-                techoExclusivo += MAX_FILAS;
-        
-        cargarPagina();
-    }//GEN-LAST:event_bAdelanteActionPerformed
-
     private void JTextDocumentoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JTextDocumentoKeyTyped
-        // TODO add your handling code here:
         //Para que se ingrese solo valores numericos
         char c = evt.getKeyChar();
         if(!Character.isDigit(c)){
@@ -488,10 +371,6 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
     private javax.swing.JTextField JTextApellido;
     private javax.swing.JTextField JTextDocumento;
     private javax.swing.JTextField JTextNombre;
-    private javax.swing.JButton bAdelante;
-    private javax.swing.JButton bAtras;
-    private javax.swing.Box.Filler filler1;
-    private javax.swing.Box.Filler filler2;
     private javax.swing.JButton jButtonBuscar;
     private javax.swing.JButton jButtonCancelar;
     private javax.swing.JButton jButtonSiguiente;
@@ -507,6 +386,5 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField2;
-    private javax.swing.JLabel lPag;
     // End of variables declaration//GEN-END:variables
 }
