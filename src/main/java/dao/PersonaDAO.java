@@ -13,6 +13,7 @@ import entidades.PersonaFisica;
 import entidades.PersonaJuridica;
 import entidades.Provincia;
 import entidades.TipoPosicionFrenteIVA;
+import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -51,6 +52,6 @@ public interface PersonaDAO {
 
     public List<TipoPosicionFrenteIVA> getAllPosicionesIVA();
 
-    public PersonaJuridica findPersonaJuridica(Integer id);
+    public PersonaJuridica findPersonaJuridica(BigInteger id);
     
 }

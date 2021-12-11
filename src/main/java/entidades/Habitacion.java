@@ -142,23 +142,28 @@ public class Habitacion implements Serializable {
     }
 
     public Estadia getEstadiaActual(){
+        boolean flagEstadia = false;
         Estadia estadia = null;
-        LocalDate horaActual;
+        LocalDate fechaActual;
         int tamanio;
         
-        horaActual = LocalDate.now();
-        tamanio = estadias.size(); //Si el tamaño es 0, tirar una excepcion
+        fechaActual = LocalDate.now();
+        tamanio = estadias.size();
         
         for(int i=0; i<tamanio; i++){
             estadia = estadias.get(i);
-            if(estadia.fechaFin.isBefore(horaActual)){
+            
+            //Si la estadía termina hoy o en el futuro, es la estadia actual
+            if(estadia.fechaFin.isAfter(fechaActual) || estadia.fechaFin.isEqual(fechaActual)){
+                flagEstadia = true;
                 break;
             }
-        }//Si la ultima estadia ya termino, tirar una excepcion
-        
-        //estadia = estadias.get(tamanio-1); //Encontrar la estadía actual, no la ultima
-        
-        return estadia;
+        }
+        if(!flagEstadia){//No hay una estadía actual
+            return estadia = null;
+        }else{
+            return estadia;
+        }
     }
 
 }

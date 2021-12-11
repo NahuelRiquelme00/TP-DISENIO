@@ -18,6 +18,7 @@ import entidades.PersonaJuridica;
 import entidades.Provincia;
 import entidades.TipoDocumento;
 import entidades.TipoPosicionFrenteIVA;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -272,7 +273,7 @@ public class GestorDePersonas {
         System.out.println(posicionIVA);
     }
     
-    public PersonaJuridica findPersonaJuridica (Integer id){
+    public PersonaJuridica findPersonaJuridica (BigInteger id){
         personaDAO = new PersonaDAOImpl();
         PersonaJuridica persona = personaDAO.findPersonaJuridica(id);
         personaDAO.close();

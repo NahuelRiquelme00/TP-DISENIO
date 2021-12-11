@@ -15,6 +15,7 @@ import entidades.PersonaJuridica;
 import entidades.Provincia;
 import entidades.TipoDocumento;
 import entidades.TipoPosicionFrenteIVA;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -357,15 +358,15 @@ public class PersonaDAOImpl implements PersonaDAO {
             em.close();
         }  
     }
-    
+
     @Override
-    public PersonaJuridica findPersonaJuridica(Integer id){
-       EntityManager em = getEntityManager();
+    public PersonaJuridica findPersonaJuridica(BigInteger id) {
+        EntityManager em = getEntityManager();
         try {
             return em.find(PersonaJuridica.class, id);
         } finally {
             em.close();
-        } 
+        }    
     }
-    
+
 }

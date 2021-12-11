@@ -115,18 +115,15 @@ public class GestorDeAlojamientos {
     }
 
     
-    public List<PersonaFisica> buscarOcupantes(Integer nroHabitacion, LocalTime horaSalida) {
-        habitacionDAO = new HabitacionDAOImpl();
-        Habitacion habitacion = habitacionDAO.findHabitacion(nroHabitacion);
-        
-        Estadia estadia;
-        estadia = habitacion.getEstadiaActual();
+    public List<PersonaFisica> buscarOcupantes(Estadia estadia) {
         
         List<PersonaFisica> pasajeros = new ArrayList<>();
-        pasajeros.add(estadia.getPasajeroResponsable());
-        pasajeros.addAll(estadia.getPasajeroAcompañante());
-      
         
+        pasajeros.add(estadia.getPasajeroResponsable());
+        
+        if(estadia.getPasajeroAcompañante()!=null){
+            pasajeros.addAll(estadia.getPasajeroAcompañante());
+        }
         habitacionDAO.close();
         return pasajeros;
     }
@@ -153,6 +150,7 @@ public class GestorDeAlojamientos {
         habitacionDAO = new HabitacionDAOImpl();
         Habitacion habitacion = habitacionDAO.findHabitacion(nroHabitacion);
         habitacionDAO.close();
+        
         Estadia estadia = habitacion.getEstadiaActual();
         
         return estadia;

@@ -19,6 +19,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     public static final int PANE_OCUPAR_HABITACION = 3;
     public static final int PANE_SELECCIONAR_RESPONSABLE = 4;
     public static final int PANE_FACTURAR = 5;
+    public static final int PANE_DAR_ALTA_RESPONSABLE = 6;
 
     /**
      * Creates new form VentanaPrincipal
@@ -51,10 +52,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             case PANE_SELECCIONAR_RESPONSABLE:
                 this.setContentPane(new PanelSeleccionarResponsable(this));
                 this.setTitle("Seleccionar Responsable");
-                break;
-            case PANE_FACTURAR://Eliminable
-                this.setContentPane(new PanelFacturar(this));
-                this.setTitle("Facturar");
                 break;
         }
         this.getContentPane().setVisible(false);

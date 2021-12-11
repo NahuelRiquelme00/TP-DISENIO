@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.*;
-import org.joda.money.Money;
+
 /**
  *
  * @author Nahuel Riquelme
@@ -32,7 +32,7 @@ public class NotaDeCredito implements Serializable {
     Double importeTotal;
 
     @ManyToOne
-    @JoinColumn(name="cuit", referencedColumnName="cuit")
+    @JoinColumn(name="cuit", referencedColumnName="cuit", columnDefinition="int8")
     PersonaJuridica responsableDePago;
 
     @OneToMany(mappedBy="notaDeCredito")

@@ -4,10 +4,15 @@
  */
 package interfaces;
 
+import dto.ServicioPrestadoDTO;
 import entidades.Estadia;
 import entidades.PersonaFisica;
 import entidades.PersonaJuridica;
 import gestores.GestorDePersonas;
+import java.math.BigInteger;
+import java.time.LocalTime;
+import java.util.List;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -19,31 +24,41 @@ public class PanelFacturarTercero extends javax.swing.JPanel {
 
     
     private final Estadia estadia;
-    private Integer cuit;
+    private final LocalTime hora;
+    private final List<PersonaFisica> pasajeros;
+    private List<ServicioPrestadoDTO> servPendientes;
+    
+    private BigInteger cuit;
     private PersonaJuridica responsable;
 
     /**
      * Creates new form PanelFacturarTercero
      * @param frame
+     * @param e
+     * @param h
+     * @param lP
      */
     
-    public PanelFacturarTercero(VentanaPrincipal frame, Estadia e) {
+    //Viene de menú principal
+    public PanelFacturarTercero(VentanaPrincipal frame, Estadia e, LocalTime h, List<PersonaFisica> lP) {
         initComponents();
         this.frame = frame;
         this.estadia = e;
-        //obtenerDatos(); //Se abre cuando el cuit tiene 11 caraceteres escritos
-        
+        this.hora = h;
+        this.pasajeros = lP;
+        this.servPendientes = null;
     }
     
-    private void obtenerDatos() {
-        cuit = Integer.valueOf(jTextCUIT.getText());
-        
-        responsable = gestorPersonas.findPersonaJuridica(cuit);
-        
-        jTextRazon.setText(responsable.getRazonSocial());
-        
+    //Viene de facturar
+    public PanelFacturarTercero(VentanaPrincipal frame, Estadia e, LocalTime h, List<PersonaFisica> lP, List<ServicioPrestadoDTO> sP) {
+        initComponents();
+        this.frame = frame;
+        this.estadia = e;
+        this.hora = h;
+        this.pasajeros = lP;
+        this.servPendientes = sP;
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -66,6 +81,12 @@ public class PanelFacturarTercero extends javax.swing.JPanel {
         jLabel1.setText("Datos de Facturación a Tercero");
 
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        jTextCUIT.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextCUITKeyTyped(evt);
+            }
+        });
 
         jTextRazon.setEnabled(false);
 
@@ -153,14 +174,93 @@ public class PanelFacturarTercero extends javax.swing.JPanel {
     private void jButtonAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAceptarActionPerformed
         // TODO add your handling code here:
         //Mensaje no escribiste cuit
+        if (cuit==null){
+            Object[] options = { "No", "Si"};
+            int opcion = JOptionPane.showOptionDialog(null, "¿Desea dar de alta un responsable de pago?", "Responsable no encontrado",
+                         JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+            if(opcion == 1) {
+                System.out.println("Pasar a la interface alta de responsable de pago");
+                frame.cambiarPanel(0);
+                
+            } else System.out.println("Seguir buscando");
+        }else{
+            
+            //Si la lista de servicios pendientes es null venimos del menu principal
+            if(servPendientes == null){
+                frame.setContentPane(new PanelFacturar(frame,responsable, estadia, hora, pasajeros));
+                frame.setTitle("Facturar");
+                frame.pack();
+                frame.setLocationRelativeTo(null);
+                frame.getContentPane().setVisible(false);
+                frame.getContentPane().setVisible(true);
+            }else{
+                
+                //System.out.println(estadia.getHabitacion().getEstado().name() + "\n");
+                frame.setContentPane(new PanelFacturar(frame,responsable, estadia, hora, pasajeros, servPendientes));
+                frame.setTitle("Facturar");
+                frame.pack();
+                frame.setLocationRelativeTo(null);
+                frame.getContentPane().setVisible(false);
+                frame.getContentPane().setVisible(true);
+            }
+            
+        }
+        
         
     }//GEN-LAST:event_jButtonAceptarActionPerformed
 
     private void jButtonCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelarActionPerformed
         // TODO add your handling code here:
         //Mensaje Desea Cerrar???
-        frame.cambiarPanel(VentanaPrincipal.PANE_MENU_PRINCIPAL);
+        Object[] options = { "No", "Si"};
+            int opcion = JOptionPane.showOptionDialog(null, "¿Desea volver al menú principal, todos los cambios se desecharán?", "Cancelar",
+                         JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+            if(opcion == 1) {
+                System.out.println("Volver al menú principal");
+                frame.cambiarPanel(0);
+            }   
     }//GEN-LAST:event_jButtonCancelarActionPerformed
+
+    private void jTextCUITKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextCUITKeyTyped
+        // TODO add your handling code here:
+        //Cuando llegue a 11 largamos a buscar
+        if(jTextCUIT.getText().length()==11){
+            //Controlar que esté bien escrito
+            try{
+                //Buscar la razón social            
+                cuit = new BigInteger(jTextCUIT.getText());
+            }catch (Exception ex){
+                Object opciones[] = {"Aceptar"};
+                JOptionPane.showOptionDialog(
+                    null, 
+                    "El cuit debe ser un campo NUMÉRICO de 11 caracteres", 
+                    "Error", 
+                    JOptionPane.DEFAULT_OPTION, 
+                    JOptionPane.INFORMATION_MESSAGE, 
+                    null, 
+                    opciones,
+                    opciones[0]
+                );
+            }
+            
+            try{
+                responsable = gestorPersonas.findPersonaJuridica(cuit);
+                jTextRazon.setText(responsable.getRazonSocial());
+            } catch (Exception ex){
+                Object opciones[] = {"Aceptar"};
+                JOptionPane.showOptionDialog(
+                    null, 
+                    "Responsable de pago con cuit: " + cuit + " no encontrado", 
+                    "Error", 
+                    JOptionPane.DEFAULT_OPTION, 
+                    JOptionPane.INFORMATION_MESSAGE, 
+                    null, 
+                    opciones,
+                    opciones[0]
+                );
+            }
+        }
+    }//GEN-LAST:event_jTextCUITKeyTyped
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -174,5 +274,22 @@ public class PanelFacturarTercero extends javax.swing.JPanel {
     private javax.swing.JTextField jTextRazon;
     // End of variables declaration//GEN-END:variables
 
+    /*
+    private void obtenerDatos() {
+        //cuit = BigInteger.valueOf(jTextCUIT.getText());
+        cuit = new BigInteger(jTextCUIT.getText());
+        responsable = gestorPersonas.findPersonaJuridica(cuit);
+        jTextRazon.setText(responsable.getRazonSocial());
+    }
+    */
+    
+    /*
+    public PanelFacturarTercero(VentanaPrincipal frame, Estadia e) {
+        initComponents();
+        this.frame = frame;
+        this.estadia = e;
+        //obtenerDatos(); //Se abre cuando el cuit tiene 11 caraceteres escritos
+    }
+    */
     
 }

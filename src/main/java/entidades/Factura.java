@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+
 import javax.persistence.*;
 //import org.joda.money.Money;
 /**
@@ -38,7 +39,7 @@ public class Factura implements Serializable {
     LocalDate fechaEmision;
 
     @ManyToOne
-    @JoinColumn(name="cuit", referencedColumnName="cuit")
+    @JoinColumn(name="cuit", referencedColumnName="cuit", columnDefinition="int8")
     PersonaJuridica responsableDePagoJuridico;
 
     @ManyToOne

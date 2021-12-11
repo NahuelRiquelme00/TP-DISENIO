@@ -26,6 +26,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import dto.ServicioAFacturar;
+import entidades.PersonaJuridica;
 import entidades.ServicioFacturado;
 
 /**
@@ -50,7 +51,7 @@ public class GestorDeFacturas {
     
     
     
-    public void createFactura(FacturaDTO f){
+    public void Facturar(FacturaDTO f){
         facturaDAO = new FacturaDAOImpl();
         estadiaDAO = new EstadiaDAOImpl();
         habitacionDAO = new HabitacionDAOImpl();
@@ -61,7 +62,6 @@ public class GestorDeFacturas {
         Factura factura = new Factura();
         
         //Cargar datos de la Factura
-        
         factura.setTipo(f.getTipoFactura());
         factura.setFechaEmision(LocalDate.parse(f.getFechaEmision()));
         
@@ -89,10 +89,12 @@ public class GestorDeFacturas {
             }
             factura.setServiciosFacturados(serviciosFacturados);
         }
-        //Cargar Estadia
         
-        Estadia estadia = estadiaDAO.findEstadia(f.getIdEstadia());
+        //Cargar Estadia
+        Estadia estadia = null;
+        
         if (f.getIdEstadia() != null){
+            estadia= estadiaDAO.findEstadia(f.getIdEstadia());
             factura.setEstadia(estadia);
         }
         
@@ -100,28 +102,38 @@ public class GestorDeFacturas {
         
         factura.setImporteTotal(f.getImporteTotal());
         
-        PersonaFisica responsablePago = personaDAO.findPersonaFisica(f.getIdResponsable());
-        factura.setResponsableDePagoFisico(responsablePago);
+        //Cargar Datos responsable de pago
+        if(f.getIdResponsable() != null){
+            PersonaFisica responsablePago = personaDAO.findPersonaFisica(f.getIdResponsable());
+            factura.setResponsableDePagoFisico(responsablePago);
+        }else{
+            PersonaJuridica responsablePago = personaDAO.findPersonaJuridica(f.getCuitResponsableJuridico());
+            factura.setResponsableDePagoJuridico(responsablePago);
+        }
+        
         
         //Crear la factura
         
         try {
             facturaDAO.createFactura(factura);
-            System.out.println("Factura creada");            
+            System.out.println("Factura creada");
         } catch (Exception ex) {
             System.out.println("Error al crear la factura, en el gestor");
             ex.printStackTrace();
         }
         
         //Le cambio el estado a la habitacion
-        
-        Habitacion habitacion = estadia.getHabitacion();
-        habitacion.setEstado(TipoEstado.DISPONIBLE);
-        try {
-            habitacionDAO.updateHabitacion(habitacion);
-        } catch (Exception ex) {
-            System.out.println("Error al actualizar el estado de la habitacion");
-            Logger.getLogger(GestorDeAlojamientos.class.getName()).log(Level.SEVERE, null, ex);
+        if(f.getIdEstadia() != null){
+            Habitacion habitacion = estadia.getHabitacion();
+            habitacion.setEstado(TipoEstado.DISPONIBLE);
+            
+            
+            try {
+                habitacionDAO.updateHabitacion(habitacion);
+                System.out.println("Habitación modificada");
+            } catch (Exception ex) {
+                Logger.getLogger(GestorDeAlojamientos.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         
         estadiaDAO.close();

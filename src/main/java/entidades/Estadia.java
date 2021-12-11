@@ -239,18 +239,22 @@ public class Estadia implements Serializable {
         cantidadNoches = new BigDecimal(cantNoches);
         factor = new BigDecimal(0.5);
         
-        if(horaSalida.isAfter(LocalTime.of(9, 0)) &&  horaSalida.isBefore(LocalTime.of(11, 0))){
-            //costoEstadia= costoPorNoche * cantNoches; ParaDouble
+        if((horaSalida.equals(LocalTime.of(9, 0)) || horaSalida.isAfter(LocalTime.of(9, 0))) 
+                &&  (horaSalida.isBefore(LocalTime.of(11, 0)) || horaSalida.equals(LocalTime.of(11, 0)))){
+            //Si estoy facturando entre 9 y 11, [9,11]
+            
             costoEstadia = costoPorNoche.multiply(cantidadNoches);
             
-        }else if(horaSalida.isAfter(LocalTime.of(11, 0)) && horaSalida.isBefore(LocalTime.of(18, 0))){
-            //costoEstadia= costoPorNoche * cantNoches + 0.5* costoPorNoche; Para Double
+        }else if(horaSalida.isAfter(LocalTime.of(11, 0)) 
+                && (horaSalida.isBefore(LocalTime.of(18, 0)) || horaSalida.equals(LocalTime.of(11, 0)))){
+            //Si estoy facturando entre 11 y 18, (11,18]
+            
             costoEstadia = (costoPorNoche.multiply(cantidadNoches)).add(costoPorNoche.multiply(factor));
             
         }else if(horaSalida.isBefore(LocalTime.of(9, 0)) || horaSalida.isAfter(LocalTime.of(18, 0))){
-            //costoEstadia= costoPorNoche * cantNoches + 0.5* costoPorNoche;Para Double
+            
             costoEstadia = (costoPorNoche.multiply(cantidadNoches)).add(costoPorNoche.multiply(factor));
-            //Tirar excepcion para mensaje?
+            
             System.out.println("Se debe re ocupar la habitación");
         }
         //System.out.println("El costo por noche es: " + costoPorNoche + " La cantidad de noches es: " + cantNoches);

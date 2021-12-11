@@ -4,6 +4,7 @@
  */
 package dto;
 
+import entidades.TipoServicio;
 import java.math.BigDecimal;
 
 /**
@@ -23,6 +24,13 @@ public class ServicioPrestadoDTO {
     
     public ServicioPrestadoDTO(){
         
+    }
+
+    public ServicioPrestadoDTO(String name, BigDecimal precio, Integer cantidad, String nombre) {//Corregir
+        this.nombreConsumo = name;
+        this.precioUnitario = precio;
+        this.unidadesTotales = cantidad;
+        this.nombreConsumo = nombre;
     }
 
     public void setNombreConsumo(String nombre) {

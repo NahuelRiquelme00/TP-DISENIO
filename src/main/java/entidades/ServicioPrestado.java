@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.*;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.joda.money.Money;
 
 @Entity
@@ -41,6 +43,7 @@ public class ServicioPrestado implements Serializable {
     TipoServicio tipo;
 
     @OneToMany(mappedBy="servicioPrestado")
+    @LazyCollection(LazyCollectionOption.FALSE)
     List<ServicioFacturado>serviciosFacturados;
 
     public Integer getIdServicio() {
