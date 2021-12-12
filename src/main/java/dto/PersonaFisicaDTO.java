@@ -27,7 +27,7 @@ public class PersonaFisicaDTO implements Comparable<PersonaFisicaDTO>{
     private Integer numero;
     private String departamento;
     private String piso;
-    private Integer codigoPostal;
+    private String codigoPostal;
     private Integer idPosicionIVA;
     private Integer idLocalidad;
     private Integer idProvincia;
@@ -38,7 +38,7 @@ public class PersonaFisicaDTO implements Comparable<PersonaFisicaDTO>{
         this.id = id;
     }
 
-    public PersonaFisicaDTO(String apellido, String nombres, String tipoDocumento, Integer nroDocumento, String fechaNacimiento, String email, String ocupacion, String nacionalidad, String telefono, String calle, Integer numero, String departamento, String piso, Integer codigoPostal, Integer posicionIVA, Integer idLocalidad, Integer idProvincia, Integer idPais) {
+    public PersonaFisicaDTO(String apellido, String nombres, String tipoDocumento, Integer nroDocumento, String fechaNacimiento, String email, String ocupacion, String nacionalidad, String telefono, String calle, Integer numero, String departamento, String piso, String codigoPostal, Integer posicionIVA, Integer idLocalidad, Integer idProvincia, Integer idPais) {
         this.apellido = apellido;
         this.nombres = nombres;
         this.tipoDocumento = tipoDocumento;
@@ -190,11 +190,11 @@ public class PersonaFisicaDTO implements Comparable<PersonaFisicaDTO>{
         this.piso = piso;
     }
 
-    public Integer getCodigoPostal() {
+    public String getCodigoPostal() {
         return codigoPostal;
     }
 
-    public void setCodigoPostal(Integer codigoPostal) {
+    public void setCodigoPostal(String codigoPostal) {
         this.codigoPostal = codigoPostal;
     }
 

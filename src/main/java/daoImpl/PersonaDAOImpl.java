@@ -166,7 +166,7 @@ public class PersonaDAOImpl implements PersonaDAO {
 
             if(!nroDocumento.isBlank() && !tipoDocumento.isBlank()) {
                 Integer nro = Integer.parseInt(nroDocumento);
-                predicateNumDoc = cb.equal(raizPersona.get("nroDocumento"),nro);
+                predicateNumDoc = cb.equal(raizPersona.get("numeroDocumento"),nro);
                 condiciones.add(predicateNumDoc);
             }
 

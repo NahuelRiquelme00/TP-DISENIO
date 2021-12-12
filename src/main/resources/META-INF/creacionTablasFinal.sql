@@ -47,7 +47,7 @@ CREATE TABLE direccion(
 	numero integer,
 	piso varchar(30),
 	departamento varchar(30),
-	codigo_postal integer,
+	codigo_postal varchar(20),
 	id_localidad integer REFERENCES localidad(id_localidad)
 );
 
@@ -249,14 +249,14 @@ CREATE TABLE usuario(
 	contraseña varchar(30)
 );
 
-INSERT INTO direccion VALUES (DEFAULT, 'Mitre', 3667, null, null, 3016, 1);
+INSERT INTO direccion VALUES (DEFAULT, 'MITRE', 3667, null, null, 3016, 1);
 
 INSERT INTO persona_fisica VALUES 
-	(DEFAULT,'DNI',34227524,'BECKER','ALISSON','02-10-1992','ALIBECKER@GMAIL.COM','INGENIERO','BRASILERO','3429466178',1,1),
-	(DEFAULT,'DNI',34227524,'MORENO','MARIANO','18-06-1987','MARIANOMORENO@GMAIL.COM','ARQUITECTO','BOLIVIANO','3421472589',1,1),
-	(DEFAULT,'DNI',34227524,'DE PAUL','RODRIGO','24-05-1994','RODEPAUL@GMAIL.COM','PROFESOR','ARGENTINA','3425684315',1,1),
-	(DEFAULT,'DNI',34227524,'GOMEZ','ALEJANDRO','15-01-1988','ALEJANDROGOMEZ@GMAIL.COM','ABOGADO','ARGENTINA','3425684547',1,1),
-	(DEFAULT,'DNI',40587514,'RIQUELME','NAHUEL','09-12-1999','NAHUELRIQUIELME@GMAIL.COM','ESTUDIANTE','ARGENTINA','3425684598',1,1);
+	(DEFAULT,'DNI',34227524,'BECKER','ALISSON','1992-10-02','ALIBECKER@GMAIL.COM','INGENIERO','BRASILERO','3429466178',1,1),
+	(DEFAULT,'DNI',34227524,'MORENO','MARIANO','1987-06-18','MARIANOMORENO@GMAIL.COM','ARQUITECTO','BOLIVIANO','3421472589',1,1),
+	(DEFAULT,'DNI',34227524,'DE PAUL','RODRIGO','1994-05-24','RODEPAUL@GMAIL.COM','PROFESOR','ARGENTINA','3425684315',1,1),
+	(DEFAULT,'DNI',34227524,'GOMEZ','ALEJANDRO','1988-01-15','ALEJANDROGOMEZ@GMAIL.COM','ABOGADO','ARGENTINA','3425684547',1,1),
+	(DEFAULT,'DNI',40587514,'RIQUELME','NAHUEL','1999-12-09','NAHUELRIQUIELME@GMAIL.COM','ESTUDIANTE','ARGENTINA','3425684598',1,1);
 
 INSERT INTO tipo_habitacion VALUES
 	('INDIVIDUAL ESTÁNDAR',null),
@@ -292,3 +292,12 @@ INSERT INTO periodo_reserva VALUES
 	(2,'2021-12-21','2021-12-25',5,2),
 	(3,'2021-12-21','2021-12-25',6,3),
 	(4,'2021-12-21','2021-12-25',7,4);
+	
+	
+/*
+DROP TABLE periodo_reserva, asociada_a, efectivo, estadia, factura, habitacion, nota_de_credito, pago, pasajero, 
+		   persona_juridica, plaza, reserva, servicio_facturado, servicio_prestado, tarjeta_credito,
+		   tarjeta_debito, tipo_habitacion, usuario, cheque, banco, cheque;
+		   
+DROP TABLE pais, provincia, localidad, direccion, tipo_posicion_frente_IVA, persona_fisica;		   
+*/
