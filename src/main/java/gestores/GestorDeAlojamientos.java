@@ -21,7 +21,9 @@ import entidades.PeriodoReserva;
 import entidades.PersonaFisica;
 import entidades.TipoEstado;
 import entidades.TipoHabitacion;
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,12 +40,14 @@ import misc.Dupla;
  */
 public class GestorDeAlojamientos {
     private static GestorDeAlojamientos instance;
+    private final GestorDePersonas gestorPersonas;
     private EstadiaDAO estadiaDAO;
     private HabitacionDAO habitacionDAO;
     private ReservaDAO reservaDAO;
     private PersonaDAO personaDAO;
     
     private GestorDeAlojamientos (){
+        this.gestorPersonas = GestorDePersonas.getInstance();
         try{
             Thread.sleep(1000);
         } catch (InterruptedException ex) {
@@ -118,6 +122,70 @@ public class GestorDeAlojamientos {
     public void deleteEstadia(){
         
     }
+
+    
+    public List<PersonaFisica> buscarOcupantes(Estadia estadia) {
+        
+        List<PersonaFisica> pasajeros = new ArrayList<>();
+        
+        pasajeros.add(estadia.getPasajeroResponsable());
+        
+        if(estadia.getPasajeroAcompañante()!=null){
+            pasajeros.addAll(estadia.getPasajeroAcompañante());
+        }
+        habitacionDAO.close();
+        return pasajeros;
+    }
+
+    public void calcularCostoEstadia(Integer nroHabitacion, LocalTime horaSalida) {
+        estadiaDAO = new EstadiaDAOImpl();
+        
+        Estadia estadia = this.buscarEstadia(nroHabitacion);
+        BigDecimal costoFinal = estadia.calcularCostoFinal(horaSalida);//Modificar al tipo de dato que haya quedado
+        
+        System.out.println("El costo final es: " + costoFinal);
+        
+        
+        try {
+            estadiaDAO.updateEstadia(estadia);
+        } catch (Exception ex) {
+            System.out.println("Error al crear persona");
+        }
+        
+        estadiaDAO.close();
+    }
+
+    public Estadia buscarEstadia(Integer nroHabitacion) {
+        habitacionDAO = new HabitacionDAOImpl();
+        Habitacion habitacion = habitacionDAO.getById(nroHabitacion);
+        habitacionDAO.close();
+        
+        Estadia estadia = habitacion.getEstadiaActual();
+        
+        return estadia;
+    }
+
+    public Integer getCantidadNoches(Estadia estadia) {
+        Integer cantNoches = estadia.getCantidadNoches();
+        return cantNoches;
+    }
+
+    public BigDecimal getCostoFinal(Estadia estadia) {
+        estadiaDAO = new EstadiaDAOImpl();
+        
+        return estadia.getCostoFinal();
+    }
+
+    public BigDecimal getCostoNoche(Estadia estadia) {
+        estadiaDAO = new EstadiaDAOImpl();
+        
+        return estadia.getCostoNoche();
+    }
+
+
+    
+    
+    
     
     public Map<LocalDate, HashMap<Integer, TipoEstado>>getEstadosHabitaciones(LocalDate fechaInicioGui, LocalDate fechaFinGui) {
         // Recuperar habitaciones, estadias y periodos de reserva

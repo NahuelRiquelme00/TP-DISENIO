@@ -5,6 +5,8 @@
  */
 package entidades;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.*;
@@ -17,8 +19,8 @@ import javax.persistence.*;
 public class PersonaJuridica extends Persona implements Serializable {
 
     @Id
-    @Column(name="cuit")
-    Integer CUIT;
+    @Column(name="cuit", columnDefinition="int8")
+    BigInteger CUIT;
 
     @Column(name="razon_social")
     String razonSocial;
@@ -35,11 +37,11 @@ public class PersonaJuridica extends Persona implements Serializable {
     @OneToMany(mappedBy="responsableDePagoJuridico")
     List<Factura> facturas;
 
-    public Integer getCUIT() {
+    public BigInteger getCUIT() {
         return CUIT;
     }
 
-    public void setCUIT(Integer CUIT) {
+    public void setCUIT(BigInteger CUIT) {
         this.CUIT = CUIT;
     }
 

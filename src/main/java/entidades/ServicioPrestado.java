@@ -6,13 +6,15 @@
 package entidades;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.*;
-import org.joda.money.Money;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 @Entity
 @Table(name="servicio_prestado")
@@ -26,8 +28,8 @@ public class ServicioPrestado implements Serializable {
     @Column(name="nombre")
     String nombre;
 
-    @Column(name="precio", columnDefinition="bytea")
-    Money precio;
+    @Column(name="precio", columnDefinition="numeric")
+    BigDecimal precio;
 
     @Column(name="cantidad")
     Integer cantidad;
@@ -40,6 +42,7 @@ public class ServicioPrestado implements Serializable {
     TipoServicio tipo;
 
     @OneToMany(mappedBy="servicioPrestado")
+    @LazyCollection(LazyCollectionOption.FALSE)
     List<ServicioFacturado>serviciosFacturados;
 
     public Integer getIdServicio() {
@@ -58,11 +61,11 @@ public class ServicioPrestado implements Serializable {
         this.nombre = nombre;
     }
 
-    public Money getPrecio() {
+    public BigDecimal getPrecio() {
         return precio;
     }
 
-    public void setPrecio(Money precio) {
+    public void setPrecio(BigDecimal precio) {
         this.precio = precio;
     }
 

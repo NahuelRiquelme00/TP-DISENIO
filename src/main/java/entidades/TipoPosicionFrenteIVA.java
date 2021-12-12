@@ -106,4 +106,8 @@ public class TipoPosicionFrenteIVA implements Serializable {
         return nombre + " (" + tipoFactura + ")" ;
     }  
     
+    public void setTipoCaptura(TipoFactura tipoFactura) {
+        int i = 1;
+        i++;
+    }
 }

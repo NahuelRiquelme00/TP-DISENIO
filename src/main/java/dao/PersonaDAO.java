@@ -10,8 +10,10 @@ import daoImpl.exceptions.PreexistingEntityException;
 import entidades.Localidad;
 import entidades.Pais;
 import entidades.PersonaFisica;
+import entidades.PersonaJuridica;
 import entidades.Provincia;
 import entidades.TipoPosicionFrenteIVA;
+import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -50,6 +52,8 @@ public interface PersonaDAO {
 
     public List<TipoPosicionFrenteIVA> getAllPosicionesIVA();
 
+    public PersonaJuridica findPersonaJuridica(BigInteger id);
+    
     public Boolean NoExisteAcompañante(Integer id);
     
     public Long countAll(String nombre, String apellido, String tipoDocumento, String nroDocumento);

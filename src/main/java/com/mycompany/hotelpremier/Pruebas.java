@@ -5,17 +5,9 @@
  */
 package com.mycompany.hotelpremier;
 
-import dto.EstadiaDTO;
-import dto.PersonaFisicaDTO;
-import entidades.PersonaFisica;
-import entidades.TipoHabitacion;
 import gestores.GestorDeAlojamientos;
 import gestores.GestorDePersonas;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import org.joda.money.CurrencyUnit;
-import org.joda.money.Money;
+
 
 
 /**

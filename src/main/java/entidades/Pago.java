@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.*;
-import org.joda.money.Money;
 
 @Entity
 @Table(name="pago")
@@ -22,14 +21,14 @@ public class Pago implements Serializable {
     @Column(name="id_pago")
     Integer idPago;
 
-    @Column(name="monto_total", columnDefinition="bytea")
-    Money montoTotal;
+    @Column(name="monto_total", columnDefinition="numeric")
+    Double montoTotal;
 
     @Column(name="fecha_y_hora")
     LocalDateTime fechaYHora;
 
-    @Column(name="vuelto", columnDefinition="bytea")
-    Money vuelto;
+    @Column(name="vuelto", columnDefinition="numeric")
+    Double vuelto;
 
     @OneToMany
     @JoinColumn(name="id_medio_de_pago", referencedColumnName="id_pago")
@@ -43,11 +42,11 @@ public class Pago implements Serializable {
         this.idPago = idPago;
     }
 
-    public Money getMontoTotal() {
+    public Double getMontoTotal() {
         return montoTotal;
     }
 
-    public void setMontoTotal(Money montoTotal) {
+    public void setMontoTotal(Double montoTotal) {
         this.montoTotal = montoTotal;
     }
 
@@ -59,11 +58,11 @@ public class Pago implements Serializable {
         this.fechaYHora = fechaYHora;
     }
 
-    public Money getVuelto() {
+    public Double getVuelto() {
         return vuelto;
     }
 
-    public void setVuelto(Money vuelto) {
+    public void setVuelto(Double vuelto) {
         this.vuelto = vuelto;
     }
 

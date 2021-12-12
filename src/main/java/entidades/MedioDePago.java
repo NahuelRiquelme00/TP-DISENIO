@@ -7,7 +7,6 @@ package entidades;
 
 import java.io.Serializable;
 import javax.persistence.*;
-import org.joda.money.Money;
 
 
 @Entity
@@ -18,14 +17,14 @@ public abstract class MedioDePago implements Serializable {
     @Column(name="id_medio_de_pago")
     Integer idMedioDePago;
 
-    @Column(name="importe", columnDefinition="bytea")
-    Money importe;
+    @Column(name="importe", columnDefinition="numeric")
+    Double importe;
 
     @Column(name="cotizacion")
     Double cotizacion;
 
-    @Column(name="importe_en_pesos", columnDefinition="bytea")
-    Money importeEnPesos;
+    @Column(name="importe_en_pesos", columnDefinition="numeric")
+    Double importeEnPesos;
 
     public Integer getIdMedioDePago() {
         return idMedioDePago;
@@ -35,11 +34,11 @@ public abstract class MedioDePago implements Serializable {
         this.idMedioDePago = idMedioDePago;
     }
 
-    public Money getImporte() {
+    public Double getImporte() {
         return importe;
     }
 
-    public void setImporte(Money importe) {
+    public void setImporte(Double importe) {
         this.importe = importe;
     }
 
@@ -51,11 +50,11 @@ public abstract class MedioDePago implements Serializable {
         this.cotizacion = cotizacion;
     }
 
-    public Money getImporteEnPesos() {
+    public Double getImporteEnPesos() {
         return importeEnPesos;
     }
 
-    public void setImporteEnPesos(Money importeEnPesos) {
+    public void setImporteEnPesos(Double importeEnPesos) {
         this.importeEnPesos = importeEnPesos;
     }
         

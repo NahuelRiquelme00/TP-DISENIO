@@ -11,9 +11,11 @@ import daoImpl.exceptions.PreexistingEntityException;
 import entidades.Localidad;
 import entidades.Pais;
 import entidades.PersonaFisica;
+import entidades.PersonaJuridica;
 import entidades.Provincia;
 import entidades.TipoDocumento;
 import entidades.TipoPosicionFrenteIVA;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -21,7 +23,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.Persistence;
-import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -320,6 +321,15 @@ public class PersonaDAOImpl implements PersonaDAO {
     }
 
     @Override
+    public PersonaJuridica findPersonaJuridica(BigInteger id) {
+        EntityManager em = getEntityManager();
+        try {
+            return em.find(PersonaJuridica.class, id);
+        } finally {
+            em.close();
+        }    
+    }
+
     public Boolean NoExisteAcompañante(Integer id) {
         /*
         Esta consulta debe devolver si existe una relacion entre la persona del id y una estadia

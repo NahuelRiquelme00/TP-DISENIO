@@ -6,9 +6,9 @@
 package entidades;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.*;
-import org.joda.money.Money;
 
 @Entity
 @Table(name="servicio_facturado")
@@ -19,14 +19,14 @@ public class ServicioFacturado implements Serializable {
     @Column(name="nombre")
     String nombre;
 
-    @Column(name="precio_unitario", columnDefinition="bytea")
-    Money precioUnitario;
+    @Column(name="precio_unitario", columnDefinition="numeric")
+    BigDecimal precioUnitario;
 
     @Column(name="cantidad")
     Integer cantidad;
 
-    @Column(name="precio_total", columnDefinition="bytea")
-    Money precioTotal;
+    @Column(name="precio_total", columnDefinition="numeric")
+    BigDecimal precioTotal;
 
     @ManyToOne
     @JoinColumn(name="id_servicio", referencedColumnName="id_servicio")
@@ -44,11 +44,11 @@ public class ServicioFacturado implements Serializable {
         this.nombre = nombre;
     }
 
-    public Money getPrecioUnitario() {
+    public BigDecimal getPrecioUnitario() {
         return precioUnitario;
     }
 
-    public void setPrecioUnitario(Money precioUnitario) {
+    public void setPrecioUnitario(BigDecimal precioUnitario) {
         this.precioUnitario = precioUnitario;
     }
 
@@ -60,11 +60,11 @@ public class ServicioFacturado implements Serializable {
         this.cantidad = cantidad;
     }
 
-    public Money getPrecioTotal() {
+    public BigDecimal getPrecioTotal() {
         return precioTotal;
     }
 
-    public void setPrecioTotal(Money precioTotal) {
+    public void setPrecioTotal(BigDecimal precioTotal) {
         this.precioTotal = precioTotal;
     }
 

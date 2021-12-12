@@ -5,11 +5,12 @@
  */
 package entidades;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.*;
-import org.joda.money.Money;
+
 /**
  *
  * @author Nahuel Riquelme
@@ -23,21 +24,21 @@ public class Factura implements Serializable {
     @Column(name="numero")
     Integer numero;
 
-    @Column(name="importe_neto", columnDefinition="bytea")
-    Money importeNeto;
+    @Column(name="importe_neto", columnDefinition="numeric")
+    BigDecimal importeNeto;
 
     @Column(name="tipo")
     @Enumerated(EnumType.STRING)
     TipoFactura tipo;
 
-    @Column(name="importe_total", columnDefinition="bytea")
-    Money importeTotal;
+    @Column(name="importe_total", columnDefinition="numeric")
+    BigDecimal importeTotal;
 
     @Column(name="fecha_emision")
     LocalDate fechaEmision;
 
     @ManyToOne
-    @JoinColumn(name="cuit", referencedColumnName="cuit")
+    @JoinColumn(name="cuit", referencedColumnName="cuit", columnDefinition="int8")
     PersonaJuridica responsableDePagoJuridico;
 
     @ManyToOne
@@ -66,11 +67,11 @@ public class Factura implements Serializable {
         this.numero = numero;
     }
 
-    public Money getImporteNeto() {
+    public BigDecimal getImporteNeto() {
         return importeNeto;
     }
 
-    public void setImporteNeto(Money importeNeto) {
+    public void setImporteNeto(BigDecimal importeNeto) {
         this.importeNeto = importeNeto;
     }
 
@@ -82,11 +83,11 @@ public class Factura implements Serializable {
         this.tipo = tipo;
     }
 
-    public Money getImporteTotal() {
+    public BigDecimal getImporteTotal() {
         return importeTotal;
     }
 
-    public void setImporteTotal(Money importeTotal) {
+    public void setImporteTotal(BigDecimal importeTotal) {
         this.importeTotal = importeTotal;
     }
 

@@ -5,10 +5,24 @@
  */
 package dao;
 
+import daoImpl.exceptions.NonexistentEntityException;
+import entidades.ServicioPrestado;
+import java.util.List;
+
 /**
  *
  * @author Nahuel Riquelme
  */
-public class ServicioPrestadoDAO {
+public interface ServicioPrestadoDAO {
+    public void createServicioPrestado(ServicioPrestado factura);
     
+    public void edit(ServicioPrestado factura) throws NonexistentEntityException, Exception;
+    
+    public List<ServicioPrestado> findServicioPrestadoEntities();
+    
+    public List<ServicioPrestado> findServicioPrestadoEntities(int maxResults, int firstResult);
+    
+    public ServicioPrestado findServicioPrestado(Integer id);
+    
+    public void close();
 }

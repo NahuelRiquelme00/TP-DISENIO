@@ -5,7 +5,11 @@
  */
 package entidades;
 
+import dao.EstadiaDAO;
+import daoImpl.EstadiaDAOImpl;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -14,6 +18,7 @@ import javax.persistence.*;
 @Entity
 @Table(name="habitacion")
 public class Habitacion implements Serializable {
+    
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -27,7 +32,7 @@ public class Habitacion implements Serializable {
     @Column(name="capacidad")
     Integer capacidad;
 
-    @OneToMany(fetch = FetchType.LAZY,mappedBy="habitacion")
+    @OneToMany(fetch = FetchType.EAGER,mappedBy="habitacion")
     List<Estadia>estadias;
 
     @ManyToOne(cascade=CascadeType.ALL)
@@ -36,6 +41,7 @@ public class Habitacion implements Serializable {
 
     @OneToMany(fetch = FetchType.LAZY,mappedBy="habitacion")
     List<PeriodoReserva> periodosReserva;
+    
 
     public Habitacion() {
     }
@@ -133,6 +139,31 @@ public class Habitacion implements Serializable {
     @Override
     public String toString() {
         return "Habitacion{" + "numero=" + numero + ", tipoHabitacion=" + tipoHabitacion + '}';
+    }
+
+    public Estadia getEstadiaActual(){
+        boolean flagEstadia = false;
+        Estadia estadia = null;
+        LocalDate fechaActual;
+        int tamanio;
+        
+        fechaActual = LocalDate.now();
+        tamanio = estadias.size();
+        
+        for(int i=0; i<tamanio; i++){
+            estadia = estadias.get(i);
+            
+            //Si la estadía termina hoy o en el futuro, es la estadia actual
+            if(estadia.fechaFin.isAfter(fechaActual) || estadia.fechaFin.isEqual(fechaActual)){
+                flagEstadia = true;
+                break;
+            }
+        }
+        if(!flagEstadia){//No hay una estadía actual
+            return estadia = null;
+        }else{
+            return estadia;
+        }
     }
 
 }

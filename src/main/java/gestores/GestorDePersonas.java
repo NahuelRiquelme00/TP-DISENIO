@@ -6,15 +6,19 @@
 package gestores;
 
 import dao.PersonaDAO;
+import dao.TipoPosicionFrenteIVADAO;
 import daoImpl.PersonaDAOImpl;
+import daoImpl.TipoPosicionFrenteIVADAOImpl;
 import dto.PersonaFisicaDTO;
 import entidades.Direccion;
 import entidades.Localidad;
 import entidades.Pais;
 import entidades.PersonaFisica;
+import entidades.PersonaJuridica;
 import entidades.Provincia;
 import entidades.TipoDocumento;
 import entidades.TipoPosicionFrenteIVA;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,6 +34,7 @@ import org.apache.commons.validator.routines.EmailValidator;
 public class GestorDePersonas {
     private static GestorDePersonas instance;
     private PersonaDAO personaDAO;
+    private TipoPosicionFrenteIVADAO posicionIVADAO;
     
     private GestorDePersonas (){
         try{
@@ -137,7 +142,7 @@ public class GestorDePersonas {
         personaDAO.close();
         return convertirADTO(listaPersonas);        
     }
-   
+            
     public List<PersonaFisicaDTO> convertirADTO(List<PersonaFisica> listaPersonas){
         List<PersonaFisicaDTO> pasajerosDTO = new ArrayList<>();
 
@@ -250,6 +255,24 @@ public class GestorDePersonas {
         
         return hayCamposIncompletos;
     }
+
+   
+    public void getTipoFactura(Integer idPosicionIVA) {
+        posicionIVADAO = new TipoPosicionFrenteIVADAOImpl();
+        
+        TipoPosicionFrenteIVA posicionIVA = posicionIVADAO.findTipoPosicionFrenteIVA(idPosicionIVA);
+        posicionIVADAO.close();
+        
+        System.out.println(posicionIVA);
+    }
+    
+    public PersonaJuridica findPersonaJuridica (BigInteger id){
+        personaDAO = new PersonaDAOImpl();
+        PersonaJuridica persona = personaDAO.findPersonaJuridica(id);
+        personaDAO.close();
+        return persona;
+    }
+    
     
     // true: valido
     public Boolean validarEmail(String email)

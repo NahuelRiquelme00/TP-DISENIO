@@ -5,6 +5,7 @@ CREATE TABLE pais(
 
 INSERT INTO pais VALUES (DEFAULT,'Argentina'), (DEFAULT,'Brasil'), (DEFAULT,'Chile'), (DEFAULT,'Uruguay'), (DEFAULT,'Bolivia');
 
+
 CREATE TABLE provincia(
 	id_provincia serial PRIMARY KEY,
 	nombre_provincia varchar(30),
@@ -22,6 +23,7 @@ INSERT INTO provincia VALUES
 	(DEFAULT,'Montevideo',4), (DEFAULT,'Flores',4), (DEFAULT,'Durazno',4), (DEFAULT,'Cerro Largo',4), (DEFAULT,'Soriano',4),
 	--Bolivia
 	(DEFAULT,'Beni',5), (DEFAULT,'Chuquisaca',5), (DEFAULT,'La Paz',5), (DEFAULT,'Potosí',5);
+
 CREATE TABLE localidad(
 	id_localidad serial PRIMARY KEY,
 	nombre_localidad varchar(30),
@@ -29,7 +31,8 @@ CREATE TABLE localidad(
 );
 
 INSERT INTO localidad VALUES 
-	(DEFAULT,'La Capital',1), (DEFAULT,'Rosario',1), (DEFAULT,'Belgrano',1), (DEFAULT,'San Justo',1), (DEFAULT,'San Javier',1), (DEFAULT,'AMBA',2), (DEFAULT,'Parana',3), (DEFAULT,'Rawson',4), (DEFAULT,'Carlos Paz',5), (DEFAULT,'Tafi del Valle',6),
+	--Argentina
+	(DEFAULT,'La Capital',1), (DEFAULT,'Rosario',1), (DEFAULT,'Belgrano',1), (DEFAULT,'San Justo',1), (DEFAULT,'San Javier',1), (DEFAULT,'AMBA',2), 
 	--Brasil
 	(DEFAULT,'Rio de Janeiro',7), (DEFAULT,'São Paulo',8), (DEFAULT,'Salvador de Bahía',9), (DEFAULT,'Florianópolis',10), (DEFAULT,'Belo Horizonte',11), 
 	(DEFAULT,'Fortaleza',9), (DEFAULT,'Recife',9),  (DEFAULT,'Natal',9), 
@@ -47,7 +50,7 @@ CREATE TABLE direccion(
 	numero integer,
 	piso varchar(30),
 	departamento varchar(30),
-	codigo_postal varchar(20),
+	codigo_postal integer,
 	id_localidad integer REFERENCES localidad(id_localidad)
 );
 
@@ -90,7 +93,7 @@ CREATE TABLE pago(
 );
 
 CREATE TABLE persona_juridica(
-	cuit bigint PRIMARY KEY,
+	cuit integer PRIMARY KEY,
 	razon_social varchar(30),
 	email varchar(30),
 	telefono varchar(30),
@@ -103,7 +106,7 @@ CREATE TABLE nota_de_credito(
 	importe_neto numeric,
 	iva double precision,
 	importe_total numeric,
-	cuit bigint REFERENCES persona_juridica(cuit), 
+	cuit integer REFERENCES persona_juridica(cuit), 
 	id_persona_fisica integer REFERENCES persona_fisica(id_persona_fisica)
 );
 
@@ -114,7 +117,7 @@ CREATE TABLE factura(
 	importe_total numeric,
 	fecha_emision date,
 	numero_nota integer REFERENCES nota_de_credito(numero_nota),
-	cuit bigint REFERENCES persona_juridica(cuit),
+	cuit integer REFERENCES persona_juridica(cuit),
 	id_persona_fisica integer REFERENCES persona_fisica(id_persona_fisica),
 	id_pago integer REFERENCES pago(id_pago)
 );
@@ -244,72 +247,36 @@ CREATE TABLE usuario(
 	contraseña varchar(30)
 );
 
-INSERT INTO direccion VALUES (DEFAULT, 'MITRE', 3667, null, null, 3016, 1);
 
-INSERT INTO persona_fisica VALUES 
-	(DEFAULT,'DNI',34227524,'BECKER','ALISSON','1992-10-02','ALIBECKER@GMAIL.COM','INGENIERO','BRASILERO','3429466178',1,1),
-	(DEFAULT,'DNI',34227524,'MORENO','MARIANO','1987-06-18','MARIANOMORENO@GMAIL.COM','ARQUITECTO','BOLIVIANO','3421472589',1,1),
-	(DEFAULT,'DNI',34227524,'DE PAUL','RODRIGO','1994-05-24','RODEPAUL@GMAIL.COM','PROFESOR','ARGENTINA','3425684315',1,1),
-	(DEFAULT,'DNI',34227524,'GOMEZ','ALEJANDRO','1988-01-15','ALEJANDROGOMEZ@GMAIL.COM','ABOGADO','ARGENTINA','3425684547',1,1),
-	(DEFAULT,'DNI',40587514,'RIQUELME','NAHUEL','1999-12-09','NAHUELRIQUIELME@GMAIL.COM','ESTUDIANTE','ARGENTINA','3425684598',1,1);
-
-INSERT INTO tipo_habitacion VALUES
-	('INDIVIDUAL ESTÁNDAR',null),
-	('DOBLE ESTÁNDAR',null),
-	('DOBLE SUPERIOR',null),
-	('SUPERIOR FAMILY PLAN',null),
-	('SUITE DOBLE',null);
-
-INSERT INTO habitacion VALUES 
-	(4,'DISPONIBLE',1,'INDIVIDUAL ESTÁNDAR'),
-	(5,'RESERVADA',2,'DOBLE ESTÁNDAR'),
-	(6,'OCUPADA',2,'DOBLE SUPERIOR'),
-	(7,'FUERA_DE_SERVICIO',5,'SUPERIOR FAMILY PLAN'),
-	(1,'DISPONIBLE',1,'INDIVIDUAL ESTÁNDAR'),
-	(20,'DISPONIBLE',1,'INDIVIDUAL ESTÁNDAR'),
-	(18,'OCUPADA',2,'DOBLE SUPERIOR'),
-	(17,'FUERA_DE_SERVICIO',5,'SUPERIOR FAMILY PLAN'),
-	(15,'DISPONIBLE',5,'SUPERIOR FAMILY PLAN'),
-	(12,'DISPONIBLE',5,'SUPERIOR FAMILY PLAN'),
-	(2,'OCUPADA',2,'DOBLE ESTÁNDAR'),
-	(3,'DISPONIBLE',2,'DOBLE ESTÁNDAR'),
-	(10,'DISPONIBLE',2,'DOBLE SUPERIOR'),
-	(8,'DISPONIBLE',2,'DOBLE SUPERIOR');
-
-INSERT INTO reserva VALUES 
-	(1,'NAHUEL','RIQUELME',456),
-	(2,'ALEJANDRO','GOMEZ',123),
-	(3,'RODRIGO','DE PAUL',487),
-	(4,'MARIANO','MORENO',897);
-
-INSERT INTO periodo_reserva VALUES 
-	(1,'2021-12-21','2021-12-25',4,1),
-	(2,'2021-12-21','2021-12-25',5,2),
-	(3,'2021-12-21','2021-12-25',6,3),
-	(4,'2021-12-21','2021-12-25',7,4);
-
-INSERT INTO estadia VALUES (DEFAULT,'2021-12-15','2021-12-20', 1500.00 ,null,null,1,1,null),(DEFAULT,'2021-12-15','2021-12-20',null,null,null,2,2,null),(DEFAULT,'2021-12-15','2021-12-20',null,null,null,3,3,null),(DEFAULT,'2021-12-15','2021-12-20',null,null,null,4,4,null);
-	
-INSERT into servicio_prestado
-values (DEFAULT, 'MINIBAR', 105, 10, '2021-12-16', null, 1) 
-	
 /*
-DROP TABLE periodo_reserva, asociada_a, efectivo, estadia, factura, habitacion, nota_de_credito, pago, pasajero, 
-		   persona_juridica, plaza, reserva, servicio_facturado, servicio_prestado, tarjeta_credito,
-		   tarjeta_debito, tipo_habitacion, usuario, cheque, banco, cheque;
-		   
-DROP TABLE pais, provincia, localidad, direccion, tipo_posicion_frente_IVA, persona_fisica;		   
-*/
+INSERT INTO direccion VALUES (DEFAULT, 'Mitre', 3667, null, null, 3016, 1);
 
+INSERT INTO persona_fisica
+VALUES (DEFAULT,'DNI',34227524,'BECKER','ALISSON','02-10-1992','ALIBECKER@GMAIL.COM','INGENIERO','BRASILERO','3429466178',1,1),
+	(DEFAULT,'DNI',34227524,'MORENO','MARIANO','18-06-1987','MARIANOMORENO@GMAIL.COM','ARQUITECTO','BOLIVIANO','3421472589',1,1),
+	(DEFAULT,'DNI',34227524,'DE PAUL','RODRIGO','24-05-1994','RODEPAUL@GMAIL.COM','PROFESOR','ARGENTINA','3425684315',1,1),
+	(DEFAULT,'DNI',34227524,'GOMEZ','ALEJANDRO','15-01-1988','ALEJANDROGOMEZ@GMAIL.COM','ABOGADO','ARGENTINA','3425684547',1,1),
+	(DEFAULT,'DNI',40587514,'RIQUELME','NAHUEL','09-12-1999','NAHUELRIQUIELME@GMAIL.COM','ESTUDIANTE','ARGENTINA','3425684598',1,1);
+
+INSERT INTO tipo_habitacion VALUES ('Individual Estándar',null),('Doble Estándar',null),('Doble Superior',null),('Superior Family Plan',null),('Suite Doble',null);
+
+INSERT INTO habitacion VALUES (1,'DISPONIBLE',1,'Individual Estándar'),(2,'RESERVADA',2,'Doble Estándar'),(3,'OCUPADA',2,'Doble Superior'),(4,'FUERA_DE_SERVICIO',5,'Superior Family Plan');
+
+INSERT INTO estadia VALUES (1,'2021-12-15','2021-12-20', 1500.00 ,null,null,1,1,null),(2,'2021-12-15','2021-12-20',null,null,null,2,2,null),(3,'2021-12-15','2021-12-20',null,null,null,3,3,null),(4,'2021-12-15','2021-12-20',null,null,null,4,4,null);
+
+INSERT INTO reserva VALUES (1,'NAHUEL','RIQUELME',1),(2,'ALEJANDRO','GOMEZ',2),(3,'RODRIGO','DE PAUL',3),(4,'MARIANO','MORENO',4);
+
+INSERT INTO periodo_reserva VALUES (1,'2021-12-21','2021-12-25',1,1),(2,'2021-12-21','2021-12-25',2,2),(3,'2021-12-21','2021-12-25',3,3),(4,'2021-12-21','2021-12-25',4,4);
+
+INSERT INTO pasajero VALUES (1, 2), (1, 3);
+
+insert into servicio_prestado
+values (DEFAULT, 'MINIBAR', 105, 10, '2021-12-16', null, 1)
+
+*/
 /*
 DROP TABLE periodo_reserva, asociada_a, efectivo, estadia, factura, habitacion, nota_de_credito, pago, pasajero, 
 		   persona_juridica, plaza, reserva, servicio_facturado, servicio_prestado, tarjeta_credito,
 		   tarjeta_debito, tipo_habitacion, usuario, cheque, banco, cheque, 
 		   pais, provincia, localidad, direccion, tipo_posicion_frente_iva, persona_fisica;
-    
-INSERT INTO estadia VALUES (1,'2021-12-15','2021-12-20', 1500.00 ,null,null,1,1,null),(2,'2021-12-15','2021-12-20',null,null,null,2,2,null),(3,'2021-12-15','2021-12-20',null,null,null,3,3,null),(4,'2021-12-15','2021-12-20',null,null,null,4,4,null);
-	
-INSERT into servicio_prestado
-values (DEFAULT, 'MINIBAR', 105, 10, '2021-12-16', null, 1) 
-       
 */
