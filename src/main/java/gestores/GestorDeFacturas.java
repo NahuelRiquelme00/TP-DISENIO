@@ -5,6 +5,11 @@
  */
 package gestores;
 
+import dao.EstadiaDAO;
+import dao.FacturaDAO;
+import dao.HabitacionDAO;
+import dao.PersonaDAO;
+import dao.ServicioPrestadoDAO;
 import daoImpl.EstadiaDAOImpl;
 import daoImpl.FacturaDAOImpl;
 import daoImpl.HabitacionDAOImpl;
@@ -28,6 +33,7 @@ import javax.persistence.Persistence;
 import dto.ServicioAFacturar;
 import entidades.PersonaJuridica;
 import entidades.ServicioFacturado;
+import java.util.ArrayList;
 
 /**
  *
@@ -36,11 +42,11 @@ import entidades.ServicioFacturado;
 public class GestorDeFacturas {
     private static GestorDeFacturas instance;
     
-    private FacturaDAOImpl facturaDAO;
-    private EstadiaDAOImpl estadiaDAO;
-    private HabitacionDAOImpl habitacionDAO;
-    private PersonaDAOImpl personaDAO;
-    private ServicioPrestadoDAOImpl servicioPrestadoDAO;
+    private FacturaDAO facturaDAO;
+    private EstadiaDAO estadiaDAO;
+    private HabitacionDAO habitacionDAO;
+    private PersonaDAO personaDAO;
+    private ServicioPrestadoDAO servicioPrestadoDAO;
         
     public static GestorDeFacturas getInstance() {
         if (instance == null) {
@@ -66,25 +72,22 @@ public class GestorDeFacturas {
         factura.setFechaEmision(LocalDate.parse(f.getFechaEmision()));
         
         //CARGAR SERVICIOS
-        
         List<ServicioAFacturar> serviciosAFacturar = f.getServiciosAFacturar();
         
         if(serviciosAFacturar != null){
             Integer tamServicios = serviciosAFacturar.size();
-            List<ServicioFacturado> serviciosFacturados = null;
+            List<ServicioFacturado> serviciosFacturados = new ArrayList<>();
             
             //Por cada servicio a facturar
             for(int i = 0; i<tamServicios; i++){
-                ServicioPrestado servicioPrestado = servicioPrestadoDAO.findServicioPrestado(serviciosAFacturar.get(i).getIdServicioPrestado());
                 ServicioAFacturar servicioAFacturarI = serviciosAFacturar.get(i);
-
-                ServicioFacturado servicioFacturado = new ServicioFacturado();
-                servicioFacturado.setNombre(servicioPrestado.getNombre());
-                servicioFacturado.setPrecioUnitario(servicioPrestado.getPrecio());
-                servicioFacturado.setCantidad(servicioAFacturarI.getCantidad());
-                servicioFacturado.setPrecioTotal(servicioAFacturarI.getPrecioTotal());
-                servicioFacturado.setServicioPrestado(servicioPrestado);
-
+                ServicioPrestado servicioPrestado = servicioPrestadoDAO.findServicioPrestado(servicioAFacturarI.getIdServicioPrestado());
+                
+                ServicioFacturado servicioFacturado = new ServicioFacturado(servicioPrestado.getNombre(), 
+                                                                            servicioPrestado.getPrecio(),
+                                                                            servicioAFacturarI.getCantidad(),
+                                                                            servicioAFacturarI.getPrecioTotal(),
+                                                                            servicioPrestado);
                 serviciosFacturados.add(servicioFacturado);
             }
             factura.setServiciosFacturados(serviciosFacturados);

@@ -4,7 +4,6 @@
  */
 package interfaces;
 
-import daoImpl.EstadiaDAOImpl;
 import dto.FacturaDTO;
 import dto.ServicioAFacturar;
 import entidades.Estadia;
@@ -12,19 +11,15 @@ import entidades.PersonaFisica;
 import entidades.ServicioPrestado;
 import entidades.TipoFactura;
 import gestores.GestorDeAlojamientos;
-import gestores.GestorDePersonas;
 import java.time.LocalDate;
 
 import dto.ServicioPrestadoDTO;
-import entidades.Habitacion;
 import entidades.PersonaJuridica;
 import entidades.ServicioFacturado;
-import entidades.TipoEstado;
 import gestores.GestorDeFacturas;
 import java.awt.Component;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.math.MathContext;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,16 +44,16 @@ import javax.swing.table.TableColumnModel;
 public class PanelFacturar extends javax.swing.JPanel {
     private final VentanaPrincipal frame;
     private final GestorDeAlojamientos gestorAlojamientos = GestorDeAlojamientos.getInstance();
-    private final GestorDePersonas gestorPersonas = GestorDePersonas.getInstance();
+    //private final GestorDePersonas gestorPersonas = GestorDePersonas.getInstance();
     private final GestorDeFacturas gestorFacturas = GestorDeFacturas.getInstance();
     
     
-    private List<ServicioPrestado> servPrestados;
+    private List<ServicioPrestado> serviciosPrestados;//Obtenidos de la estadia
     private int tamServicios;
     private BigDecimal costoFEstadia;
     private BigDecimal costoFactura;
     
-    private List<ServicioAFacturar> listaServiciosAFacturar;
+    private List<ServicioAFacturar> serviciosAFacturar;//Obtenidos de la tabla
     private Estadia estadia;
     private PersonaFisica responsable;
     private PersonaJuridica rJuridico;
@@ -66,15 +61,12 @@ public class PanelFacturar extends javax.swing.JPanel {
     public Boolean pasarServicios = false;
     public List<PersonaFisica> pasajeros;
     public LocalTime hora;
-    public List<ServicioPrestadoDTO> servNoFacturados;
+    public List<ServicioPrestadoDTO> serviciosNoFacturados;//Obtenidos de la comparacion entre la tabla(Lo que facturé) y la estadia
     
     JSpinner sp;
     DefaultTableModel dtm;
     boolean flagConsumoSumado = false;
     //DefaultTableModel dm;
-    
-    
-
     
     /**
      * Creates new form PanelFacturar
@@ -85,24 +77,26 @@ public class PanelFacturar extends javax.swing.JPanel {
         this.frame = frame;
     }
     
-    //Viene del menú principal
+    //Viene de seleccionar responsable
     public PanelFacturar(VentanaPrincipal frame, PersonaFisica r, Estadia e, List<PersonaFisica> p, LocalTime h) {
-        initComponents();
         this.frame = frame;
+        initComponents();
+        
         estadia = e;
         responsable = r;
         rJuridico=null;
         pasajeros = p;
         hora = h;
+        
         costoFactura = new BigDecimal(0);
-        listaServiciosAFacturar = new ArrayList<>();
+        serviciosAFacturar = new ArrayList<>();
         
         agregarSpinnerYcargarModelo();
         actualizarTabla();
         cargarDatos();
     }
     
-    //Viene de facturar
+    //Viene de seleccionar responsable, pero pasó anteriormente por facturar
     public PanelFacturar(VentanaPrincipal frame, PersonaFisica r, Estadia e, List<PersonaFisica> p, LocalTime h, List<ServicioPrestadoDTO> servP) {
         initComponents();
         this.frame = frame;
@@ -112,9 +106,46 @@ public class PanelFacturar extends javax.swing.JPanel {
         pasajeros = p;
         hora = h;
         costoFactura = new BigDecimal(0);
-        listaServiciosAFacturar = new ArrayList<>();
+        serviciosAFacturar = new ArrayList<>();
+        
+        agregarSpinnerYcargarModelo();
+        cargarServiciosPendientes(servP);
+        cargarDatos();
+    }
+
+    //Viene de Seleccionar tercero
+    public PanelFacturar(VentanaPrincipal frame, PersonaJuridica r, Estadia e, LocalTime h, List<PersonaFisica> p) {
+        initComponents();
+        this.frame = frame;
+        estadia = e;
+        rJuridico = r;
+        pasajeros = p;
+        hora = h;
+        costoFactura = new BigDecimal(0);
+        serviciosAFacturar = new ArrayList<>();
+        
+        agregarSpinnerYcargarModelo();
+        actualizarTabla();
+        cargarDatosJuridico();
+    }
+    
+    //Viene de Seleccionar tercero, pero pasó anteriormente por facturar
+    public PanelFacturar(VentanaPrincipal frame, PersonaJuridica r, Estadia e, LocalTime h, List<PersonaFisica> p, List<ServicioPrestadoDTO> servP) {
+        initComponents();
+        this.frame = frame;
+        estadia = e;
+        rJuridico = r;
+        pasajeros = p;
+        hora = h;
+        costoFactura = new BigDecimal(0);
+        serviciosAFacturar = new ArrayList<>();
+        
+        agregarSpinnerYcargarModelo();
+        cargarServiciosPendientes(servP);
+        cargarDatosJuridico();
         
         if(!(estadia.getHabitacion().getEstado().name().equals("OCUPADA"))){
+            jCheckBox1.setEnabled(false);
             Object opciones[] = {"Aceptar"};
             JOptionPane.showOptionDialog(
                 null, 
@@ -126,51 +157,12 @@ public class PanelFacturar extends javax.swing.JPanel {
                 opciones,
                 opciones[0]
             );
-            jCheckBox1.setEnabled(false);
         }
-        
-        agregarSpinnerYcargarModelo();
-        cargarServiciosPendientes(servP);
-        //actualizarTabla();
-        cargarDatos();
-    }
-
-    //Viene de Seleccionar responsable
-    public PanelFacturar(VentanaPrincipal frame, PersonaJuridica r, Estadia e, LocalTime h, List<PersonaFisica> p) {
-        initComponents();
-        this.frame = frame;
-        estadia = e;
-        rJuridico = r;
-        pasajeros = p;
-        hora = h;
-        costoFactura = new BigDecimal(0);
-        listaServiciosAFacturar = new ArrayList<>();
-        
-        agregarSpinnerYcargarModelo();
-        actualizarTabla();
-        cargarDatosJuridico();
-    }
-    
-    //Viene de facturar
-    public PanelFacturar(VentanaPrincipal frame, PersonaJuridica r, Estadia e, LocalTime h, List<PersonaFisica> p, List<ServicioPrestadoDTO> servP) {
-        initComponents();
-        this.frame = frame;
-        estadia = e;
-        rJuridico = r;
-        pasajeros = p;
-        hora = h;
-        costoFactura = new BigDecimal(0);
-        listaServiciosAFacturar = new ArrayList<>();
-        jCheckBox1.setEnabled(false);
-        
-        agregarSpinnerYcargarModelo();
-        cargarServiciosPendientes(servP);
-        cargarDatosJuridico();
     }
     
     private void cargarServiciosPendientes(List<ServicioPrestadoDTO> servicios) {
         if(servicios != null){
-            //Los mando a la lista de servicios pendientes
+            //Los mando a la lista de serviciosPrestadosDTO pendientes
             //Agrego los datos al arreglo
             Object[] o = new Object[7];
             for(ServicioPrestadoDTO s : servicios){ 
@@ -186,41 +178,27 @@ public class PanelFacturar extends javax.swing.JPanel {
             //Actualizo la tabla
             dtm.fireTableDataChanged();
         }
-        
     }
     
     private void actualizarTabla(){
-        //Cargo los servicios relacionados con la estadia desde la base de datos
-        List<ServicioPrestadoDTO> servicios = new ArrayList<>();
+        //Cargo los serviciosPrestados en la tabla
         ServicioPrestado sP;
-        servPrestados = estadia.getServiciosPrestados();
-        tamServicios = servPrestados.size();
+        serviciosPrestados = estadia.getServiciosPrestados();
+        tamServicios = serviciosPrestados.size();
+        
+        Object[] o = new Object[7];
         
         for(int i=0; i<tamServicios; i++){
-            sP = servPrestados.get(i);
+            sP = serviciosPrestados.get(i);
             
-            ServicioPrestadoDTO servicio = new ServicioPrestadoDTO();
-            
-            servicio.setNombreConsumo(sP.getNombre());//servicio.setNombreConsumo(sP.getTipo().name());
-            servicio.setPrecioUnitario(sP.getPrecio());
-            servicio.setUnidadesAPagar(0);
-            servicio.setUnidadesTotales(sP.getCantidad());
-            servicio.setCostoTotal(BigDecimal.valueOf(0));
-            servicio.setDescripcion(sP.getNombre());
-            
-            servicios.add(servicio);
-        }
-        
-        //Agrego los datos al arreglo
-        Object[] o = new Object[7];
-        for(ServicioPrestadoDTO s : servicios){ 
             o[0] = Boolean.FALSE;
-            o[1] = s.getNombreConsumo();
-            o[2] = s.getPrecioUnitario();            
-            o[3] = s.getUnidadesAPagar();            
-            o[4] = s.getUnidadesTotales();
-            o[5] = s.getCostoTotal();
-            o[6] = s.getDescripcion();    
+            o[1] = sP.getNombre();//sP.getTipo().name();
+            o[2] = sP.getPrecio();
+            o[3] = 0;            
+            o[4] = sP.getCantidad();
+            o[5] = BigDecimal.valueOf(0);
+            o[6] = sP.getNombre();    
+            
             dtm.addRow(o);
         }
         //Actualizo la tabla
@@ -229,18 +207,31 @@ public class PanelFacturar extends javax.swing.JPanel {
     
     private void cargarDatos() {//Se cargan los datos de la estadia y el responsable
         String apyNombre = responsable.getApellido() + " " + responsable.getNombres();
+        String tipoFactura = responsable.getTipoPosicionFrenteIVA().getTipoFactura().name();
+        Integer cantNoches = gestorAlojamientos.getCantidadNoches(estadia);
+        BigDecimal costoNoche = gestorAlojamientos.getCostoNoche(estadia);
+        costoFEstadia = gestorAlojamientos.getCostoFinal(estadia);
         
         jTextField1.setText(apyNombre);
-        jTextField2.setText(responsable.getTipoPosicionFrenteIVA().getTipoFactura().name());
-        
-        Integer cantNoches = gestorAlojamientos.getCantidadNoches(estadia);
-        costoFEstadia = gestorAlojamientos.getCostoFinal(estadia);
-        BigDecimal costoNoche = gestorAlojamientos.getCostoNoche(estadia);
-        
+        jTextField2.setText(tipoFactura);
         jTextField4.setText(costoFEstadia.toString());
         jTextField5.setText(cantNoches.toString() + " Noches x " + costoNoche.toString() + " ARS");
         
-    }
+        if(!(estadia.getHabitacion().getEstado().name().equals("OCUPADA"))){
+            jCheckBox1.setEnabled(false);
+            Object opciones[] = {"Aceptar"};
+            JOptionPane.showOptionDialog(
+                null, 
+                "La estadía ya fue facturada", 
+                "Aviso", 
+                JOptionPane.DEFAULT_OPTION, 
+                JOptionPane.INFORMATION_MESSAGE, 
+                null, 
+                opciones,
+                opciones[0]
+            );
+        }
+     }
     
     private void cargarDatosJuridico() {
         String razonSocial = rJuridico.getRazonSocial();
@@ -268,17 +259,17 @@ public class PanelFacturar extends javax.swing.JPanel {
     }
     
     private void controlServiciosFacturados() {
-        //checkear si todos los servicios tienen servicioFacturado
+        //checkear si todos los serviciosPrestadosDTO tienen servicioFacturado
         ServicioPrestado servNoFact;
-        servNoFacturados = new ArrayList<>();
+        serviciosNoFacturados = new ArrayList<>();
         
         for(int i=0; i<tamServicios; i++){
-            List<ServicioFacturado> servFacturados = servPrestados.get(i).getServiciosFacturados();//Obtengo la lista de servicios facturados
-            Integer cantP = servPrestados.get(i).getCantidad();//Obtengo la cantidad de productos del servicio prestado
+            List<ServicioFacturado> servFacturados = serviciosPrestados.get(i).getServiciosFacturados();//Obtengo la lista de serviciosPrestadosDTO facturados
+            Integer cantP = serviciosPrestados.get(i).getCantidad();//Obtengo la cantidad de productos del servicio prestado
             
-            if(servFacturados.isEmpty()){//No tiene servicios Facturados->Hay que pasar el servicio prestado entero
+            if(servFacturados.isEmpty()){//No tiene serviciosPrestadosDTO Facturados->Hay que pasar el servicio prestado entero
                 
-                servNoFact = servPrestados.get(i);
+                servNoFact = serviciosPrestados.get(i);
                 
                 //Crear Servicio Prestado dto
                 ServicioPrestadoDTO servPendiente = new ServicioPrestadoDTO();
@@ -288,9 +279,9 @@ public class PanelFacturar extends javax.swing.JPanel {
                 servPendiente.setUnidadesTotales(servNoFact.getCantidad());
                 servPendiente.setDescripcion(servNoFact.getNombre());
                 
-                //Agregarlo a una lista de servicios a facturar
+                //Agregarlo a una lista de serviciosPrestadosDTO a facturar
                 
-                servNoFacturados.add(servPendiente);
+                serviciosNoFacturados.add(servPendiente);
                 
                 //Pasarlo a la interfaz Seleccionar Responsable
                 pasarServicios = true;
@@ -308,9 +299,9 @@ public class PanelFacturar extends javax.swing.JPanel {
                 if(Objects.equals(cantP, cantF)){//Si la cantidad de los facturados es igual a la cantidad de productos del servicio prestado, vuelvo al menu principal
                     System.out.println("Todos los servicios fueron facturados");
                     
-                }else{//Si los servicios no fueron todos facturados, guardo un dto con los servicios a facturar
+                }else{//Si los serviciosPrestadosDTO no fueron todos facturados, guardo un dto con los serviciosPrestadosDTO a facturar
                     cantP = cantP-cantF;
-                    servNoFact = servPrestados.get(i);
+                    servNoFact = serviciosPrestados.get(i);
                     servNoFact.setCantidad(cantP);
                     
                     ServicioPrestadoDTO servPendiente = new ServicioPrestadoDTO(servNoFact.getNombre(),//Corregir
@@ -318,8 +309,8 @@ public class PanelFacturar extends javax.swing.JPanel {
                                                                             servNoFact.getCantidad(),
                                                                             servNoFact.getNombre());
                 
-                    //Agregarlo a una lista de servicios a facturar
-                    servNoFacturados.add(servPendiente);
+                    //Agregarlo a una lista de serviciosPrestadosDTO a facturar
+                    serviciosNoFacturados.add(servPendiente);
                     
                     //Pasarlo a la interfaz Seleccionar Responsable
                     pasarServicios = true;
@@ -681,8 +672,8 @@ public class PanelFacturar extends javax.swing.JPanel {
     private void jButtonAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAceptarActionPerformed
         
         int cantFilas = dtm.getRowCount();
-        BigDecimal costoConsumo = null; 
-        
+        BigDecimal costoConsumo; 
+        ServicioPrestado sP;
         //filasNoSeleccionadas->Ninguna fila seleccionada
         boolean filasNoS = true; 
         
@@ -695,10 +686,14 @@ public class PanelFacturar extends javax.swing.JPanel {
                 costoConsumo = costoTotalConsumo(i, (int) dtm.getValueAt(i, 3));
                 
                 //Le asigno los datos
-                //servicio.setIdServicioPrestado();//conseguir el numero de servicio prestado
+                sP = serviciosPrestados.get(i);
+                servicio.setIdServicioPrestado(sP.getIdServicio());//conseguir el numero de servicio prestado
                 servicio.setCantidad((int) dtm.getValueAt(i, 3));
                 servicio.setPrecioTotal(costoConsumo);
-                listaServiciosAFacturar.add(servicio);
+                
+                serviciosAFacturar.add(servicio);
+                
+                System.out.println(serviciosAFacturar);
                 
                 filasNoS = false;
             }
@@ -749,7 +744,7 @@ public class PanelFacturar extends javax.swing.JPanel {
             }
 
             //Asignar lista de Consumos/Servicios
-            f.setServiciosAFacturar(listaServiciosAFacturar);
+            f.setServiciosAFacturar(serviciosAFacturar);
 
             //Facturar
             gestorFacturas.Facturar(f);
@@ -761,17 +756,15 @@ public class PanelFacturar extends javax.swing.JPanel {
             
             estadia = gestorAlojamientos.buscarEstadia(habitacion);
             
-            System.out.println(estadia.getHabitacion().getEstado().name() + "\n");
-            
             if(estadia.getHabitacion().getEstado().name().equals("OCUPADA")){
                 //La habitación está ocupada->no facturé la estadía->la paso a la interfaz
                 pasarEstadia = true;
             }
 
-            //checkear si los servicios fueron facturados
+            //checkear si los serviciosPrestadosDTO fueron facturados
             controlServiciosFacturados();
 
-            if((pasarEstadia && pasarServicios) || pasarServicios || pasarEstadia){//Paso los servicios y la estadía
+            if((pasarEstadia && pasarServicios) || pasarServicios || pasarEstadia){//Paso los serviciosPrestadosDTO y la estadía
                 //Mostrar mensaje, no terminaste de pagar
                 Object opciones[] = {"Aceptar"};
                     JOptionPane.showOptionDialog(
@@ -785,7 +778,7 @@ public class PanelFacturar extends javax.swing.JPanel {
                     opciones[0]
                 );
 
-                frame.setContentPane(new PanelSeleccionarResponsable(frame, estadia, pasajeros, hora, servNoFacturados));
+                frame.setContentPane(new PanelSeleccionarResponsable(frame, estadia, pasajeros, hora, serviciosNoFacturados));
                 frame.setTitle("Facturar");
                 frame.pack();
                 frame.setLocationRelativeTo(null);
@@ -903,7 +896,7 @@ public class PanelFacturar extends javax.swing.JPanel {
         rJuridico = r;
         this.frame = frame;
         costoFactura = new BigDecimal(0);
-        listaServiciosAFacturar = new ArrayList<>();
+        serviciosAFacturar = new ArrayList<>();
         
         agregarSpinnerYcargarModelo();
         actualizarTabla();
@@ -914,22 +907,63 @@ public class PanelFacturar extends javax.swing.JPanel {
     /*
     private void cargarConsumos() {
         //gestorAlojamientos.getServiciosPrestados(estadiaG);
-        servPrestados = estadia.getServiciosPrestados();
+        serviciosPrestados = estadia.getServiciosPrestados();
         
-        System.out.println(servPrestados);
+        System.out.println(serviciosPrestados);
         dtm = (DefaultTableModel) jTableConsumos.getModel();
         
-        tamServicios = servPrestados.size();
+        tamServicios = serviciosPrestados.size();
         ServicioPrestado servicioP;
         
         //for para mostrar los datos de cada servicio
         for(int j = 0; j<tamServicios; j++){
-            servicioP = servPrestados.get(j);
+            servicioP = serviciosPrestados.get(j);
             String[] datosFila = {"", servicioP.getPrecio().toString(), "", servicioP.getCantidad().toString(), "", servicioP.getNombre()};
             //String[] datosFila = {servicioP.getTipo().name(), servicioP.getPrecio().toString(), "", servicioP.getCantidad().toString(), "", servicioP.getNombre()};
             dtm.addRow(datosFila);
         }
         
+    }
+    */
+    
+    /*
+    private void actualizarTabla(){
+        //Cargo los serviciosPrestadosDTO relacionados con la estadia desde la base de datos
+        List<ServicioPrestadoDTO> serviciosPrestadosDTO = new ArrayList<>();
+        ServicioPrestado sP;
+        serviciosPrestados = estadia.getServiciosPrestados();
+        tamServicios = serviciosPrestados.size();
+        
+        for(int i=0; i<tamServicios; i++){
+            sP = serviciosPrestados.get(i);
+            
+            ServicioPrestadoDTO servicio = new ServicioPrestadoDTO();
+            
+            servicio.setIdServicioPrestado(sP.getIdServicio());
+            servicio.setNombreConsumo(sP.getNombre());//servicio.setNombreConsumo(sP.getTipo().name());
+            servicio.setPrecioUnitario(sP.getPrecio());
+            servicio.setUnidadesAPagar(0);
+            servicio.setUnidadesTotales(sP.getCantidad());
+            servicio.setCostoTotal(BigDecimal.valueOf(0));
+            servicio.setDescripcion(sP.getNombre());
+            
+            serviciosPrestadosDTO.add(servicio);
+        }
+        
+        //Agrego los datos al arreglo
+        Object[] o = new Object[7];
+        for(ServicioPrestadoDTO s : serviciosPrestadosDTO){ 
+            o[0] = Boolean.FALSE;
+            o[1] = s.getNombreConsumo();
+            o[2] = s.getPrecioUnitario();            
+            o[3] = s.getUnidadesAPagar();            
+            o[4] = s.getUnidadesTotales();
+            o[5] = s.getCostoTotal();
+            o[6] = s.getDescripcion();    
+            dtm.addRow(o);
+        }
+        //Actualizo la tabla
+        dtm.fireTableDataChanged();
     }
     */
 }

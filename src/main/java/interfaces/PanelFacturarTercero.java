@@ -225,9 +225,9 @@ public class PanelFacturarTercero extends javax.swing.JPanel {
         // TODO add your handling code here:
         //Cuando llegue a 11 largamos a buscar
         if(jTextCUIT.getText().length()==11){
-            //Controlar que esté bien escrito
+            
             try{
-                //Buscar la razón social            
+                //Controlar que esté bien escrito
                 cuit = new BigInteger(jTextCUIT.getText());
             }catch (Exception ex){
                 Object opciones[] = {"Aceptar"};
@@ -244,8 +244,8 @@ public class PanelFacturarTercero extends javax.swing.JPanel {
             }
             
             try{
+                //Buscar la razón social  
                 responsable = gestorPersonas.findPersonaJuridica(cuit);
-                jTextRazon.setText(responsable.getRazonSocial());
             } catch (Exception ex){
                 Object opciones[] = {"Aceptar"};
                 JOptionPane.showOptionDialog(
@@ -259,6 +259,7 @@ public class PanelFacturarTercero extends javax.swing.JPanel {
                     opciones[0]
                 );
             }
+            jTextRazon.setText(responsable.getRazonSocial());
         }
     }//GEN-LAST:event_jTextCUITKeyTyped
 

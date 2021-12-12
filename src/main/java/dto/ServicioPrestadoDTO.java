@@ -13,6 +13,7 @@ import java.math.BigDecimal;
  */
 public class ServicioPrestadoDTO {
     
+    Integer idServicioPrestado;
     String nombreConsumo;
     BigDecimal precioUnitario;
     int unidadesAPagar;
@@ -32,7 +33,43 @@ public class ServicioPrestadoDTO {
         this.unidadesTotales = cantidad;
         this.nombreConsumo = nombre;
     }
+    
+    //Getters
 
+    public Integer getIdServicioPrestado() {
+        return idServicioPrestado;
+    }
+    
+    public String getNombreConsumo() {
+        return nombreConsumo;
+    }
+
+    public BigDecimal getPrecioUnitario() {
+        return precioUnitario;
+    }
+
+    public Integer getUnidadesAPagar() {
+        return unidadesAPagar;
+    }
+
+    public Integer getUnidadesTotales() {
+        return unidadesTotales;
+    }
+
+    public BigDecimal getCostoTotal() {
+        return costoTotal;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+    
+    //Setters
+
+    public void setIdServicioPrestado(Integer idServicioPrestado) {
+        this.idServicioPrestado = idServicioPrestado;
+    }
+    
     public void setNombreConsumo(String nombre) {
         this.nombreConsumo = nombre;
     }
@@ -57,28 +94,6 @@ public class ServicioPrestadoDTO {
         this.descripcion = desc;
     }
 
-    public String getNombreConsumo() {
-        return nombreConsumo;
-    }
-
-    public BigDecimal getPrecioUnitario() {
-        return precioUnitario;
-    }
-
-    public Integer getUnidadesAPagar() {
-        return unidadesAPagar;
-    }
-
-    public Integer getUnidadesTotales() {
-        return unidadesTotales;
-    }
-
-    public BigDecimal getCostoTotal() {
-        return costoTotal;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
+    
     
 }

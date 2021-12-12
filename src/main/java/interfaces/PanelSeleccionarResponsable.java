@@ -10,6 +10,7 @@ import gestores.GestorDeFacturas;
 import gestores.GestorDeAlojamientos;
 import entidades.PersonaFisica;
 import gestores.GestorDePersonas;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -22,17 +23,18 @@ import javax.swing.table.DefaultTableModel;
  */
 public class PanelSeleccionarResponsable extends javax.swing.JPanel {
     private final VentanaPrincipal frame;
-    private final GestorDeFacturas gestorFacturas = GestorDeFacturas.getInstance();
+    //private final GestorDeFacturas gestorFacturas = GestorDeFacturas.getInstance();
     private final GestorDeAlojamientos gestorAlojamientos = GestorDeAlojamientos.getInstance();
-    private final GestorDePersonas gestorPersonas = GestorDePersonas.getInstance();
+    //private final GestorDePersonas gestorPersonas = GestorDePersonas.getInstance();
     private List<PersonaFisica> pasajeros;
     private int row_selected;
     private int tamPasajeros;
-    private boolean flagCarga;
+
     private PersonaFisica responsable;
     private Estadia estadia;
-    private boolean pasarDatos;
-    private boolean flagBusqueda;
+    
+    private boolean flagCarga;//para limpiar la tabla cada vez que se presiona buscar
+    private boolean pasarDatos;//para saber si tenemos que realizar la busqueda de los pasajeros
     
     private List<ServicioPrestadoDTO> servPendientes;
 
@@ -47,11 +49,36 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
      */
     
     public PanelSeleccionarResponsable(VentanaPrincipal frame) {
-        pasarDatos = false;
         this.frame = frame;
         initComponents();
+        
+        pasarDatos = false;
+        flagCarga = false;
+        row_selected = -1;
+        
+        //CARGAR LA HORA ACTUAL COMO DEFAULT
+        cargarHoraActual();
+        
+    }
+    
+    public PanelSeleccionarResponsable(VentanaPrincipal frame, Estadia e, List<PersonaFisica> p, LocalTime h, List<ServicioPrestadoDTO> servNoFacturados) {
+        this.frame = frame;
+        this.estadia = e;
+        this.pasajeros = p;
+        this.hora = h;
+        this.servPendientes = servNoFacturados;
+        initComponents();
+        
         row_selected = -1;
         flagCarga = false;
+        pasarDatos = true;
+        //Poner los datos de la estadia y la hora, no se pueden modificar ni buscar
+        cargarDatosEstadia();
+        
+        jButtonBuscar.setEnabled(false);
+    }
+    
+    private void cargarHoraActual(){
         LocalTime time = LocalTime.now();
         int horas = time.getHour();
         int minutos = time.getMinute();
@@ -67,24 +94,6 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
             jTextHora.setText(horas + ":" + minutos);
         }
     }
-    
-    public PanelSeleccionarResponsable(VentanaPrincipal frame, Estadia e, List<PersonaFisica> p, LocalTime h, List<ServicioPrestadoDTO> servNoFacturados) {
-        this.frame = frame;
-        this.estadia = e;
-        this.pasajeros = p;
-        this.hora = h;
-        this.servPendientes = servNoFacturados;
-        
-        initComponents();
-        row_selected = -1;
-        flagCarga = false;
-        pasarDatos = true;
-        //Poner los datos de la estadia y la hora, no se pueden modificar ni buscar
-        cargarDatosEstadia();
-        
-        jButtonBuscar.setEnabled(false);
-    }
-    
     private void popularTabla(){
         tamPasajeros = pasajeros.size();
         PersonaFisica ocupante;
@@ -109,7 +118,7 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
     private void cargarDatosBusqueda(){
         try{
             nroHabitacion = Integer.valueOf(jTextHabitacion.getText());
-        }catch (Exception ex){
+        }catch (NumberFormatException ex){
             Object opciones[] = {"Aceptar"};
             JOptionPane.showOptionDialog(
                 null, 
@@ -170,7 +179,13 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
     private void cargarDatosEstadia() {
         nroHabitacion = estadia.getHabitacion().getNumero();
         jTextHabitacion.setText(nroHabitacion.toString());
+        jTextHabitacion.setEditable(false);
+        
         jTextHora.setText(hora.toString());
+        jTextHora.setEditable(false);
+        
+        //Poner los datos de los pasajeros
+        popularTabla();
     }
 
     /**
@@ -359,11 +374,14 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
 
     private void jButtonBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarActionPerformed
         // TODO add your handling code here:
-        flagBusqueda=true;
+        
         //Si no nos pasaron los datos, tenemos que buscar normalmente
         if(!pasarDatos){
             //datosIncorrectos();//Tambien hacerlo en el gestor.
-            if(flagCarga)limpiarTabla();
+            if(flagCarga){
+                limpiarTabla();
+            }
+            
             cargarDatosBusqueda();
             
         }else{//Si la lista no es null, significa que venimos de facturar, por lo que no hay que hacer nada(Boton practicamente no funciona)
@@ -384,8 +402,8 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
     private void jButtonSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSiguienteActionPerformed
         // TODO add your handling code here:
         
-        if(row_selected==-1){
-            //Si no selecciono una persona se muestra error
+        if(row_selected==-1){ //Si no selecciono una persona se muestra error
+           
             Object opciones[] = {"Aceptar"};
             JOptionPane.showOptionDialog(
                 null, 
@@ -397,8 +415,7 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
 		opciones,
 		opciones[0]
             );
-        }else{
-            //Si se selecciono una persona se pasa a la interfaz Facturar
+        }else{//Si se selecciono una persona se pasa a la interfaz Facturar
             
             //Si la persona es menor de edad se debe mostar error
             if(LocalDate.now().compareTo(responsable.getFechaNacimiento())<18){
@@ -413,24 +430,27 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
                     opciones,
                     opciones[0]
                 );
-            }else{
-                //Hacer el calculo de la estadía(si no lo hice antes) antes de la siguiente interfaz
-                if(pasarDatos){
-                    gestorAlojamientos.calcularCostoEstadia(nroHabitacion, hora);
-
+            }else{//Si es mayor de edad seguimos
+                
+                if(pasarDatos){//Si nos pasaron los datos es que venimos de facturar, entonces hay que devolver la lista de servicios pendientes
+                    
+                    estadia.calcularCostoFinal(hora);
+                    gestorAlojamientos.updateEstadia(estadia);
+                    
                     frame.setContentPane(new PanelFacturar(frame,responsable, estadia, pasajeros, hora, servPendientes));
                     frame.setTitle("Facturar");
                     frame.pack();
                     frame.setLocationRelativeTo(null);
                     frame.getContentPane().setVisible(false);
                     frame.getContentPane().setVisible(true);
+                }else{
+                    frame.setContentPane(new PanelFacturar(frame,responsable, estadia, pasajeros, hora));
+                    frame.setTitle("Facturar");
+                    frame.pack();
+                    frame.setLocationRelativeTo(null);
+                    frame.getContentPane().setVisible(false);
+                    frame.getContentPane().setVisible(true);
                 }
-                frame.setContentPane(new PanelFacturar(frame,responsable, estadia, pasajeros, hora));
-                frame.setTitle("Facturar");
-                frame.pack();
-                frame.setLocationRelativeTo(null);
-                frame.getContentPane().setVisible(false);
-                frame.getContentPane().setVisible(true);
             }   
         }
     }//GEN-LAST:event_jButtonSiguienteActionPerformed
@@ -452,23 +472,22 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
 
     private void jButtonFacturarTerceroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFacturarTerceroActionPerformed
         //Se debe buscar una nroHabitacion
-        if(flagBusqueda || pasarDatos){
-            //Hacer el calculo de la estadía antes de la siguiente interfaz si la habitación está ocupada
-            if(estadia.getHabitacion().getEstado().name().equals("OCUPADA")){
-                gestorAlojamientos.calcularCostoEstadia(nroHabitacion, hora);
-            }
+        if(pasarDatos || flagCarga){//Si nos pasaron los datos de facturar o si presionamos buscar
             
-            if(pasarDatos){//Pasarle los servicios si viene de facturar
-                //Pasarle las cosas que necesita: hora, pasajeros, servicios pendientes
+            //Hacer el calculo de la estadía
+            estadia.calcularCostoFinal(hora);
+            gestorAlojamientos.updateEstadia(estadia);
+            
+            if(pasarDatos){//Si nos pasaron los datos es que venimos de facturar, entonces hay que devolver la lista de servicios pendientes
+                
                 frame.setContentPane(new PanelFacturarTercero(frame, estadia, hora, pasajeros, servPendientes));
                 frame.setTitle("Facturar");
                 frame.pack();
                 frame.setLocationRelativeTo(null);
                 frame.getContentPane().setVisible(false);
                 frame.getContentPane().setVisible(true);
-                
             }else{
-                //Pasarle lo minimo: estadia, hora, pasajeros
+                
                 frame.setContentPane(new PanelFacturarTercero(frame, estadia, hora, pasajeros));
                 frame.setTitle("Facturar");
                 frame.pack();

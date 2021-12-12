@@ -106,8 +106,15 @@ public class GestorDeAlojamientos {
         personaDAO.close();
     }
     
-    public void updateEstadia(){
+    public void updateEstadia(Estadia estadia){
+        estadiaDAO = new EstadiaDAOImpl();
+        try {
+            estadiaDAO.updateEstadia(estadia);
+        } catch (Exception ex) {
+            System.out.println("Error al cargar costo");
+        }
         
+        estadiaDAO.close();
     }
     
     public void deleteEstadia(){
@@ -132,15 +139,12 @@ public class GestorDeAlojamientos {
         estadiaDAO = new EstadiaDAOImpl();
         
         Estadia estadia = this.buscarEstadia(nroHabitacion);
-        BigDecimal costoFinal = estadia.calcularCostoFinal(horaSalida);//Modificar al tipo de dato que haya quedado
-        
-        System.out.println("El costo final es: " + costoFinal);
-        
+        estadia.calcularCostoFinal(horaSalida);//Modificar al tipo de dato que haya quedado
         
         try {
             estadiaDAO.updateEstadia(estadia);
         } catch (Exception ex) {
-            System.out.println("Error al crear persona");
+            System.out.println("Error al cargar costo");
         }
         
         estadiaDAO.close();
