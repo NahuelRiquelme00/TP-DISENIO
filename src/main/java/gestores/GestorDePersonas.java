@@ -188,22 +188,9 @@ public class GestorDePersonas {
     	return !buscarPasajero("", "", tipoDocumento, númeroDocumento).isEmpty();
     }
     
-    public List<String> datosCompletos(
-                String nombre, 
-                String apellido, 
-                String documento,
-                Date fechaNac,
-                String telefono, 
-                String nacionalidad, 
-                String calle, 
-                String numero, 
-                String codPostal, 
-                String cuit, 
-                String posIVA, 
-                String ocupacion,
-                String localidad,
-                String provincia,
-                String pais){
+    public List<String> datosCompletos(String nombre, String apellido, String documento, Date fechaNac, String telefono,
+                                       String nacionalidad, String calle, String numero, String codPostal, String cuit,
+                                       String posIVA, String ocupacion, String localidad, String provincia, String pais){
         
         Integer largoCuit = 14;
         List<String> hayCamposIncompletos = new ArrayList<>();
