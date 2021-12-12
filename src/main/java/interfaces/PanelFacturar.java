@@ -53,12 +53,15 @@ public class PanelFacturar extends javax.swing.JPanel {
     private final GestorDeFacturas gestorFacturas = GestorDeFacturas.getInstance();
     
     
-    private List<ServicioPrestado> servPrestados;
+    private List<ServicioPrestado> serviciosPrestados;
+    private List<ServicioAFacturar> serviciosAFacturar;
+    public List<ServicioPrestadoDTO> servNoFacturados;
+    
     private int tamServicios;
     private BigDecimal costoFEstadia;
     private BigDecimal costoFactura;
     
-    private List<ServicioAFacturar> listaServiciosAFacturar;
+    
     private Estadia estadia;
     private PersonaFisica responsable;
     private PersonaJuridica rJuridico;
@@ -66,7 +69,7 @@ public class PanelFacturar extends javax.swing.JPanel {
     public Boolean pasarServicios = false;
     public List<PersonaFisica> pasajeros;
     public LocalTime hora;
-    public List<ServicioPrestadoDTO> servNoFacturados;
+    
     
     JSpinner sp;
     DefaultTableModel dtm;
@@ -95,7 +98,7 @@ public class PanelFacturar extends javax.swing.JPanel {
         pasajeros = p;
         hora = h;
         costoFactura = new BigDecimal(0);
-        listaServiciosAFacturar = new ArrayList<>();
+        serviciosAFacturar = new ArrayList<>();
         
         agregarSpinnerYcargarModelo();
         actualizarTabla();
@@ -112,7 +115,7 @@ public class PanelFacturar extends javax.swing.JPanel {
         pasajeros = p;
         hora = h;
         costoFactura = new BigDecimal(0);
-        listaServiciosAFacturar = new ArrayList<>();
+        serviciosAFacturar = new ArrayList<>();
         
         if(!(estadia.getHabitacion().getEstado().name().equals("OCUPADA"))){
             Object opciones[] = {"Aceptar"};
@@ -144,7 +147,7 @@ public class PanelFacturar extends javax.swing.JPanel {
         pasajeros = p;
         hora = h;
         costoFactura = new BigDecimal(0);
-        listaServiciosAFacturar = new ArrayList<>();
+        serviciosAFacturar = new ArrayList<>();
         
         agregarSpinnerYcargarModelo();
         actualizarTabla();
@@ -160,7 +163,7 @@ public class PanelFacturar extends javax.swing.JPanel {
         pasajeros = p;
         hora = h;
         costoFactura = new BigDecimal(0);
-        listaServiciosAFacturar = new ArrayList<>();
+        serviciosAFacturar = new ArrayList<>();
         jCheckBox1.setEnabled(false);
         
         agregarSpinnerYcargarModelo();
@@ -193,11 +196,11 @@ public class PanelFacturar extends javax.swing.JPanel {
         //Cargo los servicios relacionados con la estadia desde la base de datos
         List<ServicioPrestadoDTO> servicios = new ArrayList<>();
         ServicioPrestado sP;
-        servPrestados = estadia.getServiciosPrestados();
-        tamServicios = servPrestados.size();
+        serviciosPrestados = estadia.getServiciosPrestados();
+        tamServicios = serviciosPrestados.size();
         
         for(int i=0; i<tamServicios; i++){
-            sP = servPrestados.get(i);
+            sP = serviciosPrestados.get(i);
             
             ServicioPrestadoDTO servicio = new ServicioPrestadoDTO();
             
@@ -273,12 +276,12 @@ public class PanelFacturar extends javax.swing.JPanel {
         servNoFacturados = new ArrayList<>();
         
         for(int i=0; i<tamServicios; i++){
-            List<ServicioFacturado> servFacturados = servPrestados.get(i).getServiciosFacturados();//Obtengo la lista de servicios facturados
-            Integer cantP = servPrestados.get(i).getCantidad();//Obtengo la cantidad de productos del servicio prestado
+            List<ServicioFacturado> servFacturados = serviciosPrestados.get(i).getServiciosFacturados();//Obtengo la lista de servicios facturados
+            Integer cantP = serviciosPrestados.get(i).getCantidad();//Obtengo la cantidad de productos del servicio prestado
             
             if(servFacturados.isEmpty()){//No tiene servicios Facturados->Hay que pasar el servicio prestado entero
                 
-                servNoFact = servPrestados.get(i);
+                servNoFact = serviciosPrestados.get(i);
                 
                 //Crear Servicio Prestado dto
                 ServicioPrestadoDTO servPendiente = new ServicioPrestadoDTO();
@@ -310,7 +313,7 @@ public class PanelFacturar extends javax.swing.JPanel {
                     
                 }else{//Si los servicios no fueron todos facturados, guardo un dto con los servicios a facturar
                     cantP = cantP-cantF;
-                    servNoFact = servPrestados.get(i);
+                    servNoFact = serviciosPrestados.get(i);
                     servNoFact.setCantidad(cantP);
                     
                     ServicioPrestadoDTO servPendiente = new ServicioPrestadoDTO(servNoFact.getNombre(),//Corregir
@@ -695,10 +698,10 @@ public class PanelFacturar extends javax.swing.JPanel {
                 costoConsumo = costoTotalConsumo(i, (int) dtm.getValueAt(i, 3));
                 
                 //Le asigno los datos
-                //servicio.setIdServicioPrestado();//conseguir el numero de servicio prestado
+                servicio.setIdServicioPrestado(servicioPrestadoDTO);//conseguir el numero de servicio prestado
                 servicio.setCantidad((int) dtm.getValueAt(i, 3));
                 servicio.setPrecioTotal(costoConsumo);
-                listaServiciosAFacturar.add(servicio);
+                serviciosAFacturar.add(servicio);
                 
                 filasNoS = false;
             }
@@ -749,7 +752,7 @@ public class PanelFacturar extends javax.swing.JPanel {
             }
 
             //Asignar lista de Consumos/Servicios
-            f.setServiciosAFacturar(listaServiciosAFacturar);
+            f.setServiciosAFacturar(serviciosAFacturar);
 
             //Facturar
             gestorFacturas.Facturar(f);
@@ -903,7 +906,7 @@ public class PanelFacturar extends javax.swing.JPanel {
         rJuridico = r;
         this.frame = frame;
         costoFactura = new BigDecimal(0);
-        listaServiciosAFacturar = new ArrayList<>();
+        serviciosAFacturar = new ArrayList<>();
         
         agregarSpinnerYcargarModelo();
         actualizarTabla();
@@ -914,17 +917,17 @@ public class PanelFacturar extends javax.swing.JPanel {
     /*
     private void cargarConsumos() {
         //gestorAlojamientos.getServiciosPrestados(estadiaG);
-        servPrestados = estadia.getServiciosPrestados();
+        serviciosPrestados = estadia.getServiciosPrestados();
         
-        System.out.println(servPrestados);
+        System.out.println(serviciosPrestados);
         dtm = (DefaultTableModel) jTableConsumos.getModel();
         
-        tamServicios = servPrestados.size();
+        tamServicios = serviciosPrestados.size();
         ServicioPrestado servicioP;
         
         //for para mostrar los datos de cada servicio
         for(int j = 0; j<tamServicios; j++){
-            servicioP = servPrestados.get(j);
+            servicioP = serviciosPrestados.get(j);
             String[] datosFila = {"", servicioP.getPrecio().toString(), "", servicioP.getCantidad().toString(), "", servicioP.getNombre()};
             //String[] datosFila = {servicioP.getTipo().name(), servicioP.getPrecio().toString(), "", servicioP.getCantidad().toString(), "", servicioP.getNombre()};
             dtm.addRow(datosFila);

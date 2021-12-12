@@ -10,6 +10,7 @@ import gestores.GestorDeFacturas;
 import gestores.GestorDeAlojamientos;
 import entidades.PersonaFisica;
 import gestores.GestorDePersonas;
+import java.awt.Color;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -109,11 +110,12 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
     private void cargarDatosBusqueda(){
         try{
             nroHabitacion = Integer.valueOf(jTextHabitacion.getText());
+            hora = LocalTime.parse(jTextHora.getText());
         }catch (Exception ex){
             Object opciones[] = {"Aceptar"};
             JOptionPane.showOptionDialog(
                 null, 
-		"NÚMERO de habitación erróneo o inexistente.", 
+		"Complete los campos NÚMERO de habitación y hora (hh:mm) con el formato correcto.", 
 		"Error", 
 		JOptionPane.DEFAULT_OPTION, 
 		JOptionPane.ERROR_MESSAGE, 
@@ -121,15 +123,19 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
 		opciones,
 		opciones[0]
             );
+            
+            jLabel3.setForeground(Color.red);
+            jLabel4.setForeground(Color.red);
+            
+            return;
         }
-        
         try{
-            hora = LocalTime.parse(jTextHora.getText());
+            estadia = gestorAlojamientos.buscarEstadia(nroHabitacion);
         }catch (Exception ex){
             Object opciones[] = {"Aceptar"};
             JOptionPane.showOptionDialog(
                 null, 
-		"HORA errónea, formato hh:mm.", 
+		"No existe una estadía actual para la habitación seleccionada.", 
 		"Error", 
 		JOptionPane.DEFAULT_OPTION, 
 		JOptionPane.ERROR_MESSAGE,
@@ -137,34 +143,14 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
 		opciones,
 		opciones[0]
             );
+            return;
         }
-        
-        estadia = gestorAlojamientos.buscarEstadia(nroHabitacion);
-        if(estadia == null){
-            Object opciones[] = {"Aceptar"};
-            JOptionPane.showOptionDialog(
-                null, 
-		"No existe una estadía para la habitación y la hora seleccionadas.", 
-		"Error", 
-		JOptionPane.DEFAULT_OPTION, 
-		JOptionPane.ERROR_MESSAGE,
-		null, 
-		opciones,
-		opciones[0]
-            );
-        }else{
-            pasajeros = gestorAlojamientos.buscarOcupantes(estadia);
-            flagCarga = true;
+        pasajeros = gestorAlojamientos.buscarOcupantes(estadia);
+        flagCarga = true;
             
-            //Poner los datos de los pasajeros
-            popularTabla();
-        }
+        //Poner los datos de los pasajeros
+        popularTabla();
         
-        
-    }
-    
-    private void datosIncorrectos(){
-        //habitacion que sea un numero y hora con el formato necesario
     }
     
     private void cargarDatosEstadia() {
@@ -529,4 +515,11 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
         popularTabla();
     }
     */
+    
+    /*
+    private void datosIncorrectos(){
+        //habitacion que sea un numero y hora con el formato necesario
+    }
+    */
+    
 }
