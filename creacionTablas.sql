@@ -136,12 +136,7 @@ VALUES (DEFAULT,
 	   	1);
 */
 
---DROP TABLE pais;
---DROP TABLE provincia;
---DROP TABLE localidad;
---DROP TABLE direccion;
---DROP TABLE tipo_posicion_frente_IVA;
---DROP TABLE persona_fisica;
+--DROP TABLE pais, provincia, localidad, direccion, tipo_posicion_frente_IVA, persona_fisica;
 
 
 
