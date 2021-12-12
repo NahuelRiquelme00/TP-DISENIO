@@ -50,7 +50,7 @@ CREATE TABLE direccion(
 	numero integer,
 	piso varchar(30),
 	departamento varchar(30),
-	codigo_postal integer,
+	codigo_postal varchar(20),
 	id_localidad integer REFERENCES localidad(id_localidad)
 );
 
