@@ -50,7 +50,7 @@ CREATE TABLE direccion(
 	numero integer,
 	piso varchar(30),
 	departamento varchar(30),
-	codigo_postal integer,
+	codigo_postal varchar(20),
 	id_localidad integer REFERENCES localidad(id_localidad)
 );
 
@@ -297,7 +297,7 @@ INSERT INTO periodo_reserva VALUES
 
 INSERT INTO pasajero VALUES (1, 2), (1, 3);
 
-insert into servicio_prestado values (DEFAULT, 'CERVEZA MILLER', 105, 10, '2021-12-16', 'MINIBAR', 1);
+insert into servicio_prestado values (DEFAULT, 'CERVEZA MILLER', 105, 10, '2021-12-16', 'BAR', 1);
 
 INSERT INTO persona_juridica VALUES (12345678911, 'MIAMI AIRPORT', null, null, 1, 1);
 */
