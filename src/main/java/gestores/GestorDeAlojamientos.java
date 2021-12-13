@@ -115,8 +115,65 @@ public class GestorDeAlojamientos {
 
     }
     
-    public void updateEstadia(){
+    public void createEstadia(EstadiaDTO e){
+        estadiaDAO = new EstadiaDAOImpl();
+        habitacionDAO = new HabitacionDAOImpl();
+        personaDAO = new PersonaDAOImpl();
+                
+        Estadia estadia = new Estadia();
         
+        //Cargar datos de la estadia
+        
+        estadia.setFechaInicio(LocalDate.parse(e.getFechaInicio()));
+        
+        estadia.setFechaFin(LocalDate.parse(e.getFechaFin()));
+        
+        Habitacion habitacion = habitacionDAO.getById(e.getIdHabitacion());
+        
+        //Le cambio el estado a la habitacion
+        habitacion.setEstado(TipoEstado.OCUPADA);
+        try {
+            habitacionDAO.updateHabitacion(habitacion);
+        } catch (Exception ex) {
+            System.out.println("Error al actualizar el estado de la habitacion");
+            Logger.getLogger(GestorDeAlojamientos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        estadia.setHabitacion(habitacion);
+        
+        
+        estadia.setCostoNoche(habitacion.getTipoHabitacion().getPrecioActual());
+        
+        PersonaFisica pasajeroResponsable = personaDAO.findPersonaFisica(e.getIdPasajeroResponsable());
+        estadia.setPasajeroResponsable(pasajeroResponsable);
+        
+        e.getIdsPasajeroAcompañante().forEach(id -> {
+              estadia.addPasajeroAcompañante(personaDAO.findPersonaFisica(id));
+        });
+        
+        
+        
+        //Crear estadia        
+        try {
+            estadiaDAO.createEstadia(estadia);
+            //System.out.println("Estadia creada");            
+        } catch (Exception ex) {
+            System.out.println("Error al crear la estadia, en el gestor");
+            ex.printStackTrace();
+        }       
+        estadiaDAO.close();
+        habitacionDAO.close();
+        personaDAO.close();
+    }
+    
+     public void updateEstadia(Estadia estadia){
+        estadiaDAO = new EstadiaDAOImpl();
+        try {
+            estadiaDAO.updateEstadia(estadia);
+        } catch (Exception ex) {
+            System.out.println("Error al cargar costo");
+        }
+        
+        estadiaDAO.close();
     }
     
     public void deleteEstadia(){
@@ -141,15 +198,12 @@ public class GestorDeAlojamientos {
         estadiaDAO = new EstadiaDAOImpl();
         
         Estadia estadia = this.buscarEstadia(nroHabitacion);
-        BigDecimal costoFinal = estadia.calcularCostoFinal(horaSalida);//Modificar al tipo de dato que haya quedado
-        
-        System.out.println("El costo final es: " + costoFinal);
-        
+        estadia.calcularCostoFinal(horaSalida);//Modificar al tipo de dato que haya quedado
         
         try {
             estadiaDAO.updateEstadia(estadia);
         } catch (Exception ex) {
-            System.out.println("Error al crear persona");
+            System.out.println("Error al cargar costo");
         }
         
         estadiaDAO.close();

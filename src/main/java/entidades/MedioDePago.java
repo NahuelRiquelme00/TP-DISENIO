@@ -6,6 +6,7 @@
 package entidades;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import javax.persistence.*;
 
 
@@ -18,13 +19,13 @@ public abstract class MedioDePago implements Serializable {
     Integer idMedioDePago;
 
     @Column(name="importe", columnDefinition="numeric")
-    Double importe;
+    BigDecimal importe;
 
     @Column(name="cotizacion")
     Double cotizacion;
 
     @Column(name="importe_en_pesos", columnDefinition="numeric")
-    Double importeEnPesos;
+    BigDecimal importeEnPesos;
 
     public Integer getIdMedioDePago() {
         return idMedioDePago;
@@ -34,11 +35,11 @@ public abstract class MedioDePago implements Serializable {
         this.idMedioDePago = idMedioDePago;
     }
 
-    public Double getImporte() {
+    public BigDecimal getImporte() {
         return importe;
     }
 
-    public void setImporte(Double importe) {
+    public void setImporte(BigDecimal importe) {
         this.importe = importe;
     }
 
@@ -50,11 +51,11 @@ public abstract class MedioDePago implements Serializable {
         this.cotizacion = cotizacion;
     }
 
-    public Double getImporteEnPesos() {
+    public BigDecimal getImporteEnPesos() {
         return importeEnPesos;
     }
 
-    public void setImporteEnPesos(Double importeEnPesos) {
+    public void setImporteEnPesos(BigDecimal importeEnPesos) {
         this.importeEnPesos = importeEnPesos;
     }
         

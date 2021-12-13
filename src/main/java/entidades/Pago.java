@@ -6,6 +6,7 @@
 package entidades;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -22,13 +23,13 @@ public class Pago implements Serializable {
     Integer idPago;
 
     @Column(name="monto_total", columnDefinition="numeric")
-    Double montoTotal;
+    BigDecimal montoTotal;
 
     @Column(name="fecha_y_hora")
     LocalDateTime fechaYHora;
 
     @Column(name="vuelto", columnDefinition="numeric")
-    Double vuelto;
+    BigDecimal vuelto;
 
     @OneToMany
     @JoinColumn(name="id_medio_de_pago", referencedColumnName="id_pago")
@@ -42,11 +43,11 @@ public class Pago implements Serializable {
         this.idPago = idPago;
     }
 
-    public Double getMontoTotal() {
+    public BigDecimal getMontoTotal() {
         return montoTotal;
     }
 
-    public void setMontoTotal(Double montoTotal) {
+    public void setMontoTotal(BigDecimal montoTotal) {
         this.montoTotal = montoTotal;
     }
 
@@ -58,11 +59,11 @@ public class Pago implements Serializable {
         this.fechaYHora = fechaYHora;
     }
 
-    public Double getVuelto() {
+    public BigDecimal getVuelto() {
         return vuelto;
     }
 
-    public void setVuelto(Double vuelto) {
+    public void setVuelto(BigDecimal vuelto) {
         this.vuelto = vuelto;
     }
 

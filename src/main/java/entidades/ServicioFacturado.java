@@ -16,6 +16,9 @@ public class ServicioFacturado implements Serializable {
 	
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name="id_servicio_facturado")
+    Integer idServicio;
+    
     @Column(name="nombre")
     String nombre;
 
@@ -35,6 +38,14 @@ public class ServicioFacturado implements Serializable {
     @ManyToOne
     @JoinColumn(name="numero_factura", referencedColumnName="numero")
     Factura factura;
+
+    public ServicioFacturado(String n, BigDecimal p, Integer c, BigDecimal pTotal, ServicioPrestado sP) {
+        this.nombre = n;
+        this.precioUnitario = p;
+        this.cantidad = c;
+        this.precioTotal = pTotal;
+        this.servicioPrestado = sP;
+    }
 
     public String getNombre() {
         return nombre;

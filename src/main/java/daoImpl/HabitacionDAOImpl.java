@@ -31,7 +31,7 @@ public class HabitacionDAOImpl implements HabitacionDAO {
     private EntityManagerFactory emf = null;
 
     public HabitacionDAOImpl() {
-        this.emf = Persistence.createEntityManagerFactory("postgres");//"MiBaseDeDatos");
+        this.emf = Persistence.createEntityManagerFactory("MiBaseDeDatos");//"MiBaseDeDatos");
     }
     
     public EntityManager getEntityManager() {

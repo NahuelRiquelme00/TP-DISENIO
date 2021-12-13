@@ -29,7 +29,7 @@ public class TipoPosicionFrenteIVADAOImpl implements TipoPosicionFrenteIVADAO {
     private EntityManagerFactory emf = null;
     
     public TipoPosicionFrenteIVADAOImpl() {
-        this.emf = Persistence.createEntityManagerFactory("postgres");//"MiBaseDeDatos");
+        this.emf = Persistence.createEntityManagerFactory("MiBaseDeDatos");//"MiBaseDeDatos");
     }
 
     public EntityManager getEntityManager() {

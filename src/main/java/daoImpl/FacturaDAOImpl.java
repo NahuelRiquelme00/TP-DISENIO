@@ -34,7 +34,7 @@ public class FacturaDAOImpl implements FacturaDAO {
     private EntityManagerFactory emf = null;
 
     public FacturaDAOImpl() {
-        this.emf = Persistence.createEntityManagerFactory("postgres");//"MiBaseDeDatos");
+        this.emf = Persistence.createEntityManagerFactory("MiBaseDeDatos");
     }
 
     public EntityManager getEntityManager() {
@@ -44,7 +44,7 @@ public class FacturaDAOImpl implements FacturaDAO {
     @Override
     public void createFactura(Factura factura) {
         if (factura.getServiciosFacturados() == null) {
-            factura.setServiciosFacturados(new ArrayList<ServicioFacturado>());
+            factura.setServiciosFacturados(new ArrayList<>());
         }
         EntityManager em = null;
         try {
@@ -65,7 +65,7 @@ public class FacturaDAOImpl implements FacturaDAO {
                 estadia = em.getReference(estadia.getClass(), estadia.getIdEstadia());
                 factura.setEstadia(estadia);
             }
-            List<ServicioFacturado> attachedServiciosFacturados = new ArrayList<ServicioFacturado>();
+            List<ServicioFacturado> attachedServiciosFacturados = new ArrayList<>();
             for (ServicioFacturado serviciosFacturadosServicioFacturadoToAttach : factura.getServiciosFacturados()) {
                 serviciosFacturadosServicioFacturadoToAttach = em.getReference(serviciosFacturadosServicioFacturadoToAttach.getClass(), serviciosFacturadosServicioFacturadoToAttach.getNombre());
                 attachedServiciosFacturados.add(serviciosFacturadosServicioFacturadoToAttach);

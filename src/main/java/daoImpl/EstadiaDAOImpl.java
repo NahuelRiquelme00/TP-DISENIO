@@ -33,7 +33,7 @@ public class EstadiaDAOImpl implements EstadiaDAO {
     private EntityManagerFactory emf = null;
 
     public EstadiaDAOImpl() {
-        this.emf = Persistence.createEntityManagerFactory("postgres");//"MiBaseDeDatos");
+        this.emf = Persistence.createEntityManagerFactory("MiBaseDeDatos");//"MiBaseDeDatos");
     }
 
     public EntityManager getEntityManager() {

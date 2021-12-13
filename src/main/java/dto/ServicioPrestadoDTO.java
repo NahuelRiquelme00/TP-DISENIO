@@ -4,6 +4,7 @@
  */
 package dto;
 
+import entidades.TipoServicio;
 import java.math.BigDecimal;
 
 /**
@@ -12,6 +13,7 @@ import java.math.BigDecimal;
  */
 public class ServicioPrestadoDTO {
     
+    Integer idServicioPrestado;
     String nombreConsumo;
     BigDecimal precioUnitario;
     int unidadesAPagar;
@@ -31,31 +33,13 @@ public class ServicioPrestadoDTO {
         this.unidadesTotales = cantidad;
         this.nombreConsumo = nombre;
     }
+    
+    //Getters
 
-    public void setNombreConsumo(String nombre) {
-        this.nombreConsumo = nombre;
+    public Integer getIdServicioPrestado() {
+        return idServicioPrestado;
     }
-
-    public void setPrecioUnitario(BigDecimal precioU) {
-        this.precioUnitario = precioU;
-    }
-
-    public void setUnidadesAPagar(int uPagar) {
-        this.unidadesAPagar = uPagar;
-    }
-
-    public void setUnidadesTotales(int uTotales) {
-        this.unidadesTotales = uTotales;
-    }
-
-    public void setCostoTotal(BigDecimal costo) {
-        this.costoTotal = costo;
-    }
-
-    public void setDescripcion(String desc) {
-        this.descripcion = desc;
-    }
-
+    
     public String getNombreConsumo() {
         return nombreConsumo;
     }
@@ -80,4 +64,33 @@ public class ServicioPrestadoDTO {
         return descripcion;
     }
     
+    //Setters
+
+    public void setIdServicioPrestado(Integer idServicioPrestado) {
+        this.idServicioPrestado = idServicioPrestado;
+    }
+    
+    public void setNombreConsumo(String nombre) {
+        this.nombreConsumo = nombre;
+    }
+
+    public void setPrecioUnitario(BigDecimal precioU) {
+        this.precioUnitario = precioU;
+    }
+
+    public void setUnidadesAPagar(int uPagar) {
+        this.unidadesAPagar = uPagar;
+    }
+
+    public void setUnidadesTotales(int uTotales) {
+        this.unidadesTotales = uTotales;
+    }
+
+    public void setCostoTotal(BigDecimal costo) {
+        this.costoTotal = costo;
+    }
+
+    public void setDescripcion(String desc) {
+        this.descripcion = desc;
+    }
 }

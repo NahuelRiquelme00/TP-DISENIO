@@ -5,6 +5,7 @@
  */
 package entidades;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.*;
@@ -23,13 +24,13 @@ public class NotaDeCredito implements Serializable {
     Integer numeroNota;
 
     @Column(name="importe_neto", columnDefinition="numeric")
-    Double importeNeto;
+    BigDecimal importeNeto;
 
     @Column(name="iva")
     Double IVA;
 
     @Column(name="importe_total", columnDefinition="numeric")
-    Double importeTotal;
+    BigDecimal importeTotal;
 
     @ManyToOne
     @JoinColumn(name="cuit", referencedColumnName="cuit", columnDefinition="int8")
@@ -46,11 +47,11 @@ public class NotaDeCredito implements Serializable {
         this.numeroNota = numeroNota;
     }
 
-    public Double getImporteNeto() {
+    public BigDecimal getImporteNeto() {
         return importeNeto;
     }
 
-    public void setImporteNeto(Double importeNeto) {
+    public void setImporteNeto(BigDecimal importeNeto) {
         this.importeNeto = importeNeto;
     }
 
@@ -62,11 +63,11 @@ public class NotaDeCredito implements Serializable {
         this.IVA = IVA;
     }
 
-    public Double getImporteTotal() {
+    public BigDecimal getImporteTotal() {
         return importeTotal;
     }
 
-    public void setImporteTotal(Double importeTotal) {
+    public void setImporteTotal(BigDecimal importeTotal) {
         this.importeTotal = importeTotal;
     }
 

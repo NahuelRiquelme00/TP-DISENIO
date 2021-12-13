@@ -230,7 +230,7 @@ public class Estadia implements Serializable {
         return "Estadia{" + "idEstadia=" + idEstadia + ", fechaInicio=" + fechaInicio + ", fechaFin=" + fechaFin + '}';
     }    
 
-    public BigDecimal calcularCostoFinal(LocalTime horaSalida) {
+    public void calcularCostoFinal(LocalTime horaSalida) {
         BigDecimal costoEstadia = null, costoPorNoche, cantidadNoches, factor;
         Integer cantNoches;
         costoPorNoche = this.costoNoche;
@@ -245,7 +245,7 @@ public class Estadia implements Serializable {
             
             costoEstadia = costoPorNoche.multiply(cantidadNoches);
             
-        }else if(horaSalida.isAfter(LocalTime.of(11, 0)) 
+        }else if(horaSalida.isAfter(LocalTime.of(11, 0))
                 && (horaSalida.isBefore(LocalTime.of(18, 0)) || horaSalida.equals(LocalTime.of(11, 0)))){
             //Si estoy facturando entre 11 y 18, (11,18]
             
@@ -260,8 +260,6 @@ public class Estadia implements Serializable {
         //System.out.println("El costo por noche es: " + costoPorNoche + " La cantidad de noches es: " + cantNoches);
         
         this.setCostoFinal(costoEstadia);
-        
-        return costoEstadia;
     }
     
 }

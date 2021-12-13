@@ -37,7 +37,7 @@ public class PersonaDAOImpl implements PersonaDAO {
     private EntityManagerFactory emf = null;
     
     public PersonaDAOImpl() {
-        this.emf = Persistence.createEntityManagerFactory("postgres");//"MiBaseDeDatos");
+        this.emf = Persistence.createEntityManagerFactory("MiBaseDeDatos");//"MiBaseDeDatos");
     }   
 
     public EntityManager getEntityManager() {

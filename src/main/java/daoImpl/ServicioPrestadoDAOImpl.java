@@ -29,7 +29,7 @@ public class ServicioPrestadoDAOImpl implements ServicioPrestadoDAO {
     private EntityManagerFactory emf = null;
     
     public ServicioPrestadoDAOImpl() {
-        this.emf = Persistence.createEntityManagerFactory("postgres");//"MiBaseDeDatos");
+        this.emf = Persistence.createEntityManagerFactory("MiBaseDeDatos");//"MiBaseDeDatos");
     }
 
     public EntityManager getEntityManager() {
