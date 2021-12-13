@@ -228,9 +228,9 @@ public class PanelFacturar extends javax.swing.JPanel {
     private void cargarDatos() {//Se cargan los datos de la estadia y el responsable
         String apyNombre = responsable.getApellido() + " " + responsable.getNombres();
         String tipoFactura = responsable.getTipoPosicionFrenteIVA().getTipoFactura().name();
-        Integer cantNoches = gestorAlojamientos.getCantidadNoches(estadia);
-        BigDecimal costoNoche = gestorAlojamientos.getCostoNoche(estadia);
-        costoFEstadia = gestorAlojamientos.getCostoFinal(estadia);
+        Integer cantNoches = estadia.getCantidadNoches();
+        BigDecimal costoNoche = estadia.getCostoNoche();
+        costoFEstadia = estadia.getCostoFinal();
         
         jTextField1.setText(apyNombre);
         jTextField2.setText(tipoFactura);

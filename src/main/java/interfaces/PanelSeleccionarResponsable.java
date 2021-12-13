@@ -92,6 +92,7 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
             jTextHora.setText(horas + ":" + minutos);
         }
     }
+    
     private void popularTabla(){
         tamPasajeros = pasajeros.size();
         PersonaFisica ocupante;
@@ -160,6 +161,11 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
     
     private void datosIncorrectos(){
         //habitacion que sea un numero y hora con el formato necesario
+    }
+    
+    private void limitarCampos(){
+        //Limita la longitud de los campos
+        jTextHabitacion.setDocument(new JTextFieldLimit(4));
     }
     
     private void cargarDatosEstadia() {
@@ -418,10 +424,10 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
                 );
             }else{//Si es mayor de edad seguimos
                 
-                if(pasarDatos){//Si nos pasaron los datos es que venimos de facturar, entonces hay que devolver la lista de servicios pendientes
-                    
                     estadia.calcularCostoFinal(hora);
                     gestorAlojamientos.updateEstadia(estadia);
+                
+                if(pasarDatos){//Si nos pasaron los datos es que venimos de facturar, entonces hay que devolver la lista de servicios pendientes
                     
                     frame.setContentPane(new PanelFacturar(frame,responsable, estadia, pasajeros, hora, servPendientes));
                     frame.setTitle("Facturar");
