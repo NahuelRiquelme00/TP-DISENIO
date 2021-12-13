@@ -14,9 +14,9 @@ import java.util.List;
  * @author Nahuel Riquelme
  */
 public interface ServicioPrestadoDAO {
-    public void createServicioPrestado(ServicioPrestado factura);
+    public void createServicioPrestado(ServicioPrestado servicioPrestado);
     
-    public void edit(ServicioPrestado factura) throws NonexistentEntityException, Exception;
+    public void edit(ServicioPrestado servicioPrestado) throws NonexistentEntityException, Exception;
     
     public List<ServicioPrestado> findServicioPrestadoEntities();
     

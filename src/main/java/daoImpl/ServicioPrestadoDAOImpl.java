@@ -39,15 +39,15 @@ public class ServicioPrestadoDAOImpl implements ServicioPrestadoDAO {
     @Override
     public void createServicioPrestado(ServicioPrestado servicioPrestado) {
         if (servicioPrestado.getServiciosFacturados() == null) {
-            servicioPrestado.setServiciosFacturados(new ArrayList<ServicioFacturado>());
+            servicioPrestado.setServiciosFacturados(new ArrayList<>());
         }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            List<ServicioFacturado> attachedServiciosFacturados = new ArrayList<ServicioFacturado>();
+            List<ServicioFacturado> attachedServiciosFacturados = new ArrayList<>();
             for (ServicioFacturado serviciosFacturadosServicioFacturadoToAttach : servicioPrestado.getServiciosFacturados()) {
-                serviciosFacturadosServicioFacturadoToAttach = em.getReference(serviciosFacturadosServicioFacturadoToAttach.getClass(), serviciosFacturadosServicioFacturadoToAttach.getNombre());
+                serviciosFacturadosServicioFacturadoToAttach = em.getReference(serviciosFacturadosServicioFacturadoToAttach.getClass(), serviciosFacturadosServicioFacturadoToAttach.getIdServicio());
                 attachedServiciosFacturados.add(serviciosFacturadosServicioFacturadoToAttach);
             }
             servicioPrestado.setServiciosFacturados(attachedServiciosFacturados);

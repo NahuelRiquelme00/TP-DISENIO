@@ -66,7 +66,7 @@ public class PanelFacturar extends javax.swing.JPanel {
     JSpinner sp;
     DefaultTableModel dtm;
     boolean flagConsumoSumado = false;
-    //DefaultTableModel dm;
+    //boolean flag factura
     
     /**
      * Creates new form PanelFacturar
@@ -282,8 +282,10 @@ public class PanelFacturar extends javax.swing.JPanel {
         //checkear las cantidades de los servicios DTO
         ServicioPrestadoDTO servicio;
         int cantAPagar, cantTotal;
+        int tamServicios;
+        tamServicios = serviciosPrestadosDTO.size();
         
-        for(int i=0; i<tamServiciosPrestados; i++){
+        for(int i=0; i<tamServicios; i++){
             servicio = serviciosPrestadosDTO.get(i);
             cantAPagar = servicio.getUnidadesAPagar();
             cantTotal = servicio.getUnidadesTotales();
@@ -294,6 +296,7 @@ public class PanelFacturar extends javax.swing.JPanel {
                 //Modificamos el servicioDTO y le asignamos las cantidades que faltan por pagar
                 servicio.setUnidadesTotales(cantTotal-cantAPagar);
                 servicio.setUnidadesAPagar(0);
+                servicio.setCostoTotal(BigDecimal.valueOf(0));
                 //Informamos que hay servicios que faltan facturar
                 pasarServicios = true;
                 
@@ -305,6 +308,21 @@ public class PanelFacturar extends javax.swing.JPanel {
     }
     
     private void cargarAMontoTotal() {
+        if(!jCheckBox1.isSelected()){
+            costoFactura=BigDecimal.valueOf(0);
+        }else{
+            costoFactura=costoFEstadia;
+        }
+        
+        int cantFilas = dtm.getRowCount();
+        for(int i=0; i<cantFilas; i++){
+            
+            if(dtm.getValueAt(i, 0).toString().equals("true") && !dtm.getValueAt(i, 3).equals(0)){
+                
+                costoFactura = costoFactura.add(serviciosPrestadosDTO.get(i).getCostoTotal());
+            }
+        }
+        
         jTextField3.setText(costoFactura.toString());
     }
     
@@ -523,7 +541,7 @@ public class PanelFacturar extends javax.swing.JPanel {
 
             },
             new String [] {
-                "", "Consumos", "Precio unitario", "Unidades a pagar", "Unidades totales", "Costo total", "Descripción"
+                "", "Consumo", "Precio Unitario", "Unidades a Pagar", "Unidades Totales", "Costo Total", "Descripción"
             }
         ) {
             Class[] types = new Class [] {
@@ -670,7 +688,7 @@ public class PanelFacturar extends javax.swing.JPanel {
                 sP = serviciosPrestadosDTO.get(i);
                 
                 //Le asigno los datos
-                servicio.setIdServicioPrestado(sP.getIdServicioPrestado());//conseguir el numero de servicio prestado
+                servicio.setIdServicioPrestado(sP.getIdServicioPrestado());
                 servicio.setCantidad((int) dtm.getValueAt(i, 3));
                 servicio.setPrecioTotal(costoConsumo);
                 
@@ -678,7 +696,7 @@ public class PanelFacturar extends javax.swing.JPanel {
                 
                 //Modificar los servicios DTO
                 sP.setUnidadesAPagar((int) dtm.getValueAt(i, 3));
-                sP.setCostoTotal(costoConsumo);
+                //sP.setCostoTotal(costoConsumo);
                 
                 filasNoS = false;
             }
@@ -778,14 +796,6 @@ public class PanelFacturar extends javax.swing.JPanel {
     }//GEN-LAST:event_jButtonAceptarActionPerformed
 
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
-        // TODO add your handling code here:
-        
-        if(!jCheckBox1.isSelected()){//Si no está seleccionado debo restar la estadía
-            costoFactura = costoFactura.subtract(costoFEstadia);
-            
-        }else{
-            costoFactura = costoFactura.add(costoFEstadia);
-        }
         cargarAMontoTotal();
     }//GEN-LAST:event_jCheckBox1ActionPerformed
 
@@ -809,6 +819,10 @@ public class PanelFacturar extends javax.swing.JPanel {
             
             BigDecimal costoConsumo = costoTotalConsumo(row_selected, (int) sp.getModel().getValue());
             
+            serviciosPrestadosDTO.get(row_selected).setCostoTotal(costoConsumo);
+            dtm.setValueAt(costoConsumo, row_selected, 5);
+            
+            /*
             //Check true y flag true: Tengo que sumarlo pero ya sumé, no sumo otra vez -> no hago nada
             //Check true y flag false: Tengo que sumarlo y no lo sumé -> lo sumo y modifico el flag
             //Check false y flag true: No tengo que sumarlo y lo sumé -> lo resto y modifico el flag
@@ -823,9 +837,18 @@ public class PanelFacturar extends javax.swing.JPanel {
                 if(dtm.getValueAt(row_selected, 0).toString().equals("false") && flagConsumoSumado){
                     costoFactura = costoFactura.subtract(costoConsumo);
                     flagConsumoSumado = false;
+                    System.out.println(costoFactura.compareTo(BigDecimal.valueOf(0)));
                     
+                    if(costoFactura.compareTo(BigDecimal.valueOf(0))<0){
+                        //La resta dio negativo, hay que cambiarlo a positivo y cambiar el flag
+                        costoFactura = costoFactura.add(costoConsumo);
+                        flagConsumoSumado = false;
+                    }   
                 }
             }
+            */
+            
+            
             
             cargarAMontoTotal();
             

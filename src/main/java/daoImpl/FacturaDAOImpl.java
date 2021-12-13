@@ -66,9 +66,9 @@ public class FacturaDAOImpl implements FacturaDAO {
                 factura.setEstadia(estadia);
             }
             List<ServicioFacturado> attachedServiciosFacturados = new ArrayList<>();
-            for (ServicioFacturado serviciosFacturadosServicioFacturadoToAttach : factura.getServiciosFacturados()) {
-                serviciosFacturadosServicioFacturadoToAttach = em.getReference(serviciosFacturadosServicioFacturadoToAttach.getClass(), serviciosFacturadosServicioFacturadoToAttach.getNombre());
-                attachedServiciosFacturados.add(serviciosFacturadosServicioFacturadoToAttach);
+            for (ServicioFacturado servicioFacturadoToAttach : factura.getServiciosFacturados()) {
+                servicioFacturadoToAttach = em.getReference(servicioFacturadoToAttach.getClass(), servicioFacturadoToAttach.getIdServicio());
+                attachedServiciosFacturados.add(servicioFacturadoToAttach);
             }
             factura.setServiciosFacturados(attachedServiciosFacturados);
             em.persist(factura);
@@ -89,6 +89,7 @@ public class FacturaDAOImpl implements FacturaDAO {
                 estadia.setFactura(factura);
                 estadia = em.merge(estadia);
             }
+            
             for (ServicioFacturado serviciosFacturadosServicioFacturado : factura.getServiciosFacturados()) {
                 Factura oldFacturaOfServiciosFacturadosServicioFacturado = serviciosFacturadosServicioFacturado.getFactura();
                 serviciosFacturadosServicioFacturado.setFactura(factura);
@@ -98,6 +99,7 @@ public class FacturaDAOImpl implements FacturaDAO {
                     oldFacturaOfServiciosFacturadosServicioFacturado = em.merge(oldFacturaOfServiciosFacturadosServicioFacturado);
                 }
             }
+            
             em.getTransaction().commit();
         } finally {
             if (em != null) {

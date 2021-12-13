@@ -38,7 +38,7 @@ public class ServicioFacturado implements Serializable {
     @ManyToOne
     @JoinColumn(name="numero_factura", referencedColumnName="numero")
     Factura factura;
-
+    /*
     public ServicioFacturado(String n, BigDecimal p, Integer c, BigDecimal pTotal, ServicioPrestado sP) {
         this.nombre = n;
         this.precioUnitario = p;
@@ -46,7 +46,12 @@ public class ServicioFacturado implements Serializable {
         this.precioTotal = pTotal;
         this.servicioPrestado = sP;
     }
+    */
 
+    public Integer getIdServicio() {
+        return idServicio;
+    }
+    
     public String getNombre() {
         return nombre;
     }

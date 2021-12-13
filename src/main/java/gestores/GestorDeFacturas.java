@@ -9,11 +9,13 @@ import dao.EstadiaDAO;
 import dao.FacturaDAO;
 import dao.HabitacionDAO;
 import dao.PersonaDAO;
+import dao.ServicioFacturadoDAO;
 import dao.ServicioPrestadoDAO;
 import daoImpl.EstadiaDAOImpl;
 import daoImpl.FacturaDAOImpl;
 import daoImpl.HabitacionDAOImpl;
 import daoImpl.PersonaDAOImpl;
+import daoImpl.ServicioFacturadoDAOImpl;
 import daoImpl.ServicioPrestadoDAOImpl;
 import dto.FacturaDTO;
 import entidades.Estadia;
@@ -33,6 +35,7 @@ import javax.persistence.Persistence;
 import dto.ServicioAFacturar;
 import entidades.PersonaJuridica;
 import entidades.ServicioFacturado;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 /**
@@ -47,6 +50,7 @@ public class GestorDeFacturas {
     private HabitacionDAO habitacionDAO;
     private PersonaDAO personaDAO;
     private ServicioPrestadoDAO servicioPrestadoDAO;
+    private ServicioFacturadoDAO servicioFacturadoDAO;
         
     public static GestorDeFacturas getInstance() {
         if (instance == null) {
@@ -63,6 +67,7 @@ public class GestorDeFacturas {
         habitacionDAO = new HabitacionDAOImpl();
         personaDAO = new PersonaDAOImpl();
         servicioPrestadoDAO = new ServicioPrestadoDAOImpl();
+        servicioFacturadoDAO = new ServicioFacturadoDAOImpl();
         
         
         Factura factura = new Factura();
@@ -83,11 +88,21 @@ public class GestorDeFacturas {
                 ServicioAFacturar servicioAFacturarI = serviciosAFacturar.get(i);
                 ServicioPrestado servicioPrestado = servicioPrestadoDAO.findServicioPrestado(servicioAFacturarI.getIdServicioPrestado());
                 
-                ServicioFacturado servicioFacturado = new ServicioFacturado(servicioPrestado.getNombre(), 
-                                                                            servicioPrestado.getPrecio(),
-                                                                            servicioAFacturarI.getCantidad(),
-                                                                            servicioAFacturarI.getPrecioTotal(),
-                                                                            servicioPrestado);
+                ServicioFacturado servicioFacturado = new ServicioFacturado();
+                
+                servicioFacturado.setNombre(servicioPrestado.getNombre());
+                servicioFacturado.setPrecioUnitario(servicioPrestado.getPrecio());
+                servicioFacturado.setPrecioTotal(servicioAFacturarI.getPrecioTotal());
+                servicioFacturado.setCantidad(servicioAFacturarI.getCantidad());
+                servicioFacturado.setServicioPrestado(servicioPrestado);
+                
+                try {
+                    servicioFacturadoDAO.create(servicioFacturado);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+
+                
                 serviciosFacturados.add(servicioFacturado);
             }
             factura.setServiciosFacturados(serviciosFacturados);
@@ -115,7 +130,7 @@ public class GestorDeFacturas {
         }
         
         
-        //Crear la factura
+        //CREAR LA FACTURA
         
         try {
             facturaDAO.createFactura(factura);
@@ -123,6 +138,25 @@ public class GestorDeFacturas {
         } catch (Exception ex) {
             System.out.println("Error al crear la factura, en el gestor");
             ex.printStackTrace();
+        }
+        
+        
+        //Le agrego la factura al servicio facturado
+        if(serviciosAFacturar != null){
+            List<ServicioFacturado> serviciosFacturados = factura.getServiciosFacturados();
+            Integer tamServicios = serviciosFacturados.size();
+            
+            //Por cada servicio a facturar
+            for(int i = 0; i<tamServicios; i++){
+                ServicioFacturado servicio = serviciosFacturados.get(i);
+                
+                servicio.setFactura(factura);
+                try {
+                    servicioFacturadoDAO.edit(servicio);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
         }
         
         //Le cambio el estado a la habitacion
