@@ -91,11 +91,12 @@ public class PanelFacturar extends javax.swing.JPanel {
         costoFactura = new BigDecimal(0);
         serviciosAFacturar = new ArrayList<>();
         serviciosPrestados = estadia.getServiciosPrestados();
-
+        
         cargarServiciosDTO();
         agregarSpinnerYcargarModelo();
         cargarServiciosTabla();
         cargarDatos();
+        
     }
     
     //Viene de seleccionar responsable, pero pasó anteriormente por facturar
@@ -210,7 +211,7 @@ public class PanelFacturar extends javax.swing.JPanel {
     }
     
     private void cargarServiciosTabla() {
-        if(serviciosPrestadosDTO.isEmpty()){
+        if(!serviciosPrestadosDTO.isEmpty()){
             //Los mando a la lista de serviciosPrestadosDTO pendientes
             //Agrego los datos al arreglo
             Object[] o = new Object[7];

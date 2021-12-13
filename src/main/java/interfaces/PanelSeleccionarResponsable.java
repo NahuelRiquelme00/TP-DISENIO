@@ -143,7 +143,22 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
         }
         try{
             estadia = gestorAlojamientos.buscarEstadia(nroHabitacion);
-        }catch (Exception ex){
+        }catch(Exception ex){
+            Object opciones[] = {"Aceptar"};
+            JOptionPane.showOptionDialog(
+                null, 
+		"No existe la habitación seleccionada.", 
+		"Error", 
+		JOptionPane.DEFAULT_OPTION, 
+		JOptionPane.ERROR_MESSAGE,
+		null, 
+		opciones,
+		opciones[0]
+            );
+            return;
+        }
+            
+        if(estadia ==null){
             Object opciones[] = {"Aceptar"};
             JOptionPane.showOptionDialog(
                 null, 
@@ -421,6 +436,7 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
         }else{//Hay servicios prestados
             
             if(!serviciosPrestados.isEmpty()){
+                
                 int tamanioP = serviciosPrestados.size();
                 int cantP;
                 int cantF = 0;
@@ -552,6 +568,7 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
             
             
             if(!serviciosPrestados.isEmpty()){
+                
                 int tamanioP = serviciosPrestados.size();
                 int cantP;
                 int cantF = 0;
