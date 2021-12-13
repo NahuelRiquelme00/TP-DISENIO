@@ -47,6 +47,8 @@ public class PanelFacturarTercero extends javax.swing.JPanel {
         this.hora = h;
         this.pasajeros = lP;
         this.servPendientes = null;
+        
+        limitarCampos();
     }
     
     //Viene de facturar
@@ -57,6 +59,13 @@ public class PanelFacturarTercero extends javax.swing.JPanel {
         this.hora = h;
         this.pasajeros = lP;
         this.servPendientes = sP;
+        
+        limitarCampos();
+    }
+    
+    private void limitarCampos(){
+        //Limita la longitud de los campos
+        jTextCUIT.setDocument(new JTextFieldLimit(12));
     }
     
     /**
@@ -193,6 +202,7 @@ public class PanelFacturarTercero extends javax.swing.JPanel {
                 frame.setLocationRelativeTo(null);
                 frame.getContentPane().setVisible(false);
                 frame.getContentPane().setVisible(true);
+                
             }else{
                 
                 //System.out.println(estadia.getHabitacion().getEstado().name() + "\n");

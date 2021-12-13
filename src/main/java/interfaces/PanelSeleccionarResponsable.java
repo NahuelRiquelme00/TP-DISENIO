@@ -56,6 +56,7 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
         
         //CARGAR LA HORA ACTUAL COMO DEFAULT
         cargarHoraActual();
+        limitarCampos();
         
     }
     
@@ -74,6 +75,8 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
         cargarDatosEstadia();
         
         jButtonBuscar.setEnabled(false);
+        jTextHabitacion.setEditable(false);
+        jTextHora.setEditable(false);
     }
     
     private void cargarHoraActual(){
