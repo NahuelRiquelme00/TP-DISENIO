@@ -191,9 +191,10 @@ public class PanelFacturar extends javax.swing.JPanel {
         
         //Controlar que los servicios no sean facturados
         if(!serviciosPrestados.isEmpty()){//Que no esté vacío
-            int cantF = 0;
+            
             
             for(int i=0; i<tamServiciosPrestados; i++){//Por cada servicio prestado controlo que no tenga servicios facturados
+                int cantF = 0;
                 ServicioPrestado sP = serviciosPrestados.get(i);
                 int cantP = sP.getCantidad();
                 
@@ -207,8 +208,8 @@ public class PanelFacturar extends javax.swing.JPanel {
                         
                         cantF = cantF+sF.getCantidad();
                     }
-                    
-                    if(cantF!=cantP){//Si las cantidades son distintas, facturamos los que sean necesarios
+                    System.out.println(cantF + " " + cantP + "\n");
+                    if(cantF<cantP){//Si las cantidades son distintas, facturamos los que sean necesarios
                         
                         ServicioPrestadoDTO servicio = new ServicioPrestadoDTO();
             
@@ -795,9 +796,13 @@ public class PanelFacturar extends javax.swing.JPanel {
                 pasarEstadia=false;
                 f.setIdEstadia(estadia.getIdEstadia());
             }else{
-                pasarEstadia=true;
+                if(!(estadia.getHabitacion().getEstado().name().equals("OCUPADA"))){
+                    pasarEstadia=false;
+                }else{
+                    pasarEstadia=true;
+                }
             }
-
+            
             //Asignar lista de Consumos/Servicios si tiene algo
             if(!serviciosAFacturar.isEmpty()){
                 f.setServiciosAFacturar(serviciosAFacturar);

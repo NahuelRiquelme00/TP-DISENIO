@@ -450,23 +450,125 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
         //La lista de servicios prestados tiene que estar completamente facturada
         List<ServicioPrestado> serviciosPrestados = estadia.getServiciosPrestados();
         
+        //System.out.println(serviciosPrestados);
+        boolean todosFacturados=false;
+        
+        if(estadia.getFactura()!=null){
+            //EstadiaFacturada
+            
+            if(!serviciosPrestados.isEmpty()){
+                //Servicios Existentes->Controlar que estén pagados
+                
+                int tamanioP = serviciosPrestados.size();
+                int cantP;
+                
+                for(int i=0; i<tamanioP; i++){
+                    
+                    int cantF = 0;
+                    ServicioPrestado servicioP = serviciosPrestados.get(i);
+                    List<ServicioFacturado> serviciosFacturados = servicioP.getServiciosFacturados();
+                    cantP = servicioP.getCantidad();
+                    
+                    int tamanioF = serviciosFacturados.size();
+
+                    for(int j=0; j<tamanioF; j++){
+                        ServicioFacturado servicioF = serviciosFacturados.get(j);
+
+                        cantF=cantF + servicioF.getCantidad();
+                    }
+
+                    if(cantF==cantP){
+                        todosFacturados = true;//Están todos facturados
+                    }else{
+                        todosFacturados = false;
+                    }
+                }
+                
+                if(todosFacturados){
+                    //MENSAJE TODO PAGADO
+                    Object opciones[] = {"Aceptar"};
+                    JOptionPane.showOptionDialog(
+                        null, 
+                        "La estadía y los servicios ya fueron facturados, seleccione otra habitación", 
+                        "Aviso", 
+                        JOptionPane.DEFAULT_OPTION, 
+                        JOptionPane.INFORMATION_MESSAGE, 
+                        null, 
+                        opciones,
+                        opciones[0]
+                    );
+                }else{
+                    //Faltan mandar a facturar, pasar un dto
+                    pasarTodo();
+                }
+            }else{
+                //MENSAJE TODO PAGADO
+                Object opciones[] = {"Aceptar"};
+                JOptionPane.showOptionDialog(
+                    null, 
+                    "La estadía y los servicios ya fueron facturados, seleccione otra habitación", 
+                    "Aviso", 
+                    JOptionPane.DEFAULT_OPTION, 
+                    JOptionPane.INFORMATION_MESSAGE, 
+                    null, 
+                    opciones,
+                    opciones[0]
+                );
+            }
+        }else{
+            //Estadia no Facturada->Pasar Estadia
+            
+            if(!serviciosPrestados.isEmpty()){
+                //Servicios Existentes->Controlar que estén pagados
+                
+                int tamanioP = serviciosPrestados.size();
+                int cantP;
+                
+                for(int i=0; i<tamanioP; i++){
+                    
+                    int cantF = 0;
+                    ServicioPrestado servicioP = serviciosPrestados.get(i);
+                    List<ServicioFacturado> serviciosFacturados = servicioP.getServiciosFacturados();
+                    cantP = servicioP.getCantidad();
+                    
+                    int tamanioF = serviciosFacturados.size();
+
+                    for(int j=0; j<tamanioF; j++){
+                        ServicioFacturado servicioF = serviciosFacturados.get(j);
+
+                        cantF=cantF + servicioF.getCantidad();
+                    }
+
+                    if(cantF==cantP){
+                        todosFacturados = true;//Están todos facturados
+                    }else{
+                        todosFacturados = false;
+                    }
+                }
+                
+                if(todosFacturados){
+                    //Pasar solo estadía
+                    pasarSoloEstadia();
+                }else{
+                    //Faltan mandar a facturar, pasar todo(tal vez solo un dto)
+                    pasarTodo();
+                }
+            }else{
+                //Pasar solo estadía
+                pasarSoloEstadia();
+            }
+        }
+        
+        
+        
+        /*
         boolean todosFacturados=true;
         
         if(serviciosPrestados.isEmpty() && !(estadia.getHabitacion().getEstado().name().equals("OCUPADA"))){
             
-            Object opciones[] = {"Aceptar"};
-            JOptionPane.showOptionDialog(
-                null, 
-                "La estadía y los servicios ya fueron facturados, seleccione otra habitación", 
-                "Aviso", 
-                JOptionPane.DEFAULT_OPTION, 
-                JOptionPane.INFORMATION_MESSAGE, 
-                null, 
-                opciones,
-                opciones[0]
-            );
+            
                 
-        }else{//Hay servicios prestados
+        }else{//Hay servicios prestados o la estadía no está ocupada o ambas
             
             if(!serviciosPrestados.isEmpty()){
                 
@@ -488,10 +590,14 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
                     cantP = servicioP.getCantidad();
 
                     if(cantF==cantP){
-                        todosFacturados = true;//Están todos facturados->
+                        todosFacturados = true;//Están todos facturados
                     }else{
                         todosFacturados = false;
                     }
+                }
+            }else{//No hay servicios prestados, entonces la estadía está ocupada
+                if(!(estadia.getHabitacion().getEstado().name().equals("OCUPADA"))){
+                    
                 }
             }
             
@@ -509,46 +615,11 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
                     opciones[0]
                 );
             }else{
-                if(row_selected==-1){ //Si no selecciono una persona se muestra error
-                    Object opciones[] = {"Aceptar"};
-                    JOptionPane.showOptionDialog(
-                        null, 
-                        "Seleccione un pasajero como responsable de pago.", 
-                        "Error", 
-                        JOptionPane.DEFAULT_OPTION, 
-                        JOptionPane.INFORMATION_MESSAGE, 
-                        null, 
-                        opciones,
-                        opciones[0]
-                    );
-                }else{//Si se selecciono una persona se pasa a la interfaz Facturar
-            
-                    //Si la persona es menor de edad se debe mostar error
-                    if(LocalDate.now().compareTo(responsable.getFechaNacimiento())<18){
-                        Object opciones[] = {"Aceptar"};
-                        JOptionPane.showOptionDialog(
-                            null, 
-                            "Seleccione un pasajero mayor de edad.", 
-                            "Error", 
-                            JOptionPane.DEFAULT_OPTION, 
-                            JOptionPane.INFORMATION_MESSAGE, 
-                            null, 
-                            opciones,
-                            opciones[0]
-                        );
-                    }else{//Si es mayor de edad seguimos
-
-                        estadia.calcularCostoFinal(hora);
-                        gestorAlojamientos.updateEstadia(estadia);
+                
 
                         if(pasarDatos){//Si nos pasaron los datos es que venimos de facturar, entonces hay que devolver la lista de servicios pendientes
 
-                            frame.setContentPane(new PanelFacturar(frame,responsable, estadia, pasajeros, hora, servPendientes));
-                            frame.setTitle("Facturar");
-                            frame.pack();
-                            frame.setLocationRelativeTo(null);
-                            frame.getContentPane().setVisible(false);
-                            frame.getContentPane().setVisible(true);
+                            
                         }else{
                             frame.setContentPane(new PanelFacturar(frame,responsable, estadia, pasajeros, hora));
                             frame.setTitle("Facturar");
@@ -561,6 +632,10 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
                 }
             }
         }
+        */
+        
+        
+        
     }//GEN-LAST:event_jButtonSiguienteActionPerformed
 
     private void jButtonCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelarActionPerformed
@@ -684,6 +759,68 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_jButtonFacturarTerceroActionPerformed
 
+    private void pasarSoloEstadia() {
+        
+        if(controlSeleccionadoYMayor()){
+            frame.setContentPane(new PanelFacturar(frame,responsable, estadia, pasajeros, hora));
+            frame.setTitle("Facturar");
+            frame.pack();
+            frame.setLocationRelativeTo(null);
+            frame.getContentPane().setVisible(false);
+            frame.getContentPane().setVisible(true);
+        }
+    }
+    
+    private void pasarTodo() {
+        if(controlSeleccionadoYMayor()){
+            frame.setContentPane(new PanelFacturar(frame,responsable, estadia, pasajeros, hora, servPendientes));
+            frame.setTitle("Facturar");
+            frame.pack();
+            frame.setLocationRelativeTo(null);
+            frame.getContentPane().setVisible(false);
+            frame.getContentPane().setVisible(true);
+        }
+    }
+    
+    private boolean controlSeleccionadoYMayor(){
+        
+        if(row_selected==-1){ //Si no selecciono una persona se muestra error
+            Object opciones[] = {"Aceptar"};
+            JOptionPane.showOptionDialog(
+                null, 
+                "Seleccione un pasajero como responsable de pago.", 
+                "Error", 
+                JOptionPane.DEFAULT_OPTION, 
+                JOptionPane.INFORMATION_MESSAGE, 
+                null, 
+                opciones,
+                opciones[0]
+            );
+            return false;
+        }else{//Si se selecciono una persona se pasa a la interfaz Facturar
+
+            //Si la persona es menor de edad se debe mostar error
+            if(LocalDate.now().compareTo(responsable.getFechaNacimiento())<18){
+                Object opciones[] = {"Aceptar"};
+                JOptionPane.showOptionDialog(
+                    null, 
+                    "Seleccione un pasajero mayor de edad.", 
+                    "Error", 
+                    JOptionPane.DEFAULT_OPTION, 
+                    JOptionPane.INFORMATION_MESSAGE, 
+                    null, 
+                    opciones,
+                    opciones[0]
+                );
+                return false;
+            }else{//Si es mayor de edad seguimos
+
+                estadia.calcularCostoFinal(hora);
+                gestorAlojamientos.updateEstadia(estadia);
+                return true;
+            }
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonBuscar;
@@ -701,6 +838,8 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
     private javax.swing.JTextField jTextHabitacion;
     private javax.swing.JTextField jTextHora;
     // End of variables declaration//GEN-END:variables
+
+    
 
     /*
     public PanelSeleccionarResponsable(VentanaPrincipal frame, Estadia e, List<PersonaFisica> p, LocalTime h, Boolean pE, List<ServicioPrestadoDTO> servNoFacturados) {
@@ -725,5 +864,7 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
         //habitacion que sea un numero y hora con el formato necesario
     }
     */
+
+    
     
 }
