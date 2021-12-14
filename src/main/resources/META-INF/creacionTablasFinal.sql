@@ -249,59 +249,90 @@ CREATE TABLE usuario(
 );
 
 /*
-INSERT INTO direccion VALUES (DEFAULT, 'Mitre', 3667, null, null, 3016, 1);
 
+--direccion(id_direccion, calle, numero, piso, departamento, codigo_postal, id_localidad)
+INSERT INTO direccion VALUES (DEFAULT, 'MITRE', 3667, null, null, 3016, 1),
+							 (DEFAULT, 'CALLE FALSA', 123, null, null, 6000, 1);
+
+--persona_fisica(id_persona_fisica, tipo_documento, numero_documento, apellido, nombres, fecha_nacimiento, email, ocupacion, nacionalidad, telefono, id_direccion, id_tipo_posicion_frente_iva)
 INSERT INTO persona_fisica
-VALUES (DEFAULT,'DNI',12345678,'BECKER','ALISSON','02-10-1992','ALIBECKER@GMAIL.COM','INGENIERO','BRASILERO','3429466178',1,1),
-	(DEFAULT,'DNI',42329627,'MORENO','MARIANO','18-06-1987','MARIANOMORENO@GMAIL.COM','ARQUITECTO','BOLIVIANO','3421472589',1,1),
-	(DEFAULT,'DNI',23861076,'DE PAUL','RODRIGO','24-05-1994','RODEPAUL@GMAIL.COM','PROFESOR','ARGENTINA','3425684315',1,1),
-	(DEFAULT,'DNI',34227524,'GOMEZ','ALEJANDRO','15-01-1988','ALEJANDROGOMEZ@GMAIL.COM','ABOGADO','ARGENTINA','3425684547',1,1),
-	(DEFAULT,'DNI',40587514,'RIQUELME','NAHUEL','09-12-1999','NAHUELRIQUIELME@GMAIL.COM','ESTUDIANTE','ARGENTINA','3425684598',1,1);
+VALUES  (DEFAULT,'DNI',12345678,'BECKER','ALISSON','02-10-1992','ALIBECKER@GMAIL.COM','INGENIERO','BRASILERO','3429466178',1,1),
+		(DEFAULT,'DNI',42329627,'MORENO','MARIANO','18-06-1987','MARIANOMORENO@GMAIL.COM','ARQUITECTO','BOLIVIANO','3421472589',1,1),
+		(DEFAULT,'DNI',23861076,'DE PAUL','RODRIGO','24-05-1994','RODEPAUL@GMAIL.COM','PROFESOR','ARGENTINA','3425684315',1,1),
+		(DEFAULT,'DNI',34227524,'GOMEZ','ALEJANDRO','15-01-1988','ALEJANDROGOMEZ@GMAIL.COM','ABOGADO','ARGENTINA','3425684547',1,1),
+		(DEFAULT,'DNI',40587514,'RIQUELME','NAHUEL','09-12-1999','NAHUELRIQUIELME@GMAIL.COM','ESTUDIANTE','ARGENTINA','3425684598',1,1),
+		(DEFAULT,'DNI',20587514,'SIMPSON','HOMERO','09-12-2000', null,'SEGURIDAD','ARGENTINA','3425684598',1,1),
+		(DEFAULT,'DNI',20597514,'SIMPSON','MARGE','09-11-2000',null,'AMA DE CASA','ARGENTINA','3425684598',1,1),
+		(DEFAULT,'DNI',40487514,'SIMPSON','BART','09-12-2010',null,'ESTUDIANTE','ARGENTINA','3425684598',1,1),
+		(DEFAULT,'DNI',40387514,'SIMPSON','LISA','09-12-2010',null,'ESTUDIANTE','ARGENTINA','3425684598',1,1);
+	
 
+--tipo_habitacion(nombre, precio_actual)
 INSERT INTO tipo_habitacion VALUES
-	('INDIVIDUAL ESTÁNDAR',null),
-	('DOBLE ESTÁNDAR',null),
-	('DOBLE SUPERIOR',null),
-	('SUPERIOR FAMILY PLAN',null),
-	('SUITE DOBLE',null);
+	('INDIVIDUAL ESTÁNDAR', 4200.00),
+	('DOBLE ESTÁNDAR', 6240.00),
+	('DOBLE SUPERIOR', 7308.00),
+	('SUPERIOR FAMILY PLAN', 10500.00),
+	('SUITE DOBLE', 12600.00);
 
-INSERT INTO habitacion VALUES 
-	(4,'DISPONIBLE',1,'INDIVIDUAL ESTÁNDAR'),
-	(5,'RESERVADA',2,'DOBLE ESTÁNDAR'),
-	(6,'OCUPADA',2,'DOBLE SUPERIOR'),
-	(7,'FUERA_DE_SERVICIO',5,'SUPERIOR FAMILY PLAN'),
-	(1,'DISPONIBLE',1,'INDIVIDUAL ESTÁNDAR'),
-	(20,'DISPONIBLE',1,'INDIVIDUAL ESTÁNDAR'),
-	(18,'OCUPADA',2,'DOBLE SUPERIOR'),
-	(17,'FUERA_DE_SERVICIO',5,'SUPERIOR FAMILY PLAN'),
-	(15,'DISPONIBLE',5,'SUPERIOR FAMILY PLAN'),
-	(12,'DISPONIBLE',5,'SUPERIOR FAMILY PLAN'),
+--habitacion(numero, estado, capacidad, tipo_habitacion)
+INSERT INTO habitacion VALUES
+	(1,'OCUPADA',1,'INDIVIDUAL ESTÁNDAR'),
 	(2,'OCUPADA',2,'DOBLE ESTÁNDAR'),
-	(3,'DISPONIBLE',2,'DOBLE ESTÁNDAR'),
+	(3,'OCUPADA',2,'DOBLE ESTÁNDAR'),
+	(4,'OCUPADA',1,'INDIVIDUAL ESTÁNDAR'),
+	(5,'RESERVADA',2,'DOBLE ESTÁNDAR'),
+	(6,'DISPONIBLE',2,'DOBLE SUPERIOR'),
+	(7,'FUERA_DE_SERVICIO',5,'SUPERIOR FAMILY PLAN'),
+	(8,'DISPONIBLE',2,'DOBLE SUPERIOR'),
 	(10,'DISPONIBLE',2,'DOBLE SUPERIOR'),
-	(8,'DISPONIBLE',2,'DOBLE SUPERIOR');
+	(12,'DISPONIBLE',5,'SUPERIOR FAMILY PLAN'),
+	(15,'DISPONIBLE',5,'SUPERIOR FAMILY PLAN'),
+	(17,'FUERA_DE_SERVICIO',5,'SUPERIOR FAMILY PLAN'),
+	(18,'OCUPADA',2,'DOBLE SUPERIOR'),
+	(20,'DISPONIBLE',1,'INDIVIDUAL ESTÁNDAR');	
 
-INSERT INTO estadia VALUES (1,'2021-12-15','2021-12-20', 1500.00 ,null,null,1,1,null),(2,'2021-12-15','2021-12-20',null,null,null,2,2,null),(3,'2021-12-15','2021-12-20',null,null,null,3,3,null),(4,'2021-12-15','2021-12-20',null,null,null,4,4,null);
+--estadia(id_estadia, fecha_inicio, fecha_fin, costo, descuento, costo_final, numero_habitacion, id_persona_fisica, numero_factura)
+INSERT INTO estadia VALUES (DEFAULT,'2021-12-13','2021-12-16', 4200.00 ,null,null,1,1,null),
+						   (DEFAULT,'2021-12-13','2021-12-17', 6240.00,null,null,2,2,null),
+						   (DEFAULT,'2021-12-13','2021-12-15', 6240.00,null,null,3,3,null),
+						   (DEFAULT,'2021-12-11','2021-12-14', 4200.00,null,null,4,4,null);
 
+--reserva(id_reserva, nombre, apellido, telefono)
 INSERT INTO reserva VALUES 
-	(1,'NAHUEL','RIQUELME',456),
-	(2,'ALEJANDRO','GOMEZ',123),
-	(3,'RODRIGO','DE PAUL',487),
-	(4,'MARIANO','MORENO',897);
+	(1,'NAHUEL','RIQUELME',4561234),
+	(2,'ALEJANDRO','GOMEZ',4258468),
+	(3,'RODRIGO','DE PAUL',4871559),
+	(4,'MARIANO','MORENO',8971668);
 
+--periodo_reserva(id_periodo_reserva, fecha_inicio, fecha_fin, numero_habitacion, id_reserva)
 INSERT INTO periodo_reserva VALUES 
 	(1,'2021-12-21','2021-12-25',4,1),
 	(2,'2021-12-21','2021-12-25',5,2),
 	(3,'2021-12-21','2021-12-25',6,3),
 	(4,'2021-12-21','2021-12-25',7,4);
 
-INSERT INTO pasajero VALUES (1, 2), (1, 3);
+--pasajero(id_estadia, id_persona_fisica)
+INSERT INTO pasajero VALUES (1, 2),
+						    (1, 3);
 
-insert into servicio_prestado values (DEFAULT, 'CERVEZA MILLER', 105, 10, '2021-12-16', 'BAR', 1);
+--servicio_prestado(id_servicio, nombre, precio, cantidad, fecha, tipo, id_estadia)
+INSERT INTO servicio_prestado values (DEFAULT, 'CERVEZA MILLER', 105, 10, '2021-12-16', 'BAR', 1),
+									 (DEFAULT, 'CERVEZA SANTA FE', 90, 5, '2021-12-16', 'BAR', 1),
+									 (DEFAULT, 'CAMISA', 50, 3, '2021-12-16', 'LAVADO_Y_PLANCHADO', 2),
+									 (DEFAULT, 'DIA DE SPA', 120, 1, '2021-12-16', 'SAUNA', 2),
+									 (DEFAULT, 'CERVEZA SANTA FE', 90, 4, '2021-12-16', 'BAR', 2),
+									 (DEFAULT, 'DIA DE SPA', 120, 1, '2021-12-16', 'SAUNA', 3);
 
-INSERT INTO persona_juridica VALUES (12345678911, 'MIAMI AIRPORT', null, null, 1, 1);
+--persona_juridica(cuit, razon_social, email, telefono, id_direccion, id_tipo_posicion_frente_iva)
+INSERT INTO persona_juridica VALUES (12345678911, 'MIAMI AIRPORT', null, null, 1, 1),
+		   							(20406178975, 'COMPUMUNDO HIPERMEGARED', 'HIPERRED@GMAIL.COM', 4561234, 1, 2);
+			
+
 */
+
 /*
+
 DROP TABLE periodo_reserva, asociada_a, efectivo, estadia, factura, habitacion, nota_de_credito, pago, pasajero, 
 		   persona_juridica, plaza, reserva, servicio_facturado, servicio_prestado, tarjeta_credito,
 		   tarjeta_debito, tipo_habitacion, usuario, cheque, banco, cheque, 

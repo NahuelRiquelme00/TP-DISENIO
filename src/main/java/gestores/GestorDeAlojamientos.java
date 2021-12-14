@@ -187,10 +187,20 @@ public class GestorDeAlojamientos {
         
         pasajeros.add(estadia.getPasajeroResponsable());
         
-        if(estadia.getPasajeroAcompañante()!=null){
-            pasajeros.addAll(estadia.getPasajeroAcompañante());
+        if(estadia.getPasajeroAcompañante()!= null){
+            
+            //pasajeros.addAll(estadia.getPasajeroAcompañante());
+            
+            for(PersonaFisica p : estadia.getPasajeroAcompañante()){
+                if(!p.equals(estadia.getPasajeroResponsable())){
+                    pasajeros.add(p);
+                }
+            }
+            
         }
+        
         habitacionDAO.close();
+        
         return pasajeros;
     }
 

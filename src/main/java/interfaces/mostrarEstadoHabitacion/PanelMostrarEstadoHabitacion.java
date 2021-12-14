@@ -410,7 +410,7 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel
 
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
-        panelRangoFechas.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        panelRangoFechas.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
         panelRangoFechas.setLayout(new java.awt.GridBagLayout());
 
         lblFechaDesde.setText("Fecha desde");
@@ -521,6 +521,8 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel
             }
         });
 
+        scrollPaneEstadoHabitaciones.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
+
         modeloTablaEstadoHabitaciones = new DefaultTableModel() { // https://stackoverflow.com/questions/1990817/how-to-make-a-jtable-non-editable
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -546,7 +548,7 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel
             .addGroup(layout.createSequentialGroup()
                 .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panelRangoFechas, javax.swing.GroupLayout.DEFAULT_SIZE, 1070, Short.MAX_VALUE)
+                    .addComponent(panelRangoFechas, javax.swing.GroupLayout.DEFAULT_SIZE, 780, Short.MAX_VALUE)
                     .addComponent(scrollPaneEstadoHabitaciones)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -585,7 +587,7 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel
                 .addGap(18, 18, 18)
                 .addComponent(jLabel4)
                 .addGap(6, 6, 6)
-                .addComponent(scrollPaneEstadoHabitaciones, javax.swing.GroupLayout.DEFAULT_SIZE, 568, Short.MAX_VALUE)
+                .addComponent(scrollPaneEstadoHabitaciones, javax.swing.GroupLayout.DEFAULT_SIZE, 406, Short.MAX_VALUE)
                 .addGap(6, 6, 6)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)

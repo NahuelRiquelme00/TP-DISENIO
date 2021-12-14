@@ -11,11 +11,17 @@ import entidades.PersonaFisica;
 import entidades.ServicioFacturado;
 import entidades.ServicioPrestado;
 import java.awt.Color;
+import java.awt.Component;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.JRadioButton;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
 /**
  *
@@ -59,6 +65,7 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
         //CARGAR LA HORA ACTUAL COMO DEFAULT
         cargarHoraActual();
         limitarCampos();
+        agregarRadioButton();
         
     }
     
@@ -79,6 +86,23 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
         jButtonBuscar.setEnabled(false);
         jTextHabitacion.setEditable(false);
         jTextHora.setEditable(false);
+        
+        agregarRadioButton();
+    }
+    
+    private void agregarRadioButton(){
+        //Agrego el radiobutton a la tabla
+        class MyTableCellRenderer extends JRadioButton implements TableCellRenderer {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+               this.setSelected(isSelected);
+               setBackground(Color.WHITE);
+               return this;
+            }
+        }
+        TableColumnModel cm = jTable1.getColumnModel();
+        cm.addColumn(new TableColumn(0, 10, new MyTableCellRenderer(), null));
+        cm.moveColumn(cm.getColumnCount() - 1, 0);
     }
     
     private void cargarHoraActual(){
@@ -109,6 +133,9 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
             String[] datosFila = {ocupante.getNombres(), ocupante.getApellido(), ocupante.getTipoDocumento().name(), ocupante.getNumeroDocumento().toString()};
             dm.addRow(datosFila);
         }
+        //Para evitar que se apreten los botones sin datos cargados
+        jButtonFacturarTercero.setEnabled(true);
+        jButtonSiguiente.setEnabled(true);
     }
     
     private void limpiarTabla(){
@@ -237,7 +264,7 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
             }
         });
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
 
         jLabel3.setText("Número de Habitación (*)");
 
@@ -260,11 +287,11 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextHabitacion, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                        .addComponent(jTextHabitacion, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                        .addGap(228, 228, 228)
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextHora, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jTextHora, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButtonBuscar)))
@@ -284,8 +311,9 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
 
+        jTable1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -294,9 +322,12 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
                 "Nombre(s)", "Apellido(s)", "Tipo de Documento", "Número de Documento"
             }
         ));
-        jTable1.setRowHeight(25);
+        jTable1.setRowHeight(30);
         jTable1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jTable1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jTable1.setShowGrid(false);
+        jTable1.setShowHorizontalLines(true);
+        jTable1.setShowVerticalLines(true);
         jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jTable1MouseClicked(evt);
@@ -305,6 +336,7 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
         jScrollPane1.setViewportView(jTable1);
 
         jButtonSiguiente.setText("Siguiente");
+        jButtonSiguiente.setEnabled(false);
         jButtonSiguiente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonSiguienteActionPerformed(evt);
@@ -312,6 +344,7 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
         });
 
         jButtonFacturarTercero.setText("Facturar a Tercero");
+        jButtonFacturarTercero.setEnabled(false);
         jButtonFacturarTercero.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonFacturarTerceroActionPerformed(evt);
@@ -338,7 +371,7 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 314, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonSiguiente)
@@ -377,10 +410,10 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButtonCancelar)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 

@@ -17,7 +17,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     public static final int PANE_GESTIONAR_PASAJEROS = 1;
     public static final int PANE_DAR_ALTA_PASAJERO = 2;
     public static final int PANE_OCUPAR_HABITACION = 3;
-    public static final int PANE_MOSTRAR_ESTADO_HABIACION  = 4;
     public static final int PANE_SELECCIONAR_RESPONSABLE = 4;
     public static final int PANE_FACTURAR = 5;
     public static final int PANE_DAR_ALTA_RESPONSABLE = 6;
