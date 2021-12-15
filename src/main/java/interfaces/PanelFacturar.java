@@ -14,6 +14,7 @@ import gestores.GestorDeAlojamientos;
 import java.time.LocalDate;
 
 import dto.ServicioPrestadoDTO;
+import entidades.Factura;
 import entidades.PersonaJuridica;
 import entidades.ServicioFacturado;
 import gestores.GestorDeFacturas;
@@ -794,6 +795,7 @@ public class PanelFacturar extends javax.swing.JPanel {
             }
             
             //Asignar idEstadia si corresponde: si el check box está seleccionado
+            
             if(jCheckBox1.isSelected()){
                 pasarEstadia=false;
                 f.setIdEstadia(estadia.getIdEstadia());
@@ -811,8 +813,8 @@ public class PanelFacturar extends javax.swing.JPanel {
             }
             
             //Facturar
-            gestorFacturas.Facturar(f);
-
+            gestorFacturas.Facturar(f, estadia);
+            
             //checkear si los serviciosPrestadosDTO fueron facturados
             controlServiciosFacturados();
 
