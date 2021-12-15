@@ -458,7 +458,6 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
             
             if(!serviciosPrestados.isEmpty()){
                 //Servicios Existentes->Controlar que estén pagados
-                System.out.println("Entra acá \n");
                 int tamanioP = serviciosPrestados.size();
                 int cantP;
                 
@@ -592,6 +591,8 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
         
         //System.out.println(serviciosPrestados);
         boolean todosFacturados=false;
+        estadia.calcularCostoFinal(hora);
+        //gestorAlojamientos.updateEstadia(estadia);
         
         if(estadia.getFactura()!=null){
             //EstadiaFacturada
@@ -639,7 +640,12 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
                     );
                 }else{
                     //Faltan mandar a facturar, pasar un dto
-                    pasarTodo();
+                    frame.setContentPane(new PanelFacturarTercero(frame,estadia, hora, pasajeros, servPendientes));
+                    frame.setTitle("Facturar Tercero");
+                    frame.pack();
+                    frame.setLocationRelativeTo(null);
+                    frame.getContentPane().setVisible(false);
+                    frame.getContentPane().setVisible(true);
                 }
             }else{
                 //MENSAJE TODO PAGADO
@@ -718,6 +724,7 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
                 }
             }else{
                 //Pasar solo estadía
+                
                 frame.setContentPane(new PanelFacturarTercero(frame,estadia, hora, pasajeros));
                 frame.setTitle("Facturar Tercero");
                 frame.pack();
@@ -785,7 +792,7 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
             }else{//Si es mayor de edad seguimos
 
                 estadia.calcularCostoFinal(hora);
-                gestorAlojamientos.updateEstadia(estadia);
+                //gestorAlojamientos.updateEstadia(estadia);
                 return true;
             }
         }
