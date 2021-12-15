@@ -596,7 +596,7 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
         //System.out.println(serviciosPrestados);
         boolean todosFacturados=false;
         estadia.calcularCostoFinal(hora);
-        //gestorAlojamientos.updateEstadia(estadia);
+        gestorAlojamientos.updateEstadia(estadia);
         
         if(estadia.getFactura()!=null){
             //EstadiaFacturada
@@ -796,7 +796,7 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
             }else{//Si es mayor de edad seguimos
 
                 estadia.calcularCostoFinal(hora);
-                //gestorAlojamientos.updateEstadia(estadia);
+                gestorAlojamientos.updateEstadia(estadia);
                 return true;
             }
         }

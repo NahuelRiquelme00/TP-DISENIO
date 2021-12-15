@@ -293,10 +293,10 @@ INSERT INTO habitacion VALUES
 	(20,'DISPONIBLE',1,'INDIVIDUAL ESTÁNDAR');	
 
 --estadia(id_estadia, fecha_inicio, fecha_fin, costo, descuento, costo_final, numero_habitacion, id_persona_fisica, numero_factura)
-INSERT INTO estadia VALUES (DEFAULT,'2021-12-13','2021-12-16', 4200.00 ,null,null,1,1,null),
-						   (DEFAULT,'2021-12-13','2021-12-17', 6240.00,null,null,2,2,null),
-						   (DEFAULT,'2021-12-13','2021-12-15', 6240.00,null,null,3,3,null),
-						   (DEFAULT,'2021-12-11','2021-12-14', 4200.00,null,null,4,4,null);
+INSERT INTO estadia VALUES (DEFAULT,'2021-12-12','2021-12-18', 4200.00 ,null,null,1,1,null),
+						   (DEFAULT,'2021-12-13','2021-12-19', 6240.00,null,null,2,2,null),
+						   (DEFAULT,'2021-12-14','2021-12-18', 6240.00,null,null,3,3,null),
+						   (DEFAULT,'2021-12-13','2021-12-20', 4200.00,null,null,4,4,null);
 
 --reserva(id_reserva, nombre, apellido, telefono)
 INSERT INTO reserva VALUES 
