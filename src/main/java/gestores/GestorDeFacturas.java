@@ -24,18 +24,13 @@ import entidades.Habitacion;
 import entidades.PersonaFisica;
 import entidades.ServicioPrestado;
 import entidades.TipoEstado;
-import entidades.TipoFactura;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import dto.ServicioAFacturar;
 import entidades.PersonaJuridica;
 import entidades.ServicioFacturado;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 
 /**
@@ -95,7 +90,9 @@ public class GestorDeFacturas {
                 servicioFacturado.setPrecioTotal(servicioAFacturarI.getPrecioTotal());
                 servicioFacturado.setCantidad(servicioAFacturarI.getCantidad());
                 servicioFacturado.setServicioPrestado(servicioPrestado);
+//servicioFacturado.setFactura(factura);
                 
+//No se deberia crear el servicio facturado, ya que se deberia crear solo al crear la factura
                 try {
                     servicioFacturadoDAO.create(servicioFacturado);
                 } catch (Exception ex) {
@@ -140,7 +137,7 @@ public class GestorDeFacturas {
             ex.printStackTrace();
         }
         
-        
+//No deberia ser necesario        
         //Le agrego la factura al servicio facturado
         if(serviciosAFacturar != null){
             List<ServicioFacturado> serviciosFacturados = factura.getServiciosFacturados();

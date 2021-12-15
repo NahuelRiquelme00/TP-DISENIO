@@ -728,7 +728,7 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
                 Object opciones[] = {"Aceptar"};
                 JOptionPane.showOptionDialog(
                     null, 
-                    "La habitacion ya alcanzo su capacidad maxima de personas", 
+                    "La habitación ya alcanzo su capacidad máxima de personas", 
                     "Capacidad alcanzada", 
                     JOptionPane.DEFAULT_OPTION, 
                     JOptionPane.INFORMATION_MESSAGE, 

@@ -321,7 +321,11 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
             new String [] {
                 "Nombre(s)", "Apellido(s)", "Tipo de Documento", "Número de Documento"
             }
-        ));
+        ){
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return false;
+            }
+        });
         jTable1.setRowHeight(30);
         jTable1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jTable1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);

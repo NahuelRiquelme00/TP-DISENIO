@@ -783,11 +783,17 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel
     }
     
     private void cancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelarActionPerformed
-        //Al cancelar se debe volver al menu principal
-        frame.cambiarPanel(VentanaPrincipal.PANE_MENU_PRINCIPAL);
-        //Se limpian las habitaciones con estados pre cargados
-        PanelMostrarEstadoHabitacion.limpiarHabitaciones();
-        PanelOcuparHabitacion.limpiarEstadias();       
+        Object[] options = { "No", "Si"};
+        int opcion = JOptionPane.showOptionDialog(null, "¿Esta seguro de cancelar la ocupación?", "Cancelar ocupación",
+                     JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+        if(opcion == 1) {
+            //Al cancelar se debe volver al menu principal
+            System.out.println("Volver al menú principal");
+            frame.cambiarPanel(VentanaPrincipal.PANE_MENU_PRINCIPAL);
+            //Se limpian las habitaciones con estados pre cargados
+            PanelMostrarEstadoHabitacion.limpiarHabitaciones();
+            PanelOcuparHabitacion.limpiarEstadias();
+        } else System.out.println("Seguir con la ocupación");
     }//GEN-LAST:event_cancelarActionPerformed
 
     private void dcFechaDesdePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_dcFechaDesdePropertyChange

@@ -340,6 +340,14 @@ public class PanelGestionarPasajeros extends javax.swing.JPanel {
             } else System.out.println("Seguir buscando");
         }else{
             //Si se selecciono una persona se pasa a la interfaz modificar usuario
+            Object[] options = { "No", "Si"};
+            int opcion = JOptionPane.showOptionDialog(null, "¿Desea modificar el pasajero seleccionado?", "Modificar pasajero",
+                         JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+            if(opcion == 1) {
+                System.out.println("Pasar a la interface modificar pasajero (no implementado)");
+                //Se vuelve al menu principal ya que no se implementa este caso de uso
+                frame.cambiarPanel(VentanaPrincipal.PANE_MENU_PRINCIPAL);
+            }
         }
     }//GEN-LAST:event_jButtonSiguienteActionPerformed
 

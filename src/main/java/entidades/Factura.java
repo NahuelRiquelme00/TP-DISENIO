@@ -56,6 +56,7 @@ public class Factura implements Serializable {
     @OneToOne(mappedBy="factura")
     Estadia estadia;
 
+//@OneToMany(mappedBy="factura", cascade = CascadeType.PERSIST)
     @OneToMany(mappedBy="factura")
     List<ServicioFacturado>serviciosFacturados;
 
