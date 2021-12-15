@@ -93,6 +93,8 @@ public class PanelFacturar extends javax.swing.JPanel {
         serviciosPrestados = estadia.getServiciosPrestados();
         agregarSpinnerYcargarModelo();
         
+        System.out.println(serviciosPrestados);
+        
         cargarServiciosDTO();
         cargarServiciosTabla();
         cargarDatos();

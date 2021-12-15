@@ -550,92 +550,19 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
                     //Pasar solo estadía
                     pasarSoloEstadia();
                 }else{
+                    if(pasarDatos){
+                        pasarTodo();
+                    }else{
+                        pasarSoloEstadia();
+                    }
                     //Faltan mandar a facturar, pasar todo(tal vez solo un dto)
-                    pasarTodo();
+                    
                 }
             }else{
                 //Pasar solo estadía
                 pasarSoloEstadia();
             }
         }
-        
-        
-        
-        /*
-        boolean todosFacturados=true;
-        
-        if(serviciosPrestados.isEmpty() && !(estadia.getHabitacion().getEstado().name().equals("OCUPADA"))){
-            
-            
-                
-        }else{//Hay servicios prestados o la estadía no está ocupada o ambas
-            
-            if(!serviciosPrestados.isEmpty()){
-                
-                int tamanioP = serviciosPrestados.size();
-                int cantP;
-                int cantF = 0;
-                for(int i=0; i<tamanioP; i++){
-
-                    ServicioPrestado servicioP = serviciosPrestados.get(i);
-                    List<ServicioFacturado> serviciosFacturados = servicioP.getServiciosFacturados();
-                    int tamanioF = serviciosFacturados.size();
-
-                    for(int j=0; j<tamanioF; j++){
-                        ServicioFacturado servicioF = serviciosFacturados.get(j);
-
-                        cantF=cantF + servicioF.getCantidad();
-                    }
-
-                    cantP = servicioP.getCantidad();
-
-                    if(cantF==cantP){
-                        todosFacturados = true;//Están todos facturados
-                    }else{
-                        todosFacturados = false;
-                    }
-                }
-            }else{//No hay servicios prestados, entonces la estadía está ocupada
-                if(!(estadia.getHabitacion().getEstado().name().equals("OCUPADA"))){
-                    
-                }
-            }
-            
-            if(!(estadia.getHabitacion().getEstado().name().equals("OCUPADA")) && todosFacturados){//Si la estadia está desocupada y todos los servicios facturados
-            
-                Object opciones[] = {"Aceptar"};
-                JOptionPane.showOptionDialog(
-                    null, 
-                    "La estadía y los servicios ya fueron facturados, seleccione otra habitación", 
-                    "Aviso", 
-                    JOptionPane.DEFAULT_OPTION, 
-                    JOptionPane.INFORMATION_MESSAGE, 
-                    null, 
-                    opciones,
-                    opciones[0]
-                );
-            }else{
-                
-
-                        if(pasarDatos){//Si nos pasaron los datos es que venimos de facturar, entonces hay que devolver la lista de servicios pendientes
-
-                            
-                        }else{
-                            frame.setContentPane(new PanelFacturar(frame,responsable, estadia, pasajeros, hora));
-                            frame.setTitle("Facturar");
-                            frame.pack();
-                            frame.setLocationRelativeTo(null);
-                            frame.getContentPane().setVisible(false);
-                            frame.getContentPane().setVisible(true);
-                        }
-                    }   
-                }
-            }
-        }
-        */
-        
-        
-        
     }//GEN-LAST:event_jButtonSiguienteActionPerformed
 
     private void jButtonCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelarActionPerformed
@@ -655,35 +582,29 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
 
     private void jButtonFacturarTerceroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFacturarTerceroActionPerformed
         
+        //Si la estadía ya está facturada y los servicios tambien
         //La lista de servicios prestados tiene que estar completamente facturada
         List<ServicioPrestado> serviciosPrestados = estadia.getServiciosPrestados();
         
-        boolean todosFacturados=true;
+        //System.out.println(serviciosPrestados);
+        boolean todosFacturados=false;
         
-        if(serviciosPrestados.isEmpty() && !(estadia.getHabitacion().getEstado().name().equals("OCUPADA"))){
-            Object opciones[] = {"Aceptar"};
-                JOptionPane.showOptionDialog(
-                    null, 
-                    "La estadía y los servicios ya fueron facturados, seleccione otra habitación", 
-                    "Aviso", 
-                    JOptionPane.DEFAULT_OPTION, 
-                    JOptionPane.INFORMATION_MESSAGE, 
-                    null, 
-                    opciones,
-                    opciones[0]
-                );
-        }else{//Hay servicios prestados
-            
+        if(estadia.getFactura()!=null){
+            //EstadiaFacturada
             
             if(!serviciosPrestados.isEmpty()){
+                //Servicios Existentes->Controlar que estén pagados
                 
                 int tamanioP = serviciosPrestados.size();
                 int cantP;
-                int cantF = 0;
+                
                 for(int i=0; i<tamanioP; i++){
-
+                    
+                    int cantF = 0;
                     ServicioPrestado servicioP = serviciosPrestados.get(i);
                     List<ServicioFacturado> serviciosFacturados = servicioP.getServiciosFacturados();
+                    cantP = servicioP.getCantidad();
+                    
                     int tamanioF = serviciosFacturados.size();
 
                     for(int j=0; j<tamanioF; j++){
@@ -692,19 +613,32 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
                         cantF=cantF + servicioF.getCantidad();
                     }
 
-                    cantP = servicioP.getCantidad();
-
                     if(cantF==cantP){
-                        todosFacturados = true;//Están todos facturados->
+                        todosFacturados = true;//Están todos facturados
                     }else{
                         todosFacturados = false;
                     }
                 }
-            }
-            
-            
-            if(!(estadia.getHabitacion().getEstado().name().equals("OCUPADA")) && todosFacturados){//Si la estadia está desocupada y todos los servicios facturados
-            
+                
+                if(todosFacturados){
+                    //MENSAJE TODO PAGADO
+                    Object opciones[] = {"Aceptar"};
+                    JOptionPane.showOptionDialog(
+                        null, 
+                        "La estadía y los servicios ya fueron facturados, seleccione otra habitación", 
+                        "Aviso", 
+                        JOptionPane.DEFAULT_OPTION, 
+                        JOptionPane.INFORMATION_MESSAGE, 
+                        null, 
+                        opciones,
+                        opciones[0]
+                    );
+                }else{
+                    //Faltan mandar a facturar, pasar un dto
+                    pasarTodo();
+                }
+            }else{
+                //MENSAJE TODO PAGADO
                 Object opciones[] = {"Aceptar"};
                 JOptionPane.showOptionDialog(
                     null, 
@@ -716,45 +650,76 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
                     opciones,
                     opciones[0]
                 );
-            }else{
-                //Se debe buscar una nroHabitacion
-                if(pasarDatos || flagCarga){//Si nos pasaron los datos de facturar o si presionamos buscar
+            }
+        }else{
+            //Estadia no Facturada->Pasar Estadia
+            
+            if(!serviciosPrestados.isEmpty()){
+                //Servicios Existentes->Controlar que estén pagados
+                
+                int tamanioP = serviciosPrestados.size();
+                int cantP;
+                
+                for(int i=0; i<tamanioP; i++){
+                    
+                    int cantF = 0;
+                    ServicioPrestado servicioP = serviciosPrestados.get(i);
+                    List<ServicioFacturado> serviciosFacturados = servicioP.getServiciosFacturados();
+                    cantP = servicioP.getCantidad();
+                    
+                    int tamanioF = serviciosFacturados.size();
 
-                    //Hacer el calculo de la estadía
-                    estadia.calcularCostoFinal(hora);
-                    gestorAlojamientos.updateEstadia(estadia);
+                    for(int j=0; j<tamanioF; j++){
+                        ServicioFacturado servicioF = serviciosFacturados.get(j);
 
-                    if(pasarDatos){//Si nos pasaron los datos es que venimos de facturar, entonces hay que devolver la lista de servicios pendientes
+                        cantF=cantF + servicioF.getCantidad();
+                    }
 
-                        frame.setContentPane(new PanelFacturarTercero(frame, estadia, hora, pasajeros, servPendientes));
-                        frame.setTitle("Facturar");
+                    if(cantF==cantP){
+                        todosFacturados = true;//Están todos facturados
+                    }else{
+                        todosFacturados = false;
+                    }
+                }
+                
+                if(todosFacturados){
+                    //Pasar solo estadía
+                    //PanelFacturarTercero(VentanaPrincipal frame, Estadia e, LocalTime h, List<PersonaFisica> lP)
+                    frame.setContentPane(new PanelFacturarTercero(frame,estadia, hora, pasajeros));
+                    frame.setTitle("Facturar Tercero");
+                    frame.pack();
+                    frame.setLocationRelativeTo(null);
+                    frame.getContentPane().setVisible(false);
+                    frame.getContentPane().setVisible(true);
+                }else{
+                    if(pasarDatos){
+                        
+                        frame.setContentPane(new PanelFacturarTercero(frame,estadia, hora, pasajeros, servPendientes));
+                        frame.setTitle("Facturar Tercero");
                         frame.pack();
                         frame.setLocationRelativeTo(null);
                         frame.getContentPane().setVisible(false);
                         frame.getContentPane().setVisible(true);
+                        
                     }else{
-
-                        frame.setContentPane(new PanelFacturarTercero(frame, estadia, hora, pasajeros));
-                        frame.setTitle("Facturar");
+                        frame.setContentPane(new PanelFacturarTercero(frame,estadia, hora, pasajeros));
+                        frame.setTitle("Facturar Tercero");
                         frame.pack();
                         frame.setLocationRelativeTo(null);
                         frame.getContentPane().setVisible(false);
                         frame.getContentPane().setVisible(true);
                     }
-
-                }else{
-                    Object opciones[] = {"Aceptar"};
-                    JOptionPane.showOptionDialog(
-                        null, 
-                        "Debe buscar los datos de una habitación.", 
-                        "Error", 
-                        JOptionPane.DEFAULT_OPTION, 
-                        JOptionPane.INFORMATION_MESSAGE, 
-                        null, 
-                        opciones,
-                        opciones[0]
-                    );
+                    //Faltan mandar a facturar, pasar todo(tal vez solo un dto)
+                    
                 }
+            }else{
+                //Pasar solo estadía
+                frame.setContentPane(new PanelFacturarTercero(frame,estadia, hora, pasajeros));
+                frame.setTitle("Facturar Tercero");
+                frame.pack();
+                frame.setLocationRelativeTo(null);
+                frame.getContentPane().setVisible(false);
+                frame.getContentPane().setVisible(true);
             }
         }
     }//GEN-LAST:event_jButtonFacturarTerceroActionPerformed
