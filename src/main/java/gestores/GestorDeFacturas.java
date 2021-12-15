@@ -61,7 +61,7 @@ public class GestorDeFacturas {
     
     
     
-    public void Facturar(FacturaDTO f){
+    public void Facturar(FacturaDTO f, Estadia estadia){
         facturaDAO = new FacturaDAOImpl();
         estadiaDAO = new EstadiaDAOImpl();
         habitacionDAO = new HabitacionDAOImpl();
@@ -108,11 +108,7 @@ public class GestorDeFacturas {
             factura.setServiciosFacturados(serviciosFacturados);
         }
         
-        //Cargar Estadia
-        Estadia estadia = null;
-        
         if (f.getIdEstadia() != null){
-            estadia= estadiaDAO.findEstadia(f.getIdEstadia());
             factura.setEstadia(estadia);
         }
         
@@ -160,15 +156,14 @@ public class GestorDeFacturas {
             }
         }
         
-        //Le cambio el estado a la habitacion y le agrego la factura a la estadía
+        //Le cambio el estado a la habitacion
         if(f.getIdEstadia() != null){
             Habitacion habitacion = estadia.getHabitacion();
             habitacion.setEstado(TipoEstado.DISPONIBLE);
-            //estadia.setFactura(factura);
+            estadia.setFactura(factura);
             
             try {
                 habitacionDAO.updateHabitacion(habitacion);
-                //estadiaDAO.updateEstadia(estadia);
                 System.out.println("Habitación modificada");
             } catch (Exception ex) {
                 Logger.getLogger(GestorDeAlojamientos.class.getName()).log(Level.SEVERE, null, ex);
@@ -177,7 +172,7 @@ public class GestorDeFacturas {
         
         
         estadiaDAO.close();
-        System.out.println("Factura estadía: " + estadia.getFactura() + "\n");
+        //System.out.println("Factura estadía: " + estadia.getFactura() + "\n");
         habitacionDAO.close();
         personaDAO.close();
         facturaDAO.close();
