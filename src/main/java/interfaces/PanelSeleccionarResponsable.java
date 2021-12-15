@@ -458,7 +458,7 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
             
             if(!serviciosPrestados.isEmpty()){
                 //Servicios Existentes->Controlar que estén pagados
-                
+                System.out.println("Entra acá \n");
                 int tamanioP = serviciosPrestados.size();
                 int cantP;
                 
@@ -499,7 +499,11 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
                     );
                 }else{
                     //Faltan mandar a facturar, pasar un dto
-                    pasarTodo();
+                    if(pasarDatos){
+                        pasarTodo();
+                    }else{
+                        pasarSoloEstadia();
+                    }
                 }
             }else{
                 //MENSAJE TODO PAGADO

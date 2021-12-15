@@ -135,6 +135,7 @@ public class GestorDeFacturas {
         try {
             facturaDAO.createFactura(factura);
             System.out.println("Factura creada");
+            
         } catch (Exception ex) {
             System.out.println("Error al crear la factura, en el gestor");
             ex.printStackTrace();
@@ -159,21 +160,24 @@ public class GestorDeFacturas {
             }
         }
         
-        //Le cambio el estado a la habitacion
+        //Le cambio el estado a la habitacion y le agrego la factura a la estadía
         if(f.getIdEstadia() != null){
             Habitacion habitacion = estadia.getHabitacion();
             habitacion.setEstado(TipoEstado.DISPONIBLE);
-            
+            //estadia.setFactura(factura);
             
             try {
                 habitacionDAO.updateHabitacion(habitacion);
+                //estadiaDAO.updateEstadia(estadia);
                 System.out.println("Habitación modificada");
             } catch (Exception ex) {
                 Logger.getLogger(GestorDeAlojamientos.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         
+        
         estadiaDAO.close();
+        System.out.println("Factura estadía: " + estadia.getFactura() + "\n");
         habitacionDAO.close();
         personaDAO.close();
         facturaDAO.close();

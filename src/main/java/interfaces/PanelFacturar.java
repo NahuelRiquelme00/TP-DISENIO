@@ -798,7 +798,7 @@ public class PanelFacturar extends javax.swing.JPanel {
                 pasarEstadia=false;
                 f.setIdEstadia(estadia.getIdEstadia());
             }else{
-                if(!(estadia.getHabitacion().getEstado().name().equals("OCUPADA"))){
+                if(estadia.getFactura()!=null){
                     pasarEstadia=false;
                 }else{
                     pasarEstadia=true;
