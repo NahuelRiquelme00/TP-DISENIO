@@ -337,7 +337,7 @@ public class PanelMostrarEstadoHabitacion extends javax.swing.JPanel
         reservasUOcupacionesAdicionales.add(estadiaActualTrip);
         
         frame.setContentPane(new PanelOcuparHabitacion(frame, estadiaActualDTO));
-        frame.setTitle("Ocupar habitacion");
+        frame.setTitle("Ocupar habitación");
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.getContentPane().setVisible(false);

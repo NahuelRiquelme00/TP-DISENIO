@@ -45,8 +45,8 @@ public class PasajerosTableModel2 extends AbstractTableModel {
         case 0: return "Nombre(s)";
         case 1: return "Apellido(s)";
         case 2: return "Tipo de documento";
-        case 3: return "Numero de documento";
-        case 4: return "Categoria";
+        case 3: return "Número de documento";
+        case 4: return "Categoría";
         default: return "Error al cargar nombres";
         }
     }

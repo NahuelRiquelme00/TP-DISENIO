@@ -197,7 +197,7 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
         setPreferredSize(new java.awt.Dimension(1184, 798));
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel3.setText("Criterios de busqueda");
+        jLabel3.setText("Criterios de búsqueda");
 
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
 
@@ -216,7 +216,7 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
 
         jLabel4.setText("Apellido(s)");
 
-        jLabel5.setText("Numero de documento");
+        jLabel5.setText("Número de documento");
 
         JTextApellido.setNextFocusableComponent(jComboBoxTipoDoc);
 
@@ -455,7 +455,7 @@ public class PanelOcuparHabitacion extends javax.swing.JPanel {
         });
 
         jButtonCargarOtra.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jButtonCargarOtra.setText("Cargar otra habitacion");
+        jButtonCargarOtra.setText("Cargar otra habitación");
         jButtonCargarOtra.setEnabled(false);
         jButtonCargarOtra.setName(""); // NOI18N
         jButtonCargarOtra.setNextFocusableComponent(jButtonSalir);
