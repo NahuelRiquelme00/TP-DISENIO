@@ -139,11 +139,15 @@ public class PanelSeleccionarResponsable extends javax.swing.JPanel {
     }
     
     private void limpiarTabla(){
-        tamPasajeros = pasajeros.size();
         
-        for(int j = tamPasajeros; j>0; j--){
-            dm.removeRow(j-1);
-        }
+//        tamPasajeros = pasajeros.size();
+//        
+//        for(int j = tamPasajeros; j>0; j--){
+//            dm.removeRow(j-1);
+//        }
+        
+        dm.setRowCount(0);
+        
     }
         
     private void cargarDatosBusqueda(){

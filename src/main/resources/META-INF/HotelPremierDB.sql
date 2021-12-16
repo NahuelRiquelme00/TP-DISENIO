@@ -248,8 +248,6 @@ CREATE TABLE usuario(
 	contraseña varchar(30)
 );
 
-/*
-
 --direccion(id_direccion, calle, numero, piso, departamento, codigo_postal, id_localidad)
 INSERT INTO direccion VALUES (DEFAULT, 'MITRE', 3667, null, null, 3016, 1),
 							 (DEFAULT, 'CALLE FALSA', 123, null, null, 6000, 1);
@@ -288,8 +286,8 @@ INSERT INTO tipo_habitacion VALUES
 
 --habitacion(numero, estado, capacidad, tipo_habitacion)
 INSERT INTO habitacion VALUES
-	(1,'OCUPADA',1,'INDIVIDUAL ESTÁNDAR'),
-	(2,'OCUPADA',2,'DOBLE ESTÁNDAR'),
+	(1,'OCUPADA',1,'DOBLE ESTÁNDAR'),
+	(2,'OCUPADA',2,'INDIVIDUAL ESTÁNDAR'),
 	(3,'OCUPADA',2,'DOBLE ESTÁNDAR'),
 	(4,'OCUPADA',1,'INDIVIDUAL ESTÁNDAR'),
 	(5,'RESERVADA',2,'DOBLE ESTÁNDAR'),
@@ -344,7 +342,6 @@ INSERT INTO persona_juridica VALUES (12345678911, 'MIAMI AIRPORT', null, null, 1
 		   							(20406175242, 'COMPUMUNDO HIPERMEGARED', 'HIPERRED@GMAIL.COM', 4561234, 1, 2);
 			
 
-*/
 
 /*
 
