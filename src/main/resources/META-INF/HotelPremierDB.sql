@@ -134,14 +134,6 @@ CREATE TABLE habitacion(
 	tipo_habitacion varchar(30) REFERENCES tipo_habitacion(nombre)
 );
 
-CREATE TABLE asociada_a(
-	habitacion integer REFERENCES habitacion(numero),
-	reserva integer REFERENCES reserva(id_reserva),
-	fecha_inicio date,
-	fecha_fin date,
-	CONSTRAINT pk_asociada_a PRIMARY KEY (habitacion,reserva)
-);
-
 CREATE TABLE periodo_reserva(
 	id_periodo_reserva serial PRIMARY KEY,
 	fecha_inicio date,
@@ -336,7 +328,7 @@ INSERT INTO servicio_prestado values (DEFAULT, 'CERVEZA MILLER', 105, 10, '2021-
 									 (DEFAULT, 'DIA DE SPA', 120, 1, '2021-12-16', 'SAUNA', 2),
 									 (DEFAULT, 'CERVEZA SANTA FE', 90, 4, '2021-12-16', 'BAR', 2),
 									 (DEFAULT, 'DIA DE SPA', 120, 1, '2021-12-16', 'SAUNA', 3);
-
+									 
 --persona_juridica(cuit, razon_social, email, telefono, id_direccion, id_tipo_posicion_frente_iva)
 INSERT INTO persona_juridica VALUES (12345678911, 'MIAMI AIRPORT', null, null, 1, 1),
 		   							(20406175242, 'COMPUMUNDO HIPERMEGARED', 'HIPERRED@GMAIL.COM', 4561234, 1, 2);
